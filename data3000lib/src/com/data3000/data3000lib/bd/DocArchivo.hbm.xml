@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 29/04/2014 06:39:49 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.data3000.data3000lib.bd.DocArchivo" table="doc_archivo">
+        <id name="archIdn" type="long">
+            <column name="arch_idn" precision="10" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">SQN_DOC_ARCHIVO</param>
+            </generator>
+        </id>
+        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
+            <column name="sist_arch_idn" precision="10" scale="0" not-null="true">
+                <comment>Item del sistema de archivos donde se carga el documento</comment>
+            </column>
+        </many-to-one>
+        <property name="archNombre" type="string">
+            <column name="arch_nombre" length="300" not-null="true">
+                <comment>Nombre del archivo</comment>
+            </column>
+        </property>
+        <property name="archDescripcion" type="string">
+            <column name="arch_descripcion">
+                <comment>Descripci&#195;&#179;n de contenido del archivo</comment>
+            </column>
+        </property>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>Login de usuario de la persona que realizo la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="timestamp">
+            <column name="audi_fech_modi" length="29" not-null="true">
+                <comment>Fecha de la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="boolean">
+            <column name="audi_si_anul" not-null="true">
+                <comment>Indica si el registro fue anulado (true) o no (false)</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul" length="32">
+                <comment>Motivo de anulacion del registro</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200">
+                <comment>Checksum del registro con SHA1</comment>
+            </column>
+        </property>
+        <set name="docArchivoVersions" table="doc_archivo_version" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="arch_idn" precision="10" scale="0" not-null="true">
+                    <comment>Identificador del archivo al que pertenece la versi&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocArchivoVersion" />
+        </set>
+    </class>
+</hibernate-mapping>
