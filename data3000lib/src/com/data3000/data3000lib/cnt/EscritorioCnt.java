@@ -63,29 +63,16 @@ public class EscritorioCnt extends WindowComposer {
 		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
 		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formulario);
 		parametros.put(ConstantesAdmin.ARG_CLASE,DocArchivo.class);
+		parametros.put(ConstantesAdmin.ARG_CAMPOS_TABLA, DocArchivo.getCamposTabla());
 		
 		Window win = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
 		win.setTitle(null);
 		win.setBorder("none");
 		win.doEmbedded();
 		
-		
-		
-		
-		
 		cargarArbol();
-		
-		
 	}
 	
-	
-	
-	
-	
-
-
-
-
 	private void cargarArbol() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("Consultando arbol ...");
 		
