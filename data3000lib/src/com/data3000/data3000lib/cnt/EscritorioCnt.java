@@ -11,6 +11,7 @@ import org.zkoss.zhtml.Tbody;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Tree;
@@ -40,7 +41,7 @@ public class EscritorioCnt extends WindowComposer {
 	private Div divTrabajo;
 	
 	
-	private TablaDatos tablaDatos;
+	private Window winTablaDatos;
 	
 	private class ItemDir {
 		public DocSistArch dir;
@@ -64,10 +65,10 @@ public class EscritorioCnt extends WindowComposer {
 		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formulario);
 		parametros.put(ConstantesAdmin.ARG_CLASE,DocArchivo.class);
 		
-		Window win = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
-		win.setTitle(null);
-		win.setBorder("none");
-		win.doEmbedded();
+		winTablaDatos = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
+		winTablaDatos.setTitle(null);
+		winTablaDatos.setBorder("none");
+		winTablaDatos.doEmbedded();
 		
 		
 		
@@ -183,6 +184,9 @@ public class EscritorioCnt extends WindowComposer {
 	public void onSelect$trFileSystem(Event event) throws Exception {
 		
 		Treeitem seleccion = trFileSystem.getSelectedItem();
+		
+		actualizarTablaDatos((DocSistArch) seleccion.getValue());
+		
 		if(seleccion != null){
 			
 			Treechildren hijos = seleccion.getTreechildren();
@@ -197,6 +201,24 @@ public class EscritorioCnt extends WindowComposer {
 		}
 		
 	}
+
+
+
+
+	private void actualizarTablaDatos(DocSistArch dir) {
+		
+		Map<String,Object> datos = new HashMap<String, Object>();
+		datos.put(ConstantesAdmin.ACCION, ConstantesAdmin.EVENTO_REFRESCAR);
+		datos.put(ConstantesAdmin.OBJETO_PADRE, dir);
+		
+		Events.sendEvent(Events.ON_USER, winTablaDatos, datos);
+		
+	}
+
+
+
+
+
 
 
 
