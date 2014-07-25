@@ -3,31 +3,32 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="com.data3000.data3000lib.bd.DocArchivo" table="doc_archivo" schema="data3000">
-        <id name="archIdn" type="long">
-            <column name="arch_idn" precision="10" scale="0" />
+    <class name="com.data3000.data3000lib.bd.DocCampTipo" table="doc_camp_tipo" schema="data3000">
+        <comment>campos asociados al tipo de archivo</comment>
+        <id name="campTipoIdn" type="long">
+            <column name="camp_tipo_idn" precision="10" scale="0" />
             <generator class="sequence">
-            	<param name="sequence">SQN_DOC_ARCHIVO</param>
+            	<param name="sequence">SQN_DOC_CAMP_TIPO</param>
             </generator>
         </id>
-        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" fetch="select">
-            <column name="tipo_arch_idn" precision="10" scale="0" not-null="true">
-                <comment>Tipo de archivo al que pertenece el archivo</comment>
-            </column>
-        </many-to-one>
-        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
-            <column name="sist_arch_idn" precision="10" scale="0" not-null="true">
-                <comment>Item del sistema de archivos donde se carga el documento</comment>
-            </column>
-        </many-to-one>
-        <property name="archNombre" type="string">
-            <column name="arch_nombre" length="300" not-null="true">
-                <comment>Nombre del archivo</comment>
+        <property name="campoIdn" type="long">
+            <column name="campo_idn" precision="10" scale="0" not-null="true">
+                <comment>id del campo referenciado</comment>
             </column>
         </property>
-        <property name="archDescripcion" type="string">
-            <column name="arch_descripcion">
-                <comment>Descripci&#195;&#179;n de contenido del archivo</comment>
+        <property name="tipoIdn" type="long">
+            <column name="tipo_idn" precision="10" scale="0" not-null="true">
+                <comment>id del tipo asociado</comment>
+            </column>
+        </property>
+        <property name="campTipoRequerido" type="boolean">
+            <column name="camp_tipo_requerido" not-null="true">
+                <comment>Determina si el campo es requerido para el tipo (TRUE) o no (FALSE)</comment>
+            </column>
+        </property>
+        <property name="campTipoOrden" type="short">
+            <column name="camp_tipo_orden" precision="3" scale="0" not-null="true">
+                <comment>Determina el orden en que se debe mostrar el campo</comment>
             </column>
         </property>
         <property name="audiUsuario" type="string">
@@ -55,13 +56,5 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
-        <set name="docArchivoVersions" table="doc_archivo_version" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="arch_idn" precision="10" scale="0" not-null="true">
-                    <comment>Identificador del archivo al que pertenece la versi&#195;&#179;n</comment>
-                </column>
-            </key>
-            <one-to-many class="com.data3000.data3000lib.bd.DocArchivoVersion" />
-        </set>
     </class>
 </hibernate-mapping>

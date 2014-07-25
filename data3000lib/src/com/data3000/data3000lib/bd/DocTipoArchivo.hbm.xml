@@ -3,31 +3,22 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="com.data3000.data3000lib.bd.DocArchivo" table="doc_archivo" schema="data3000">
-        <id name="archIdn" type="long">
-            <column name="arch_idn" precision="10" scale="0" />
+    <class name="com.data3000.data3000lib.bd.DocTipoArchivo" table="doc_tipo_archivo" schema="data3000">
+        <comment>Tipo de archivo que se cargara en la aplicaci&#195;&#179;n</comment>
+        <id name="tipoArchIdn" type="long">
+            <column name="tipo_arch_idn" precision="10" scale="0" />
             <generator class="sequence">
-            	<param name="sequence">SQN_DOC_ARCHIVO</param>
+            	<param name="sequence">SQN_DOC_TIPO_ARCHIVO</param>
             </generator>
         </id>
-        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" fetch="select">
-            <column name="tipo_arch_idn" precision="10" scale="0" not-null="true">
-                <comment>Tipo de archivo al que pertenece el archivo</comment>
-            </column>
-        </many-to-one>
-        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
-            <column name="sist_arch_idn" precision="10" scale="0" not-null="true">
-                <comment>Item del sistema de archivos donde se carga el documento</comment>
-            </column>
-        </many-to-one>
-        <property name="archNombre" type="string">
-            <column name="arch_nombre" length="300" not-null="true">
-                <comment>Nombre del archivo</comment>
+        <property name="tipoArchNombre" type="string">
+            <column name="tipo_arch_nombre" length="100" not-null="true" unique="true">
+                <comment>Nombre del tipo de archivo</comment>
             </column>
         </property>
-        <property name="archDescripcion" type="string">
-            <column name="arch_descripcion">
-                <comment>Descripci&#195;&#179;n de contenido del archivo</comment>
+        <property name="tipoArchDescripcion" type="string">
+            <column name="tipo_arch_descripcion" not-null="true">
+                <comment>Tag o c&#195;&#179;digo con el que se identifica la version</comment>
             </column>
         </property>
         <property name="audiUsuario" type="string">
@@ -55,13 +46,13 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
-        <set name="docArchivoVersions" table="doc_archivo_version" inverse="true" lazy="true" fetch="select">
+        <set name="docArchivos" table="doc_archivo" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="arch_idn" precision="10" scale="0" not-null="true">
-                    <comment>Identificador del archivo al que pertenece la versi&#195;&#179;n</comment>
+                <column name="tipo_arch_idn" precision="10" scale="0" not-null="true">
+                    <comment>Tipo de archivo al que pertenece el archivo</comment>
                 </column>
             </key>
-            <one-to-many class="com.data3000.data3000lib.bd.DocArchivoVersion" />
+            <one-to-many class="com.data3000.data3000lib.bd.DocArchivo" />
         </set>
     </class>
 </hibernate-mapping>
