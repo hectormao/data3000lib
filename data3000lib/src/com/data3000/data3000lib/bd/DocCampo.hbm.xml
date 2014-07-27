@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 27/07/2014 03:16:04 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocCampo" table="doc_campo" schema="data3000">
         <comment>Versi&#195;&#179;n del documento cargado a la plataforma</comment>
@@ -17,12 +17,12 @@
             </column>
         </property>
         <property name="campoDescripcion" type="string">
-            <column name="campo_descripcion" not-null="true">
+            <column name="campo_descripcion">
                 <comment>descripci&#195;&#179;n del campo</comment>
             </column>
         </property>
-        <property name="campoTipo" type="boolean">
-            <column name="campo_tipo" precision="1" scale="0" not-null="true">
+        <property name="campoTipo" type="byte">
+            <column name="campo_tipo" precision="2" scale="0" not-null="true">
                 <comment>tipo de campo 1: cadena 2: numero 3: fecha</comment>
             </column>
         </property>
@@ -51,5 +51,13 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
+        <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="campo_idn" precision="10" scale="0" not-null="true">
+                    <comment>id del campo referenciado</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
+        </set>
     </class>
 </hibernate-mapping>

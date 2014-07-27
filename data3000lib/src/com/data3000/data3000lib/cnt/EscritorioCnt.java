@@ -1,5 +1,6 @@
 package com.data3000.data3000lib.cnt;
 
+import java.awt.MenuItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
@@ -39,6 +41,10 @@ public class EscritorioCnt extends WindowComposer {
 	private SistemaArchivoNgc sistemaArchivoNgc;
 	
 	private Div divTrabajo;
+	
+	private Menupopup menuArchivo;
+	private MenuItem itemCargarArchivo;
+	
 	
 	
 	private Window winTablaDatos;
@@ -114,6 +120,7 @@ public class EscritorioCnt extends WindowComposer {
 				celda.setTooltiptext(hijo.getSistArchDescripcion());
 				fila.appendChild(celda);
 				item.appendChild(fila);
+				fila.setContext(menuArchivo);
 				
 				
 				dirAux = new ItemDir();

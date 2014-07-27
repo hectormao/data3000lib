@@ -20,5 +20,8 @@
     	 <div id="divTrabajo" hflex="1" vflex="1" /> 		
  </center>
   	</borderlayout>
+  	<menupopup id="menuArchivo">
+  		<menuitem id="itemCargarArchivo" image="img/iconos/agregarArchivo.png" label="${data3000.agregar.archivo}"></menuitem>
+  	</menupopup>
   </window>
 </zk>

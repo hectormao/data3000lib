@@ -1,6 +1,6 @@
 package com.data3000.data3000lib.bd;
 
-// Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1
+// Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -10,8 +10,8 @@ import java.util.Date;
 public class DocCampTipo implements java.io.Serializable {
 
 	private long campTipoIdn;
-	private long campoIdn;
-	private long tipoIdn;
+	private DocTipoArchivo docTipoArchivo;
+	private DocCampo docCampo;
 	private boolean campTipoRequerido;
 	private short campTipoOrden;
 	private String audiUsuario;
@@ -23,12 +23,12 @@ public class DocCampTipo implements java.io.Serializable {
 	public DocCampTipo() {
 	}
 
-	public DocCampTipo(long campTipoIdn, long campoIdn, long tipoIdn,
-			boolean campTipoRequerido, short campTipoOrden, String audiUsuario,
-			Date audiFechModi, boolean audiSiAnul) {
+	public DocCampTipo(long campTipoIdn, DocTipoArchivo docTipoArchivo,
+			DocCampo docCampo, boolean campTipoRequerido, short campTipoOrden,
+			String audiUsuario, Date audiFechModi, boolean audiSiAnul) {
 		this.campTipoIdn = campTipoIdn;
-		this.campoIdn = campoIdn;
-		this.tipoIdn = tipoIdn;
+		this.docTipoArchivo = docTipoArchivo;
+		this.docCampo = docCampo;
 		this.campTipoRequerido = campTipoRequerido;
 		this.campTipoOrden = campTipoOrden;
 		this.audiUsuario = audiUsuario;
@@ -36,13 +36,13 @@ public class DocCampTipo implements java.io.Serializable {
 		this.audiSiAnul = audiSiAnul;
 	}
 
-	public DocCampTipo(long campTipoIdn, long campoIdn, long tipoIdn,
-			boolean campTipoRequerido, short campTipoOrden, String audiUsuario,
-			Date audiFechModi, boolean audiSiAnul, String audiMotiAnul,
-			String audiChecksum) {
+	public DocCampTipo(long campTipoIdn, DocTipoArchivo docTipoArchivo,
+			DocCampo docCampo, boolean campTipoRequerido, short campTipoOrden,
+			String audiUsuario, Date audiFechModi, boolean audiSiAnul,
+			String audiMotiAnul, String audiChecksum) {
 		this.campTipoIdn = campTipoIdn;
-		this.campoIdn = campoIdn;
-		this.tipoIdn = tipoIdn;
+		this.docTipoArchivo = docTipoArchivo;
+		this.docCampo = docCampo;
 		this.campTipoRequerido = campTipoRequerido;
 		this.campTipoOrden = campTipoOrden;
 		this.audiUsuario = audiUsuario;
@@ -60,20 +60,20 @@ public class DocCampTipo implements java.io.Serializable {
 		this.campTipoIdn = campTipoIdn;
 	}
 
-	public long getCampoIdn() {
-		return this.campoIdn;
+	public DocTipoArchivo getDocTipoArchivo() {
+		return this.docTipoArchivo;
 	}
 
-	public void setCampoIdn(long campoIdn) {
-		this.campoIdn = campoIdn;
+	public void setDocTipoArchivo(DocTipoArchivo docTipoArchivo) {
+		this.docTipoArchivo = docTipoArchivo;
 	}
 
-	public long getTipoIdn() {
-		return this.tipoIdn;
+	public DocCampo getDocCampo() {
+		return this.docCampo;
 	}
 
-	public void setTipoIdn(long tipoIdn) {
-		this.tipoIdn = tipoIdn;
+	public void setDocCampo(DocCampo docCampo) {
+		this.docCampo = docCampo;
 	}
 
 	public boolean isCampTipoRequerido() {

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocCampTipo" table="doc_camp_tipo" schema="data3000">
         <comment>campos asociados al tipo de archivo</comment>
@@ -11,16 +11,16 @@
             	<param name="sequence">SQN_DOC_CAMP_TIPO</param>
             </generator>
         </id>
-        <property name="campoIdn" type="long">
-            <column name="campo_idn" precision="10" scale="0" not-null="true">
-                <comment>id del campo referenciado</comment>
-            </column>
-        </property>
-        <property name="tipoIdn" type="long">
+        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" fetch="select">
             <column name="tipo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del tipo asociado</comment>
             </column>
-        </property>
+        </many-to-one>
+        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="select">
+            <column name="campo_idn" precision="10" scale="0" not-null="true">
+                <comment>id del campo referenciado</comment>
+            </column>
+        </many-to-one>
         <property name="campTipoRequerido" type="boolean">
             <column name="camp_tipo_requerido" not-null="true">
                 <comment>Determina si el campo es requerido para el tipo (TRUE) o no (FALSE)</comment>

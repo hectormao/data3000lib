@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+visualeditor.custom_web_content_path=/data3000lib/src
+visualeditor.custom_zk_package=zk-bin-7.0.0_1
+visualeditor.is_use_zks_lib=true

@@ -1,39 +1,48 @@
 <?page title="Tipo Documento" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window apply="${tipoDcumentoCnt}" border="normal">
+<window id="winTipoDocumento" apply="${tipoDocumentoCnt}" border="normal">
 <vbox>
 	<groupbox>
 		<caption label="${labels.data3000.informacion.general}" />
 		<vbox>
 			<hbox>
-				<label id="lblNombre" value="${labels.data3000.nombre}" style="font-weight:bold;" width="150px"></label>
+				<div width="150px">
+					<label id="lblNombre" value="${labels.data3000.nombre}" style="font-weight:bold;"></label>
+				</div>
 				<textbox id="txtNombre" width="150px" constraint="/.{1,100}/"></textbox>
 			</hbox>
 			<vbox>
-				<label id="lblDescripcion" value="${labels.data3000.descripcion}" width="150px"></label>
+				<div width="150px">
+				<label id="lblDescripcion" value="${labels.data3000.descripcion}"></label>
+				</div>
 				<textbox id="txtDescripcion" width="300px" rows="3"></textbox>
 			</vbox>
 		</vbox>
-	</groupbox>
-	<separator width="10px"></separator>
+	</groupbox>	
 	<groupbox>
 		<caption label="${labels.data3000.metadatos}" id="grdMetaDatos"/>
-		<grid id="gMeta">
-			<columns>
-				<column label="${labels.data3000.nombre}" style="font-weight:bold;" width="150px" />
-				<column label="${labels.data3000.tipo}" style="font-weight:bold;" width="150px" />
-				<column label="${labels.data3000.descripcion}" width="150px" />
-				<column label="${labels.data3000.requerido}" style="font-weight:bold;" width="150px" />				
-			</columns>
-		</grid>
+		<toolbar>
+			<toolbarbutton id="btnNuevoCampo" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.campo}"></toolbarbutton>
+			<toolbarbutton id="btnEliminarCampo" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.campo}"></toolbarbutton>
+		</toolbar>
+		<listbox id="lstMetadato" rows="4" multiple="true" checkmark="true">
+			<listhead>
+				<listheader label="${labels.data3000.nombre}" style="font-weight:bold;" width="200px" />
+				<listheader label="${labels.data3000.tipo}" style="font-weight:bold;" width="200px" />
+				<listheader label="${labels.data3000.descripcion}" />
+				<listheader label="${labels.data3000.requerido}" style="font-weight:bold;" width="100px" />
+			</listhead>		
+		</listbox>
+		
 		
 	</groupbox>
+	<div width="100%" align="center">
 	<hbox>
-		<button label="${data3000.aceptar}"/>
+		<button id="btnAceptar" label="${labels.data3000.aceptar}"/>
 		<separator width="20px"/>
-		<button label="${data3000.cancelar}"/>
+		<button id="btnCancelar" label="${labels.data3000.cancelar}"/>
 	</hbox>
-
+	</div>
 </vbox>
 </window>
 </zk>

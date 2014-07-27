@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocTipoArchivo" table="doc_tipo_archivo" schema="data3000">
         <comment>Tipo de archivo que se cargara en la aplicaci&#195;&#179;n</comment>
@@ -17,7 +17,7 @@
             </column>
         </property>
         <property name="tipoArchDescripcion" type="string">
-            <column name="tipo_arch_descripcion" not-null="true">
+            <column name="tipo_arch_descripcion">
                 <comment>Tag o c&#195;&#179;digo con el que se identifica la version</comment>
             </column>
         </property>
@@ -53,6 +53,14 @@
                 </column>
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocArchivo" />
+        </set>
+        <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="tipo_idn" precision="10" scale="0" not-null="true">
+                    <comment>id del tipo asociado</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
         </set>
     </class>
 </hibernate-mapping>

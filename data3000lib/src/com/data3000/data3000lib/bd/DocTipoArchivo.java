@@ -1,6 +1,6 @@
 package com.data3000.data3000lib.bd;
 
-// Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1
+// Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import java.util.HashSet;
@@ -20,16 +20,15 @@ public class DocTipoArchivo implements java.io.Serializable {
 	private String audiMotiAnul;
 	private String audiChecksum;
 	private Set<DocArchivo> docArchivos = new HashSet<DocArchivo>(0);
+	private Set<DocCampTipo> docCampTipos = new HashSet<DocCampTipo>(0);
 
 	public DocTipoArchivo() {
 	}
 
 	public DocTipoArchivo(long tipoArchIdn, String tipoArchNombre,
-			String tipoArchDescripcion, String audiUsuario, Date audiFechModi,
-			boolean audiSiAnul) {
+			String audiUsuario, Date audiFechModi, boolean audiSiAnul) {
 		this.tipoArchIdn = tipoArchIdn;
 		this.tipoArchNombre = tipoArchNombre;
-		this.tipoArchDescripcion = tipoArchDescripcion;
 		this.audiUsuario = audiUsuario;
 		this.audiFechModi = audiFechModi;
 		this.audiSiAnul = audiSiAnul;
@@ -38,7 +37,7 @@ public class DocTipoArchivo implements java.io.Serializable {
 	public DocTipoArchivo(long tipoArchIdn, String tipoArchNombre,
 			String tipoArchDescripcion, String audiUsuario, Date audiFechModi,
 			boolean audiSiAnul, String audiMotiAnul, String audiChecksum,
-			Set<DocArchivo> docArchivos) {
+			Set<DocArchivo> docArchivos, Set<DocCampTipo> docCampTipos) {
 		this.tipoArchIdn = tipoArchIdn;
 		this.tipoArchNombre = tipoArchNombre;
 		this.tipoArchDescripcion = tipoArchDescripcion;
@@ -48,6 +47,7 @@ public class DocTipoArchivo implements java.io.Serializable {
 		this.audiMotiAnul = audiMotiAnul;
 		this.audiChecksum = audiChecksum;
 		this.docArchivos = docArchivos;
+		this.docCampTipos = docCampTipos;
 	}
 
 	public long getTipoArchIdn() {
@@ -120,6 +120,14 @@ public class DocTipoArchivo implements java.io.Serializable {
 
 	public void setDocArchivos(Set<DocArchivo> docArchivos) {
 		this.docArchivos = docArchivos;
+	}
+
+	public Set<DocCampTipo> getDocCampTipos() {
+		return this.docCampTipos;
+	}
+
+	public void setDocCampTipos(Set<DocCampTipo> docCampTipos) {
+		this.docCampTipos = docCampTipos;
 	}
 
 }
