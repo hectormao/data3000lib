@@ -1,0 +1,39 @@
+<?page title="Tipo Documento" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window apply="${tipoDcumentoCnt}" border="normal">
+<vbox>
+	<groupbox>
+		<caption label="${labels.data3000.informacion.general}" />
+		<vbox>
+			<hbox>
+				<label id="lblNombre" value="${labels.data3000.nombre}" style="font-weight:bold;" width="150px"></label>
+				<textbox id="txtNombre" width="150px" constraint="/.{1,100}/"></textbox>
+			</hbox>
+			<vbox>
+				<label id="lblDescripcion" value="${labels.data3000.descripcion}" width="150px"></label>
+				<textbox id="txtDescripcion" width="300px" rows="3"></textbox>
+			</vbox>
+		</vbox>
+	</groupbox>
+	<separator width="10px"></separator>
+	<groupbox>
+		<caption label="${labels.data3000.metadatos}" id="grdMetaDatos"/>
+		<grid id="gMeta">
+			<columns>
+				<column label="${labels.data3000.nombre}" style="font-weight:bold;" width="150px" />
+				<column label="${labels.data3000.tipo}" style="font-weight:bold;" width="150px" />
+				<column label="${labels.data3000.descripcion}" width="150px" />
+				<column label="${labels.data3000.requerido}" style="font-weight:bold;" width="150px" />				
+			</columns>
+		</grid>
+		
+	</groupbox>
+	<hbox>
+		<button label="${data3000.aceptar}"/>
+		<separator width="20px"/>
+		<button label="${data3000.cancelar}"/>
+	</hbox>
+
+</vbox>
+</window>
+</zk>
