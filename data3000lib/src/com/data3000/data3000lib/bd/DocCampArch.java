@@ -1,6 +1,6 @@
 package com.data3000.data3000lib.bd;
 
-// Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1
+// Generated 19/08/2014 08:34:49 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -10,8 +10,8 @@ import java.util.Date;
 public class DocCampArch implements java.io.Serializable {
 
 	private long campArchIdn;
-	private long campoIdn;
-	private long archIdn;
+	private DocArchivoVersion docArchivoVersion;
+	private DocCampo docCampo;
 	private String campArchValor;
 	private String audiUsuario;
 	private Date audiFechModi;
@@ -22,24 +22,25 @@ public class DocCampArch implements java.io.Serializable {
 	public DocCampArch() {
 	}
 
-	public DocCampArch(long campArchIdn, long campoIdn, long archIdn,
-			String campArchValor, String audiUsuario, Date audiFechModi,
-			boolean audiSiAnul) {
+	public DocCampArch(long campArchIdn, DocArchivoVersion docArchivoVersion,
+			DocCampo docCampo, String campArchValor, String audiUsuario,
+			Date audiFechModi, boolean audiSiAnul) {
 		this.campArchIdn = campArchIdn;
-		this.campoIdn = campoIdn;
-		this.archIdn = archIdn;
+		this.docArchivoVersion = docArchivoVersion;
+		this.docCampo = docCampo;
 		this.campArchValor = campArchValor;
 		this.audiUsuario = audiUsuario;
 		this.audiFechModi = audiFechModi;
 		this.audiSiAnul = audiSiAnul;
 	}
 
-	public DocCampArch(long campArchIdn, long campoIdn, long archIdn,
-			String campArchValor, String audiUsuario, Date audiFechModi,
-			boolean audiSiAnul, String audiMotiAnul, String audiChecksum) {
+	public DocCampArch(long campArchIdn, DocArchivoVersion docArchivoVersion,
+			DocCampo docCampo, String campArchValor, String audiUsuario,
+			Date audiFechModi, boolean audiSiAnul, String audiMotiAnul,
+			String audiChecksum) {
 		this.campArchIdn = campArchIdn;
-		this.campoIdn = campoIdn;
-		this.archIdn = archIdn;
+		this.docArchivoVersion = docArchivoVersion;
+		this.docCampo = docCampo;
 		this.campArchValor = campArchValor;
 		this.audiUsuario = audiUsuario;
 		this.audiFechModi = audiFechModi;
@@ -56,20 +57,20 @@ public class DocCampArch implements java.io.Serializable {
 		this.campArchIdn = campArchIdn;
 	}
 
-	public long getCampoIdn() {
-		return this.campoIdn;
+	public DocArchivoVersion getDocArchivoVersion() {
+		return this.docArchivoVersion;
 	}
 
-	public void setCampoIdn(long campoIdn) {
-		this.campoIdn = campoIdn;
+	public void setDocArchivoVersion(DocArchivoVersion docArchivoVersion) {
+		this.docArchivoVersion = docArchivoVersion;
 	}
 
-	public long getArchIdn() {
-		return this.archIdn;
+	public DocCampo getDocCampo() {
+		return this.docCampo;
 	}
 
-	public void setArchIdn(long archIdn) {
-		this.archIdn = archIdn;
+	public void setDocCampo(DocCampo docCampo) {
+		this.docCampo = docCampo;
 	}
 
 	public String getCampArchValor() {

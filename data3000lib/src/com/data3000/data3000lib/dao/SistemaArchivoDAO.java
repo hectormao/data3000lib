@@ -11,6 +11,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.data3000.admin.dao.PltDAO;
+import com.data3000.data3000lib.bd.DocArchivo;
+import com.data3000.data3000lib.bd.DocArchivoVersion;
+import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSistArch;
@@ -105,7 +108,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			}
 			
 			Criteria criteria = sesion.createCriteria(DocCampTipo.class);
-			criteria.add(Restrictions.eq("DocTipoArchivo", docTipoArchivo));
+			criteria.add(Restrictions.eq("docTipoArchivo", docTipoArchivo));
 			criteria.addOrder(Order.asc("campTipoOrden"));
 			
 			return criteria.list();
@@ -188,6 +191,80 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			for(DocCampTipo campoTipo : listaCrear){
 				sesion.save(campoTipo);
+			}
+			
+			tx.commit();
+		} catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		}
+		
+	}
+
+
+	public List<DocTipoArchivo> getTipos() throws Exception{
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocTipoArchivo.class);
+			
+			criteria.addOrder(Order.asc("tipoArchNombre"));
+			
+			return criteria.list();
+			
+		} catch(Exception ex){
+			sesion.close();
+			throw ex;
+		}
+	}
+
+
+	public DocArchivo getArchivo(DocSistArch directorio, String nombreArchivo) throws Exception {
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocArchivo.class);
+			criteria.add(Restrictions.and(Restrictions.eq("docSistArch", directorio),Restrictions.eq("archNombre", nombreArchivo)));
+			
+			return (DocArchivo) criteria.uniqueResult();
+			
+		} catch(Exception ex){
+			sesion.close();
+			throw ex;
+		}
+		
+	}
+
+
+	public void registrarArchivo(DocArchivo docArchivo, DocArchivoVersion version, List<DocCampArch> listaMeta) throws Exception{
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			if(docArchivo.getArchIdn() == 0){
+				sesion.save(docArchivo);
+			}
+			
+			sesion.save(version);
+			for(DocCampArch meta : listaMeta){
+				sesion.save(meta);
 			}
 			
 			tx.commit();

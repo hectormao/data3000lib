@@ -1,6 +1,7 @@
 package com.data3000.data3000lib.cnt;
 
 import java.awt.MenuItem;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,10 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Tbody;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
@@ -24,8 +27,10 @@ import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Window;
 
 import com.data3000.admin.cmp.TablaDatos;
+import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.WindowComposer;
+import com.data3000.admin.vo.Formulario;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
@@ -39,11 +44,14 @@ public class EscritorioCnt extends WindowComposer {
 	
 	
 	private SistemaArchivoNgc sistemaArchivoNgc;
+	private PlataformaNgc plataformaNgc;
 	
 	private Div divTrabajo;
 	
 	private Menupopup menuArchivo;
 	private MenuItem itemCargarArchivo;
+	
+	private DocSistArch seleccion = null;
 	
 	
 	
@@ -107,7 +115,7 @@ public class EscritorioCnt extends WindowComposer {
 		
 		//int idx = 0;
 		
-		for(DocSistArch hijo : listaHijos){
+		for(final DocSistArch hijo : listaHijos){
 			
 			
 			ItemDir dirAux = mapaDirAux.remove(hijo.getSistArchIdn());
@@ -121,6 +129,14 @@ public class EscritorioCnt extends WindowComposer {
 				fila.appendChild(celda);
 				item.appendChild(fila);
 				fila.setContext(menuArchivo);
+				fila.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						seleccion = hijo;
+						
+					}
+				});
 				
 				
 				dirAux = new ItemDir();
@@ -211,7 +227,39 @@ public class EscritorioCnt extends WindowComposer {
 
 
 
-
+	public void onClick$itemCargarArchivo(Event evt) throws Exception{
+		
+		cargarArchivo(seleccion);
+		
+	}
+	
+	private void cargarArchivo(DocSistArch directorio) throws IOException{
+		
+		
+		
+		Formulario formularioCargar = super.getFormulario("form.1002");
+		
+		Map<String,Object> parametros = new HashMap<String, Object>();
+		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
+		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formularioCargar);
+		parametros.put(ConstantesAdmin.OBJETO_PADRE,directorio);
+		
+		
+		java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream(formularioCargar.getUrl()) ;
+		java.io.Reader zulReader = new java.io.InputStreamReader(zulInput) ;
+		
+		
+		Window winCargar = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
+		
+		String titulo = Labels.getLabel("form.1002");
+		if(titulo == null){
+			titulo = "form.1002";
+		}
+		
+		winCargar.setTitle(titulo);
+		winCargar.doModal();
+		
+	}
 
 
 
@@ -226,6 +274,14 @@ public class EscritorioCnt extends WindowComposer {
 
 	public void setSistemaArchivoNgc(SistemaArchivoNgc sistemaArchivoNgc) {
 		this.sistemaArchivoNgc = sistemaArchivoNgc;
+	}
+
+	public PlataformaNgc getPlataformaNgc() {
+		return plataformaNgc;
+	}
+
+	public void setPlataformaNgc(PlataformaNgc plataformaNgc) {
+		this.plataformaNgc = plataformaNgc;
 	}
 	
 	

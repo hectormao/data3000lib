@@ -1,0 +1,56 @@
+<?page title="Cargar Archivo" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="" border="normal" width="50%" apply="${cargarArchivoCnt}">
+<vbox>
+	<groupbox>
+		<caption>${labels.data3000.archivo}</caption>
+		<vbox>
+		<hbox>
+		<div width="150px">
+			<label value="${labels.data3000.archivo}"></label>
+		</div>
+		<textbox id="txtArchivo" readonly="true"/>
+		<button id="btnCargar" label="${labels.data3000.agregar.archivo}" upload="zk.Data3000UF"></button>
+		<div id="progreso"></div>
+		</hbox>
+		
+		<hbox>
+		<div width="150px">
+			<label value="${labels.data3000.tipo}"></label>
+		</div>
+		<combobox id="cmbTipoArchivo" width="150px" constraint="no empty"/>
+		</hbox>
+		<hbox>
+		<div width="150px">
+			<label value="${labels.data3000.tagversion}"></label>
+		</div>
+		<textbox id="txtTagVersion" width="150px" constraint="no empty"/>
+		</hbox>
+		</vbox>
+	</groupbox>
+	<groupbox>
+		<caption>${labels.data3000.descripcion}</caption>
+		<textbox id="txtDescripcion" rows="2" width="100%"></textbox>
+	</groupbox>
+	<groupbox>
+		<caption>${labels.data3000.metadatos}</caption>
+		
+		<listbox id="lstMeta" rows="4">
+			<listhead>
+				<listheader label="${labels.data3000.campo}" width="30%"></listheader>
+				<listheader label="${labels.data3000.valor}"></listheader>
+			</listhead>
+		</listbox>
+	</groupbox>
+	<div width="100%" align="center">
+	<hbox>
+		<button id="btnAceptar" label="${labels.data3000.aceptar}"/>
+		<separator width="20px"/>
+		<button id="btnCancelar" label="${labels.data3000.cancelar}"/>
+	</hbox>
+	</div>
+
+</vbox>
+</window>
+<script type="text/javascript" src="zkJs/Data3000UF.js" />
+</zk>

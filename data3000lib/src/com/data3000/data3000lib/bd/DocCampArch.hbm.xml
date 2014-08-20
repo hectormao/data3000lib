@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 19/08/2014 08:34:49 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocCampArch" table="doc_camp_arch" schema="data3000">
         <comment>campos asociados al tipo de archivo</comment>
@@ -11,16 +11,16 @@
             	<param name="sequence">SQN_DOC_CAMP_ARCH</param>
             </generator>
         </id>
-        <property name="campoIdn" type="long">
+        <many-to-one name="docArchivoVersion" class="com.data3000.data3000lib.bd.DocArchivoVersion" fetch="select">
+            <column name="arch_vers_idn" precision="10" scale="0" not-null="true">
+                <comment>id de la versi&#195;&#179;n del archivo asociado</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="select">
             <column name="campo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del campo referenciado</comment>
             </column>
-        </property>
-        <property name="archIdn" type="long">
-            <column name="arch_idn" precision="10" scale="0" not-null="true">
-                <comment>id del archivo asociado</comment>
-            </column>
-        </property>
+        </many-to-one>
         <property name="campArchValor" type="string">
             <column name="camp_arch_valor" length="100" not-null="true">
                 <comment>Determina si el campo es requerido para el tipo (TRUE) o no (FALSE)</comment>
