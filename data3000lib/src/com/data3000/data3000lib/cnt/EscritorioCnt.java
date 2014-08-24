@@ -18,6 +18,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -31,6 +32,7 @@ import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.WindowComposer;
 import com.data3000.admin.vo.Formulario;
+import com.data3000.admin.vo.FormularioHijo;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
@@ -49,7 +51,7 @@ public class EscritorioCnt extends WindowComposer {
 	private Div divTrabajo;
 	
 	private Menupopup menuArchivo;
-	private MenuItem itemCargarArchivo;
+	
 	
 	private DocSistArch seleccion = null;
 	
@@ -85,7 +87,65 @@ public class EscritorioCnt extends WindowComposer {
 		winTablaDatos.setBorder("none");
 		winTablaDatos.doEmbedded();
 		
+		
+		List<FormularioHijo> hijos = formulario.getHijos();
+		if(hijos != null && ! hijos.isEmpty()){
+			for(FormularioHijo hijo : hijos){
+				if(hijo.getTipo().equals(ConstantesAdmin.HIJO_BOTON)){
+					
+					crearMenuItem(hijo.getHijo());
+					
+				}
+			}
+		}
+		
 		cargarArbol();
+	}
+	
+	private void crearMenuItem(final Formulario formularioHijo){		
+		Menuitem item = new Menuitem();					
+		
+		String nombre = formularioHijo.getNombre();
+		String leyenda = Labels.getLabel(nombre);
+		if(leyenda == null){
+			leyenda = nombre;
+		}
+		
+		item.setLabel(leyenda);
+		item.setImage(formularioHijo.getUrlIcono());
+		item.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				
+				Map<String,Object> parametros = new HashMap<String, Object>();
+				
+				parametros.putAll(argumentos);
+				parametros.put(ConstantesAdmin.ARG_FORMULARIO,formularioHijo);
+				parametros.put(ConstantesAdmin.OBJETO_PADRE,seleccion);							
+				
+				java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream(formularioHijo.getUrl()) ;
+				java.io.Reader zulReader = new java.io.InputStreamReader(zulInput) ;
+				
+				
+				Window winCargar = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
+				
+				String nombre = formularioHijo.getNombre();
+				
+				String titulo = Labels.getLabel(nombre);
+				if(titulo == null){
+					titulo = formularioHijo.getNombre();
+				}
+				
+				winCargar.setTitle(titulo);
+				winCargar.doModal();							
+			}
+		});
+		
+		menuArchivo.appendChild(item);
+		
+		
+		
 	}
 	
 	private void cargarArbol() throws Exception {
@@ -227,39 +287,7 @@ public class EscritorioCnt extends WindowComposer {
 
 
 
-	public void onClick$itemCargarArchivo(Event evt) throws Exception{
-		
-		cargarArchivo(seleccion);
-		
-	}
 	
-	private void cargarArchivo(DocSistArch directorio) throws IOException{
-		
-		
-		
-		Formulario formularioCargar = super.getFormulario("form.1002");
-		
-		Map<String,Object> parametros = new HashMap<String, Object>();
-		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
-		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formularioCargar);
-		parametros.put(ConstantesAdmin.OBJETO_PADRE,directorio);
-		
-		
-		java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream(formularioCargar.getUrl()) ;
-		java.io.Reader zulReader = new java.io.InputStreamReader(zulInput) ;
-		
-		
-		Window winCargar = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
-		
-		String titulo = Labels.getLabel("form.1002");
-		if(titulo == null){
-			titulo = "form.1002";
-		}
-		
-		winCargar.setTitle(titulo);
-		winCargar.doModal();
-		
-	}
 
 
 
