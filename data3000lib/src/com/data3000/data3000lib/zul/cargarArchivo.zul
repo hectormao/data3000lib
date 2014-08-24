@@ -1,6 +1,6 @@
 <?page title="Cargar Archivo" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window title="" border="normal" width="50%" apply="${cargarArchivoCnt}">
+<window id="winCargarArchivo" title="" border="normal" width="50%" apply="${cargarArchivoCnt}">
 <vbox>
 	<groupbox>
 		<caption>${labels.data3000.archivo}</caption>
@@ -29,7 +29,7 @@
 		</vbox>
 	</groupbox>
 	<groupbox>
-		<caption>${labels.data3000.descripcion}</caption>
+		<caption>${labels.data3000.descripcion.$}</caption>
 		<textbox id="txtDescripcion" rows="2" width="100%"></textbox>
 	</groupbox>
 	<groupbox>

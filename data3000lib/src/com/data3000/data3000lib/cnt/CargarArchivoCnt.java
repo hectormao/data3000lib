@@ -42,6 +42,7 @@ public class CargarArchivoCnt extends WindowComposer implements ComboitemRendere
 	
 	private SistemaArchivoNgc sistemaArchivoNgc;
 	
+	private Window winCargarArchivo;
 	private Combobox cmbTipoArchivo;
 	private Listbox lstMeta;
 	private Textbox txtArchivo;
@@ -72,6 +73,18 @@ public class CargarArchivoCnt extends WindowComposer implements ComboitemRendere
 		
 		directorio = (DocSistArch) argumentos.get(ConstantesAdmin.OBJETO_PADRE);
 		
+	}
+	
+	public void onCreate$winCargarArchivo(Event evt){
+		try{
+			if(directorio == null){
+				throw new Exception(Labels.getLabel("error.1002"));
+			}
+		} catch(Exception ex){
+			logger.error(new StringBuilder("Error al abrir cargar archivo: ").append(ex.getClass().getName()).append(" - ").append(ex.getMessage()).toString(),ex);
+			Messagebox.show(ex.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+			Events.sendEvent(Events.ON_CLOSE,winCargarArchivo,null);
+		}
 	}
 	
 	public void onSelect$cmbTipoArchivo(Event evt) throws Exception{
