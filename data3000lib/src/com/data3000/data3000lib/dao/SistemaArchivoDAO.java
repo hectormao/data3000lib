@@ -161,7 +161,10 @@ public class SistemaArchivoDAO extends PltDAO{
 		}
 		
 	}
-
+	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception {
+		super.update(docTipoArchivo);
+		
+	}
 
 	public void actualizarTipoDocumentos(DocTipoArchivo docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
@@ -178,7 +181,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			}
 			
 			
-			sesion.update(docTipoArchivo);
+			sesion.merge(docTipoArchivo);
 			
 			for(DocCampTipo campoTipo : listaEliminar){
 				sesion.delete(campoTipo);
@@ -186,7 +189,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			
 			for(DocCampTipo campoTipo : listaActualizar){
-				sesion.update(campoTipo);
+				sesion.merge(campoTipo);
 			}
 			
 			for(DocCampTipo campoTipo : listaCrear){

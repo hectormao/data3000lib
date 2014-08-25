@@ -170,4 +170,11 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 
 
+	@Override
+	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception {
+		this.sistemaArchivoDAO.anularTipoDocumentos(docTipoArchivo);
+		
+	}
+
+
 }

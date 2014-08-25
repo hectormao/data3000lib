@@ -1,19 +1,19 @@
 <?page title="Tipo Documento" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="winTipoDocumento" apply="${tipoDocumentoCnt}" border="normal">
+<window id="winTipoDocumento" apply="${tipoDocumentoCnt}" border="normal" closable="true">
 <vbox>
 	<groupbox>
 		<caption label="${labels.data3000.informacion.general}" />
 		<vbox>
 			<hbox>
 				<div width="150px">
-					<label id="lblNombre" value="${labels.data3000.nombre}" style="font-weight:bold;"></label>
+					<label id="lblNombre" value="${labels.data3000.nombre.$}" style="font-weight:bold;"></label>
 				</div>
 				<textbox id="txtNombre" width="150px" constraint="/.{1,100}/"></textbox>
 			</hbox>
 			<vbox>
 				<div width="150px">
-				<label id="lblDescripcion" value="${labels.data3000.descripcion}"></label>
+				<label id="lblDescripcion" value="${labels.data3000.descripcion.$}"></label>
 				</div>
 				<textbox id="txtDescripcion" width="300px" rows="3"></textbox>
 			</vbox>
@@ -27,9 +27,9 @@
 		</toolbar>
 		<listbox id="lstMetadato" rows="4" multiple="true" checkmark="true">
 			<listhead>
-				<listheader label="${labels.data3000.nombre}" style="font-weight:bold;" width="200px" />
+				<listheader label="${labels.data3000.nombre.$}" style="font-weight:bold;" width="200px" />
 				<listheader label="${labels.data3000.tipo}" style="font-weight:bold;" width="200px" />
-				<listheader label="${labels.data3000.descripcion}" />
+				<listheader label="${labels.data3000.descripcion.$}" />
 				<listheader label="${labels.data3000.requerido}" style="font-weight:bold;" width="100px" />
 			</listhead>		
 		</listbox>

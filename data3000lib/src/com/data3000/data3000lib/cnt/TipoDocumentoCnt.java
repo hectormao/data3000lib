@@ -70,8 +70,14 @@ public class TipoDocumentoCnt extends WindowComposer {
 			cargarDatos();
 		}
 		
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			soloConsulta();
+		}
+		
 		
 	}
+	
+	
 	
 	
 	
@@ -259,16 +265,27 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	public void onClick$btnAceptar(Event evt) throws Exception{
 		
-		establecerDatos();
+		
 		
 		if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
+			establecerDatos();
 			sistemaArchivoNgc.registrarTipoDocumentos(docTipoArchivo,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
-		} else {
+		} else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
+			establecerDatos();
 			sistemaArchivoNgc.actualizarTipoDocumentos(docTipoArchivo,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
+		} else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			String nota = solicitarNota();
+			
+			docTipoArchivo.setAudiFechModi(new Date());
+			docTipoArchivo.setAudiMotiAnul(nota);
+			docTipoArchivo.setAudiSiAnul(true);
+			docTipoArchivo.setAudiUsuario(usuario.getLogin());
+			sistemaArchivoNgc.anularTipoDocumentos(docTipoArchivo);
+			
 		}
 		
 		
-		Events.sendEvent(new Event(Events.ON_CLOSE,this.self,null));
+		Events.sendEvent(new Event(Events.ON_CLOSE,this.self,ConstantesAdmin.EXITO));
 	}
 	
 	
