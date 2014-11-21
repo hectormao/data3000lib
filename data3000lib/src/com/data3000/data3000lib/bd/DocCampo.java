@@ -130,5 +130,10 @@ public class DocCampo implements java.io.Serializable {
 	public void setDocCampTipos(Set<DocCampTipo> docCampTipos) {
 		this.docCampTipos = docCampTipos;
 	}
+	
+	@Override
+	public String toString(){
+		return getCampoNombre();
+	}
 
 }
