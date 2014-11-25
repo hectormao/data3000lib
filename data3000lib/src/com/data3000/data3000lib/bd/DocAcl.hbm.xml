@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/11/2014 06:12:19 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.data3000.data3000lib.bd.DocAcl" table="doc_acl">
+        <comment>Lista de control de acceso a archivos y/o directorios</comment>
+        <id name="aclIdn" type="long">
+            <column name="acl_idn" precision="10" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">sqn_doc_acl</param>
+            </generator>
+        </id>
+        <many-to-one name="pltRol" class="com.data3000.admin.bd.PltRol" fetch="select">
+            <column name="rol_idn" precision="10" scale="0">
+                <comment>Rol al que se le asigna el permiso</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="pltUsuario" class="com.data3000.admin.bd.PltUsuario" fetch="select">
+            <column name="usua_idn" precision="10" scale="0">
+                <comment>Usuario al que se le asigna el permiso, el permiso sobre el usuario prevalece sobre el del rol</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="docArchivo" class="com.data3000.data3000lib.bd.DocArchivo" fetch="select">
+            <column name="arch_idn" precision="10" scale="0">
+                <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
+            <column name="sist_arch_idn" precision="10" scale="0">
+                <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
+            </column>
+        </many-to-one>
+        <property name="aclSiLectura" type="boolean">
+            <column name="acl_si_lectura" not-null="true">
+                <comment>Si se permite la lectura del archivo o directorio</comment>
+            </column>
+        </property>
+        <property name="aclSiEscritura" type="boolean">
+            <column name="acl_si_escritura" not-null="true">
+                <comment>Si se le permite la escritura o modificaci&#195;&#179;n del archivo o directorio</comment>
+            </column>
+        </property>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>Login de usuario de la persona que realizo la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="timestamp">
+            <column name="audi_fech_modi" length="29" not-null="true">
+                <comment>Fecha de la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="boolean">
+            <column name="audi_si_anul" not-null="true">
+                <comment>Indica si el registro fue anulado (true) o no (false)</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul" length="32">
+                <comment>Motivo de anulacion del registro</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200">
+                <comment>Checksum del registro con SHA1</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>
