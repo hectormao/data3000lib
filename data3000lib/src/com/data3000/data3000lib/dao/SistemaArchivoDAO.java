@@ -11,6 +11,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.data3000.admin.dao.PltDAO;
+import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
@@ -268,6 +269,31 @@ public class SistemaArchivoDAO extends PltDAO{
 			sesion.save(version);
 			for(DocCampArch meta : listaMeta){
 				sesion.save(meta);
+			}
+			
+			tx.commit();
+		} catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		}
+		
+	}
+
+
+	public void registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception{
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			sesion.save(directorio);
+			
+			for(DocAcl acl : permisos){
+				sesion.save(acl);
 			}
 			
 			tx.commit();

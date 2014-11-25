@@ -17,9 +17,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
@@ -51,6 +53,7 @@ public class EscritorioCnt extends WindowComposer {
 	private Div divTrabajo;
 	
 	private Menupopup menuArchivo;
+	private Toolbarbutton btnNuevoDirectorio;
 	
 	
 	private DocSistArch seleccion = null;
@@ -99,7 +102,49 @@ public class EscritorioCnt extends WindowComposer {
 			}
 		}
 		
+		String nombreFormulario = (String) btnNuevoDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
+		final Formulario frmNuevoDirectorio = getFormulario(nombreFormulario);
+		if(frmNuevoDirectorio == null){
+			btnNuevoDirectorio.setDisabled(true);
+			btnNuevoDirectorio.setVisible(false);
+		} else {
+			
+			btnNuevoDirectorio.setImage(frmNuevoDirectorio.getUrlIcono());
+			
+			btnNuevoDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									onSelect$trFileSystem(arg0);
+								}
+								
+							}
+						};
+					
+					
+					abrirFormulario(frmNuevoDirectorio, seleccion, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
 		cargarArbol();
+	}
+	
+	private void abrirNuevoDirectorio(Formulario frmNuevoDirectorio) throws Exception {
+		
+		
+		
 	}
 	
 	private void crearMenuItem(final Formulario formularioHijo){		
@@ -253,21 +298,30 @@ public class EscritorioCnt extends WindowComposer {
 	
 	public void onSelect$trFileSystem(Event event) throws Exception {
 		
-		Treeitem seleccion = trFileSystem.getSelectedItem();
 		
-		actualizarTablaDatos((DocSistArch) seleccion.getValue());
 		
-		if(seleccion != null){
+		Treeitem tiSeleccion = trFileSystem.getSelectedItem();
+		
+		DocSistArch directorio = tiSeleccion != null ? (DocSistArch) tiSeleccion.getValue() : null; 
+		if(directorio !=  null){
+			seleccion = directorio;
+			actualizarTablaDatos(directorio);
+		}
+		
+		if(tiSeleccion != null){
 			
-			Treechildren hijos = seleccion.getTreechildren();
+			Treechildren hijos = tiSeleccion.getTreechildren();
 			if(hijos == null){
 				hijos = new Treechildren();
-				seleccion.appendChild(hijos);
+				tiSeleccion.appendChild(hijos);
 			}			
-			DocSistArch dir = seleccion.getValue();			
+			DocSistArch dir = tiSeleccion.getValue();			
 			cargarArbol(dir, hijos);
 						
 			
+		} else {
+			Treechildren hijos = trFileSystem.getTreechildren();
+			cargarArbol(null, hijos);
 		}
 		
 	}

@@ -11,6 +11,7 @@ import org.zkoss.util.media.Media;
 
 import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
+import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
@@ -173,6 +174,15 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	@Override
 	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception {
 		this.sistemaArchivoDAO.anularTipoDocumentos(docTipoArchivo);
+		
+	}
+
+
+	@Override
+	public void registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception {
+		
+		sistemaArchivoDAO.registrarDirectorio(directorio,permisos);
+		
 		
 	}
 

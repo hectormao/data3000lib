@@ -6,8 +6,19 @@
 		
         	<tree vflex="1" height="100%" width="100%" id="trFileSystem" multiple="false" checkmark="true" >
 				<treecols sizable="true">
-					<treecol width="200px">
-							<label value="${labels.data3000.sistema.archivo}"></label>
+					<treecol width="100%">
+						
+							<hbox width="100%" sclass="columna-arbol">
+								<div width="100%" align="left">
+									<label value="${labels.data3000.sistema.directorio}"></label>
+								</div>
+								<div width="100%" align="right">
+									<toolbarbutton id="btnNuevoDirectorio">
+										<custom-attributes formulario="form.1007"/>
+									</toolbarbutton>
+								</div>
+							</hbox>
+						
 					</treecol >
 					
 					

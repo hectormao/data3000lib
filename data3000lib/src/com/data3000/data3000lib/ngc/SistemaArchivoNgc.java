@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zkoss.util.media.Media;
 
+import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
@@ -84,4 +85,11 @@ public interface SistemaArchivoNgc {
 	 * @throws Exception
 	 */
 	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception ;
+
+	/**
+	 * Crea un nuevo directorio
+	 * @param directorio
+	 * @param permisos
+	 */
+	public void registrarDirectorio(DocSistArch directorio,	List<DocAcl> permisos) throws Exception;
 }
