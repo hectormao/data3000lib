@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.dao.PltDAO;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
@@ -36,11 +37,15 @@ public class SistemaArchivoDAO extends PltDAO{
 				tx.begin();
 			}
 			
-			Criteria criteria = sesion.createCriteria(DocSistArch.class);
-			criteria.add(Restrictions.isNull("docSistArch"));
-			criteria.addOrder(Order.asc("sistArchNombre"));
+			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.docSistArch is null order by dir.sistArchNombre";
 			
-			return criteria.list();
+			Query query = sesion.createQuery(hql);
+			
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.isNull("docSistArch"));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
+			
+			return query.list();
 			
 		} catch(Exception ex){
 			sesion.close();
@@ -62,11 +67,16 @@ public class SistemaArchivoDAO extends PltDAO{
 				tx.begin();
 			}
 			
-			Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
 			criteria.add(Restrictions.eq("docSistArch",padre));
-			criteria.addOrder(Order.asc("sistArchNombre"));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
 			
-			return criteria.list();
+			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.docSistArch = :padre order by dir.sistArchNombre";
+			
+			Query query = sesion.createQuery(hql);
+			query.setEntity("padre", padre);
+			
+			return query.list();
 			
 		} catch(Exception ex){
 			sesion.close();

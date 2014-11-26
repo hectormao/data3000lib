@@ -5,12 +5,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.zkoss.util.media.Media;
 
+import sun.usagetracker.UsageTrackerClient;
+
+import com.data3000.admin.bd.PltRol;
+import com.data3000.admin.bd.PltUsuaRol;
+import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
+import com.data3000.admin.vo.Usuario;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
@@ -29,16 +37,54 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	private PlataformaNgc plataformaNgc;
 	
 	@Override
-	public List<DocSistArch> getHijos(DocSistArch padre) throws Exception{
+	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario) throws Exception{
+		
+		List<DocSistArch> directorios = null;
 		
 		if(padre == null){
-			return sistemaArchivoDAO.getHijosRaiz();
+			directorios = sistemaArchivoDAO.getHijosRaiz();
 		} else {
-			return sistemaArchivoDAO.getHijos(padre);
+			directorios = sistemaArchivoDAO.getHijos(padre);
 		}
 		
+		List<DocSistArch> directoriosPermiso = new ArrayList<DocSistArch>();
 		
+		for(DocSistArch directorio : directorios){
+			
+			if(directorio.getPltUsuario().getUsuaIdn() == usuario.getUsuaIdn()){
+				directoriosPermiso.add(directorio);
+			} else {
+				Set<DocAcl> permisos = directorio.getDocAcls();
+				for(DocAcl permiso : permisos){
+					PltUsuario usuarioPermiso = permiso.getPltUsuario();
+					PltRol rolPermiso = permiso.getPltRol();
+					if(usuarioPermiso != null && usuarioPermiso.getUsuaIdn() == usuario.getUsuaIdn()){
+						if(permiso.isAclSiLectura()){
+							directoriosPermiso.add(directorio);
+							break;
+						}
+					} else if(rolPermiso != null){
+						
+						Set<PltUsuaRol> roles = usuario.getPltUsuaRols();
+						boolean encontro = false;
+						for(PltUsuaRol usuarioRol : roles){
+							if(rolPermiso.getRolIdn() == usuarioRol.getPltRol().getRolIdn() && permiso.isAclSiLectura()){
+								directoriosPermiso.add(directorio);
+								encontro = true;
+								break;
+							}
+						}
+						if(encontro){
+							break;
+						}
+						
+					}
+				}
+			}
+			
+		}
 		
+		return directoriosPermiso;
 	}
 
 	

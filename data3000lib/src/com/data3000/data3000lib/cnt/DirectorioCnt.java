@@ -99,7 +99,7 @@ public class DirectorioCnt extends WindowComposer {
 	}
 
 	private void agregarUsuarios(Treeitem item) throws Exception{
-		List<PltUsuario> usuarios = usuarioNgc.getUsuarios();
+		List<PltUsuario> usuarios = usuarioNgc.getUsuariosDiferentesA((PltUsuario)usuario);
 		Treechildren hijos = new Treechildren();
 		for(PltUsuario usuario : usuarios){
 			Treeitem itemUsuario = new Treeitem();
@@ -222,6 +222,7 @@ public class DirectorioCnt extends WindowComposer {
 		directorio.setDocSistArch(directorioPadre);
 		directorio.setSistArchDescripcion(txtDescripcion.getValue());
 		directorio.setSistArchNombre(txtNombre.getValue());
+		directorio.setPltUsuario((PltUsuario)usuario);
 		
 		
 		List<DocAcl> permisos = new ArrayList<DocAcl>();

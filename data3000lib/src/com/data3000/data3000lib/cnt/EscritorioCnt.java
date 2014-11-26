@@ -29,6 +29,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Window;
 
+import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.cmp.TablaDatos;
 import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
@@ -129,7 +130,12 @@ public class EscritorioCnt extends WindowComposer {
 						};
 					
 					
-					abrirFormulario(frmNuevoDirectorio, seleccion, eventoCerrar);
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmNuevoDirectorio, directorioPadre, eventoCerrar);
 					
 					
 				}
@@ -196,15 +202,24 @@ public class EscritorioCnt extends WindowComposer {
 	private void cargarArbol() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("Consultando arbol ...");
 		
-		Treechildren hijosRaiz = new Treechildren();		
-		trFileSystem.appendChild(hijosRaiz);
+		Treechildren raiz = new Treechildren();		
+		trFileSystem.appendChild(raiz);
+		
+		Treeitem tiRaiz = new Treeitem();
+		tiRaiz.setLabel(Labels.getLabel("data3000.raiz"));
+		raiz.appendChild(tiRaiz);
+		
+		
+		Treechildren hijosRaiz = new Treechildren();
+		tiRaiz.appendChild(hijosRaiz);
+		
 		cargarArbol(null, hijosRaiz);
 	}
 	
 	private void cargarArbol(DocSistArch padre, Treechildren arbolPadre) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug(new StringBuilder("Cargando hijos para ...").append(padre != null ? padre.getSistArchNombre() : "Raiz").toString());
 		
-		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre);
+		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre, (PltUsuario) usuario);
 		
 		Map<Long,ItemDir> mapaDir = (Map<Long, ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR);
 		List<ItemDir> listaDir = (List<ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_LISTA_DIR);
@@ -304,7 +319,6 @@ public class EscritorioCnt extends WindowComposer {
 		
 		DocSistArch directorio = tiSeleccion != null ? (DocSistArch) tiSeleccion.getValue() : null; 
 		if(directorio !=  null){
-			seleccion = directorio;
 			actualizarTablaDatos(directorio);
 		}
 		

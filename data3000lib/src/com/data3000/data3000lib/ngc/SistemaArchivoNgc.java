@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.zkoss.util.media.Media;
 
+import com.data3000.admin.bd.PltUsuario;
+import com.data3000.admin.vo.Usuario;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
@@ -17,9 +19,10 @@ public interface SistemaArchivoNgc {
 	/**
 	 * Obtiene los directorios hijos
 	 * @param padre
+	 * @param usuario 
 	 * @return
 	 */
-	public List<DocSistArch> getHijos(DocSistArch padre)  throws Exception;
+	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario)  throws Exception;
 
 	/**
 	 * Obtiene los campos ya registrados en el sistema ordenados por su nombre

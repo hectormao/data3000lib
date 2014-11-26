@@ -16,6 +16,11 @@
                 <comment>identificador del padre de este directorio (null) cuando pertenece a la raiz</comment>
             </column>
         </many-to-one>
+        <many-to-one name="pltUsuario" class="com.data3000.admin.bd.PltUsuario" fetch="select">
+            <column name="usua_idn" precision="10" scale="0" not-null="true">
+                <comment>Id del usuario propietario (creador) del directorio</comment>
+            </column>
+        </many-to-one>
         <property name="sistArchNombre" type="string">
             <column name="sist_arch_nombre" length="300" not-null="true">
                 <comment>nombre del item (directorio) del sistema de archivos</comment>
@@ -51,6 +56,14 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
+        <set name="docAcls" table="doc_acl" inverse="true" lazy="false" fetch="join">
+            <key>
+                <column name="sist_arch_idn" precision="10" scale="0">
+                    <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocAcl" />
+        </set>
         <set name="docSistArchs" table="doc_sist_arch" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="sist_arch_padre" precision="10" scale="0">
