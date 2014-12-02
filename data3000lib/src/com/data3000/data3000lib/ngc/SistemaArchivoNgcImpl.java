@@ -123,10 +123,10 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 
 	@Override
-	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta) throws Exception {
+	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception {
 		
 		
-		sistemaArchivoDAO.registrarArchivo(docArchivo,version, listaMeta);
+		sistemaArchivoDAO.registrarArchivo(docArchivo,version, listaMeta, permisos);
 		
 		try{
 			Path archivo = getRutaArchivo(version);

@@ -262,7 +262,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarArchivo(DocArchivo docArchivo, DocArchivoVersion version, List<DocCampArch> listaMeta) throws Exception{
+	public void registrarArchivo(DocArchivo docArchivo, DocArchivoVersion version, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception{
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -279,6 +279,10 @@ public class SistemaArchivoDAO extends PltDAO{
 			sesion.save(version);
 			for(DocCampArch meta : listaMeta){
 				sesion.save(meta);
+			}
+			
+			for(DocAcl acl : permisos){
+				sesion.save(acl);
 			}
 			
 			tx.commit();

@@ -78,9 +78,10 @@ public interface SistemaArchivoNgc {
 	 * carga un archivo en la plataforma
 	 * @param docArchivo
 	 * @param version
+	 * @param permisos 
 	 * @param archivo
 	 */
-	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta) throws Exception;
+	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception;
 	
 	/**
 	 * Anula o elimina un tipo de archivo del sistema

@@ -15,6 +15,11 @@
                 <comment>Tipo de archivo al que pertenece el archivo</comment>
             </column>
         </many-to-one>
+        <many-to-one name="pltUsuario" class="com.data3000.admin.bd.PltUsuario" fetch="select">
+            <column name="usua_idn" precision="10" scale="0" not-null="true">
+                <comment>Id del usuario propietario del archivo</comment>
+            </column>
+        </many-to-one>
         <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
             <column name="sist_arch_idn" precision="10" scale="0" not-null="true">
                 <comment>Item del sistema de archivos donde se carga el documento</comment>
@@ -62,6 +67,14 @@
                 </column>
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocArchivoVersion" />
+        </set>
+        <set name="docAcls" table="doc_acl" inverse="true" lazy="false" fetch="join">
+            <key>
+                <column name="arch_idn" precision="10" scale="0">
+                    <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocAcl" />
         </set>
     </class>
 </hibernate-mapping>
