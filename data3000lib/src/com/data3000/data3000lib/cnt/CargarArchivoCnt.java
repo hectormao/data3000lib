@@ -347,6 +347,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 				docArchivo.setAudiUsuario(usuario.getLogin());
 				docArchivo.setDocSistArch(directorio);
 				docArchivo.setDocTipoArchivo(tipo);
+				docArchivo.setPltUsuario((PltUsuario)usuario);
 			}
 
 			// creo la version
@@ -399,7 +400,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 			
 			sistemaArchivoNgc.cargarArchivo(docArchivo, version, archivo.getByteData(), listaMeta, permisos);
 
-			Events.sendEvent(new Event(Events.ON_CLOSE, this.self, null));
+			Events.sendEvent(new Event(Events.ON_CLOSE, this.self, ConstantesAdmin.EXITO));
 		} catch (Exception ex) {
 			String mensaje = new StringBuilder("Error al registrar archivo: ")
 					.append(ex.getClass().getName()).append(": ")
