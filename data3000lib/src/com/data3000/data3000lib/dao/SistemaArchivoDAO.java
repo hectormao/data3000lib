@@ -37,7 +37,7 @@ public class SistemaArchivoDAO extends PltDAO{
 				tx.begin();
 			}
 			
-			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.docSistArch is null order by dir.sistArchNombre";
+			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.audiSiAnul = false and dir.docSistArch is null order by dir.sistArchNombre";
 			
 			Query query = sesion.createQuery(hql);
 			
@@ -47,9 +47,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			return query.list();
 			
-		} catch(Exception ex){
-			sesion.close();
+		} catch(Exception ex){			
 			throw ex;
+		} finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -71,7 +74,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			criteria.add(Restrictions.eq("docSistArch",padre));
 			criteria.addOrder(Order.asc("sistArchNombre"));*/
 			
-			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.docSistArch = :padre order by dir.sistArchNombre";
+			String hql = "from com.data3000.data3000lib.bd.DocSistArch dir where dir.audiSiAnul = false and dir.docSistArch = :padre order by dir.sistArchNombre";
 			
 			Query query = sesion.createQuery(hql);
 			query.setEntity("padre", padre);
@@ -79,8 +82,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			return query.list();
 			
 		} catch(Exception ex){
-			sesion.close();
+			
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -102,8 +109,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			return criteria.list();
 			
 		} catch(Exception ex){
-			sesion.close();
+			
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 	}
 
@@ -125,8 +136,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			return criteria.list();
 			
 		} catch(Exception ex){
-			sesion.close();
+			
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 	}
 
@@ -169,6 +184,10 @@ public class SistemaArchivoDAO extends PltDAO{
 		} catch(Exception ex){
 			tx.rollback();
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -211,6 +230,10 @@ public class SistemaArchivoDAO extends PltDAO{
 		} catch(Exception ex){
 			tx.rollback();
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -233,8 +256,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			return criteria.list();
 			
 		} catch(Exception ex){
-			sesion.close();
+			
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 	}
 
@@ -255,8 +282,12 @@ public class SistemaArchivoDAO extends PltDAO{
 			return (DocArchivo) criteria.uniqueResult();
 			
 		} catch(Exception ex){
-			sesion.close();
+			
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -289,6 +320,10 @@ public class SistemaArchivoDAO extends PltDAO{
 		} catch(Exception ex){
 			tx.rollback();
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
 		
 	}
@@ -314,7 +349,83 @@ public class SistemaArchivoDAO extends PltDAO{
 		} catch(Exception ex){
 			tx.rollback();
 			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
 		}
+		
+	}
+
+
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception{
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();		
+		Transaction tx = sesion.getTransaction();
+		try{
+			
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			
+			sesion.update(directorio);
+			// TODO Auto-generated method stub
+			
+			for(DocAcl acl : permisosNuevos){
+				sesion.save(acl);
+			}
+			
+			for(DocAcl acl : permisosEdicion){				
+				
+				sesion.update(acl);				
+			}
+			
+			for(DocAcl acl : permisosEliminacion){
+				
+				sesion.delete(acl);
+			}
+			
+			tx.commit();
+		} catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		} finally {
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+		
+	}
+
+
+	public DocSistArch getDirectorio(long sistArchIdn) throws Exception {
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();		
+		Transaction tx = sesion.getTransaction();
+		try{
+			
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			
+			return (DocSistArch) sesion.get(DocSistArch.class, sistArchIdn);
+		} catch(Exception ex){
+			
+			throw ex;
+		} finally {
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+		
+		
+	}
+
+
+	public void anularDirectorio(DocSistArch directorio) throws Exception{
+		super.update(directorio);
 		
 	}
 	

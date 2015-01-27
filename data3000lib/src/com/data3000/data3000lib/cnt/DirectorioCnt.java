@@ -3,14 +3,19 @@ package com.data3000.data3000lib.cnt;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zhtml.Tbody;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -21,6 +26,7 @@ import org.zkoss.zul.Window;
 
 import com.data3000.admin.bd.PltRol;
 import com.data3000.admin.bd.PltUsuario;
+import com.data3000.admin.exc.PltException;
 import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.ngc.UsuarioNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
@@ -28,6 +34,7 @@ import com.data3000.admin.utl.WindowComposer;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
+import com.data3000.data3000lib.utl.ConstantesData3000;
 
 public class DirectorioCnt extends WindowComposer {
 	
@@ -48,11 +55,17 @@ public class DirectorioCnt extends WindowComposer {
 	private DocSistArch directorioPadre;
 	private DocSistArch directorio;
 	
+	private Map<Long,DocAcl> permisosRol;
+	private Map<Long,DocAcl> permisosUsuario;
+	
 	@Override
 	public void doAfterCompose(Window winDirectorio) throws Exception{
 		
 		super.doAfterCompose(winDirectorio);
 		
+		
+		permisosRol = new HashMap<Long, DocAcl>();
+		permisosUsuario = new HashMap<Long, DocAcl>();
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			directorioPadre = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
@@ -60,8 +73,55 @@ public class DirectorioCnt extends WindowComposer {
 		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			directorioPadre = directorio.getDocSistArch();
+			cargarDatosDirectorio();
+			
+			Set<DocAcl> permisos = directorio.getDocAcls();
+			for(DocAcl acl : permisos){
+				
+				PltUsuario aclUsuario = acl.getPltUsuario();
+				PltRol aclRol = acl.getPltRol();
+				
+				if(aclUsuario != null){
+					permisosUsuario.put(aclUsuario.getUsuaIdn(), acl);					
+				} else {
+					permisosRol.put(aclRol.getRolIdn(), acl);
+				}
+				
+				
+			}
+			
+			
+			
 		}
 		cargarArbolPermisos();
+		
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			super.soloConsulta();
+		}
+		
+		
+	}
+	
+	public void onCreate$winDirectorio(Event evt) throws Exception{
+		
+		try{
+			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
+					throw new PltException(ConstantesData3000.ERR1005);
+				}
+			}
+		} catch(PltException ex){
+			Events.sendEvent(Events.ON_CLOSE, this.self, null);
+			Messagebox.show(Labels.getLabel(ex.getCodigo()), "Error", Messagebox.OK, Messagebox.ERROR);
+			logger.error("Al editar directorio",ex);
+		}
+		
+	}
+	
+	private void cargarDatosDirectorio(){
+		txtNombre.setValue(directorio.getSistArchNombre());
+		txtDescripcion.setValue(directorio.getSistArchDescripcion());
+		
 		
 		
 		
@@ -102,10 +162,14 @@ public class DirectorioCnt extends WindowComposer {
 		List<PltUsuario> usuarios = usuarioNgc.getUsuariosDiferentesA((PltUsuario)usuario);
 		Treechildren hijos = new Treechildren();
 		for(PltUsuario usuario : usuarios){
-			Treeitem itemUsuario = new Treeitem();
+			
+			DocAcl acl = permisosUsuario.get(usuario.getUsuaIdn());
+			
+			Treeitem itemUsuario = new Treeitem();			
 			Treerow filaUsuario = new Treerow();
 			
 			itemUsuario.setValue(usuario);
+			itemUsuario.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);
 			
 			StringBuilder nombre = new StringBuilder(usuario.getUsuaNombre());
 			nombre.append(" (");
@@ -116,13 +180,24 @@ public class DirectorioCnt extends WindowComposer {
 			filaUsuario.appendChild(celdaNombre);
 			
 			final Checkbox chkSiLectura = new Checkbox();
+			boolean siLectura = acl != null && acl.isAclSiLectura();			
+			chkSiLectura.setChecked(siLectura);
 			Treecell celdaSiLectura = new Treecell();
 			celdaSiLectura.appendChild(chkSiLectura);
 			filaUsuario.appendChild(celdaSiLectura);
 			
 			
 			
+			
 			final Checkbox chkSiEscritura = new Checkbox();
+			boolean siEscritura = acl != null && acl.isAclSiEscritura();
+			chkSiEscritura.setChecked(siEscritura);
+			
+			if(siEscritura){
+				chkSiLectura.setChecked(true);
+				chkSiLectura.setDisabled(true);
+			}
+			
 			Treecell celdaSiEscritura = new Treecell();
 			celdaSiEscritura.appendChild(chkSiEscritura);
 			filaUsuario.appendChild(celdaSiEscritura);
@@ -158,16 +233,24 @@ public class DirectorioCnt extends WindowComposer {
 		List<PltRol> roles = plataformaNgc.getRoles();
 		Treechildren hijos = new Treechildren();
 		for(PltRol rol : roles){
+			
+			DocAcl acl = permisosRol.get(rol.getRolIdn());
+			
 			Treeitem itemRol = new Treeitem();
 			Treerow filarol = new Treerow();
 			
 			itemRol.setValue(rol);
+			itemRol.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);
 			
 			
 			Treecell celdaNombre = new Treecell(rol.getRolNombre());
 			filarol.appendChild(celdaNombre);
 			
 			final Checkbox chkSiLectura = new Checkbox();
+			
+			boolean siLectura = acl != null && acl.isAclSiLectura();			
+			chkSiLectura.setChecked(siLectura);
+			
 			Treecell celdaSiLectura = new Treecell();
 			celdaSiLectura.appendChild(chkSiLectura);
 			filarol.appendChild(celdaSiLectura);
@@ -175,6 +258,15 @@ public class DirectorioCnt extends WindowComposer {
 			
 			
 			final Checkbox chkSiEscritura = new Checkbox();
+			
+			boolean siEscritura = acl != null && acl.isAclSiEscritura();
+			chkSiEscritura.setChecked(siEscritura);
+			
+			if(siEscritura){
+				chkSiLectura.setChecked(true);
+				chkSiLectura.setDisabled(true);
+			}
+			
 			Treecell celdaSiEscritura = new Treecell();
 			celdaSiEscritura.appendChild(chkSiEscritura);
 			filarol.appendChild(celdaSiEscritura);
@@ -222,22 +314,45 @@ public class DirectorioCnt extends WindowComposer {
 		directorio.setDocSistArch(directorioPadre);
 		directorio.setSistArchDescripcion(txtDescripcion.getValue());
 		directorio.setSistArchNombre(txtNombre.getValue());
-		directorio.setPltUsuario((PltUsuario)usuario);
 		
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
+			directorio.setPltUsuario((PltUsuario)usuario);
+		}
 		
-		List<DocAcl> permisos = new ArrayList<DocAcl>();
+		List<DocAcl> permisosNuevos = new ArrayList<DocAcl>();
+		List<DocAcl> permisosEdicion = new ArrayList<DocAcl>();
+		List<DocAcl> permisosEliminacion = new ArrayList<DocAcl>();
+		
+		directorio.getDocAcls().clear();
 		
 		Treechildren hijosRaiz = trPermisos.getTreechildren();
-		tomarPermisos(permisos, hijosRaiz);
+		tomarPermisos(permisosNuevos, permisosEdicion, permisosEliminacion, hijosRaiz);
 		
-		sistemaArchivoNgc.registrarDirectorio(directorio,permisos);
+		directorio.getDocAcls().addAll(permisosNuevos);
+		directorio.getDocAcls().addAll(permisosEdicion);
+		
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
+			sistemaArchivoNgc.registrarDirectorio(directorio,permisosNuevos);
+		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
+			sistemaArchivoNgc.modificarDirectorio(directorio,permisosNuevos, permisosEdicion, permisosEliminacion);
+		}else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			String nota = solicitarNota();
+			
+			directorio.setAudiFechModi(new Date());
+			directorio.setAudiMotiAnul(nota);
+			directorio.setAudiSiAnul(true);
+			directorio.setAudiUsuario(usuario.getLogin());
+			sistemaArchivoNgc.anularDirectorio(directorio);
+			
+		}
+		
 		
 		
 		Events.sendEvent(Events.ON_CLOSE,winDirectorio,ConstantesAdmin.EXITO);
 		
 	}
 	
-	public void tomarPermisos(List<DocAcl> permisos, Treechildren arbol){
+	public void tomarPermisos(List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion, Treechildren arbol){
 		
 		Collection<Treeitem> itemsHijo = arbol.getItems();
 		
@@ -249,6 +364,9 @@ public class DirectorioCnt extends WindowComposer {
 			for(Treeitem item : itemsHijo){				
 				Object valor = item.getValue();
 				if(valor != null && (valor instanceof PltUsuario || valor instanceof PltRol)){
+					
+					DocAcl acl = (DocAcl) item.getAttribute(ConstantesData3000.ATRIBUTO_ACL);
+					
 					Checkbox chkSiLectura = (Checkbox) item.getAttribute("chkSiLectura");
 					Checkbox chkSiEscritura = (Checkbox) item.getAttribute("chkSiEscritura");
 					
@@ -256,28 +374,50 @@ public class DirectorioCnt extends WindowComposer {
 					boolean siEscribir = chkSiEscritura.isChecked();
 					
 					if(siLeer || siEscribir){
-						DocAcl permiso = new DocAcl();
-						permiso.setAclSiEscritura(siEscribir);
-						permiso.setAclSiLectura(siLeer);
-						permiso.setAudiChecksum(null);
-						permiso.setAudiFechModi(new Date());
-						permiso.setAudiMotiAnul(null);
-						permiso.setAudiSiAnul(false);
-						permiso.setAudiUsuario(usuario.getLogin());
-						permiso.setDocArchivo(null);
-						permiso.setDocSistArch(directorio);
-						if(valor instanceof PltRol){
-							permiso.setPltRol((PltRol) valor);
-							permiso.setPltUsuario(null);
+						if(acl == null){
+							DocAcl permiso = new DocAcl();
+							permiso.setAclSiEscritura(siEscribir);
+							permiso.setAclSiLectura(siLeer);
+							permiso.setAudiChecksum(null);
+							permiso.setAudiFechModi(new Date());
+							permiso.setAudiMotiAnul(null);
+							permiso.setAudiSiAnul(false);
+							permiso.setAudiUsuario(usuario.getLogin());
+							permiso.setDocArchivo(null);
+							permiso.setDocSistArch(directorio);
+							if(valor instanceof PltRol){
+								permiso.setPltRol((PltRol) valor);
+								permiso.setPltUsuario(null);
+							} else {
+								permiso.setPltRol(null);
+								permiso.setPltUsuario((PltUsuario)valor);
+							}
+							
+							permisosNuevos.add(permiso);
 						} else {
-							permiso.setPltRol(null);
-							permiso.setPltUsuario((PltUsuario)valor);
+							boolean actualizar = false;
+							if(acl.isAclSiLectura() != siLeer){
+								acl.setAclSiLectura(siLeer);
+								actualizar = true;
+							}
+							
+							if(acl.isAclSiEscritura() != siEscribir){
+								acl.setAclSiEscritura(siEscribir);
+								actualizar = true;
+							}
+							
+							if(actualizar){
+								acl.setAudiUsuario(usuario.getLogin());
+								acl.setAudiFechModi(new Date());
+								permisosEdicion.add(acl);
+								
+							}
 						}
 						
-						permisos.add(permiso);
-						
 					} else {
-						//eliminar permiso si es necesario
+						if(acl != null){
+							permisosEliminacion.add(acl);
+						}
 					}
 					
 					

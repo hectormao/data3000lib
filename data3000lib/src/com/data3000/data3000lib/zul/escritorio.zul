@@ -16,6 +16,12 @@
 									<toolbarbutton id="btnNuevoDirectorio">
 										<custom-attributes formulario="form.1007"/>
 									</toolbarbutton>
+									<toolbarbutton id="btnEditarDirectorio">
+										<custom-attributes formulario="form.1011"/>
+									</toolbarbutton>
+									<toolbarbutton id="btnEliminarDirectorio">
+										<custom-attributes formulario="form.1012"/>
+									</toolbarbutton>
 								</div>
 							</hbox>
 						

@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Toolbarbutton;
@@ -55,6 +56,8 @@ public class EscritorioCnt extends WindowComposer {
 	
 	private Menupopup menuArchivo;
 	private Toolbarbutton btnNuevoDirectorio;
+	private Toolbarbutton btnEditarDirectorio;
+	private Toolbarbutton btnEliminarDirectorio;
 	
 	
 	private DocSistArch seleccion = null;
@@ -111,6 +114,7 @@ public class EscritorioCnt extends WindowComposer {
 		} else {
 			
 			btnNuevoDirectorio.setImage(frmNuevoDirectorio.getUrlIcono());
+			btnNuevoDirectorio.setTooltip(frmNuevoDirectorio.getTooltip());
 			
 			btnNuevoDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 
@@ -144,14 +148,115 @@ public class EscritorioCnt extends WindowComposer {
 			
 		}
 		
+		
+		String nombreFormularioEditar = (String) btnEditarDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
+		final Formulario frmEditarDirectorio = getFormulario(nombreFormularioEditar);
+		if(frmEditarDirectorio == null){
+			btnEditarDirectorio.setDisabled(true);
+			btnEditarDirectorio.setVisible(false);
+		} else {
+			
+			btnEditarDirectorio.setImage(frmEditarDirectorio.getUrlIcono());
+			btnEditarDirectorio.setTooltip(frmEditarDirectorio.getTooltip());
+			btnEditarDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									
+									
+									
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){
+										
+										DocSistArch directorioTmp = li.getValue();
+										
+										DocSistArch directorio = sistemaArchivoNgc.getDirectorio(directorioTmp.getSistArchIdn());
+										
+										Treerow fila = (Treerow) li.getFirstChild();
+										Treecell celda = (Treecell) fila.getFirstChild();
+										li.setValue(directorio);
+										celda.setLabel(directorio.getSistArchNombre());
+										celda.setTooltiptext(directorio.getSistArchDescripcion());
+									}
+									
+									
+									//onSelect$trFileSystem(arg0);
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEditarDirectorio, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
+		String nombreFormularioEliminar = (String) btnEliminarDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
+		final Formulario frmEliminarDirectorio = getFormulario(nombreFormularioEliminar);
+		if(frmEliminarDirectorio == null){
+			btnEliminarDirectorio.setDisabled(true);
+			btnEliminarDirectorio.setVisible(false);
+		} else {
+			
+			btnEliminarDirectorio.setImage(frmEliminarDirectorio.getUrlIcono());
+			btnEliminarDirectorio.setTooltip(frmEliminarDirectorio.getTooltip());
+			btnEliminarDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){										
+										Component padre = li.getParent();										
+										padre.removeChild(li);
+									}
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEliminarDirectorio, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
 		cargarArbol();
 	}
 	
-	private void abrirNuevoDirectorio(Formulario frmNuevoDirectorio) throws Exception {
-		
-		
-		
-	}
+	
 	
 	private void crearMenuItem(final Formulario formularioHijo){		
 		Menuitem item = new Menuitem();					

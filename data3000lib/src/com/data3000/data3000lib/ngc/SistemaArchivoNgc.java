@@ -96,4 +96,34 @@ public interface SistemaArchivoNgc {
 	 * @param permisos
 	 */
 	public void registrarDirectorio(DocSistArch directorio,	List<DocAcl> permisos) throws Exception;
+	
+	
+	
+	/**
+	 * Calcula el checksum de un archivo
+	 * @param data
+	 * @return
+	 * @throws Exception
+	 */
+	public String calcularChecksum(byte[] data) throws Exception;
+	
+	/**
+	 * Modifica los datos de un directorio
+	 * @param directorio
+	 * @param permisos
+	 */
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception;
+	
+	/**
+	 * Obtiene un directorio a partir de su id
+	 * @param sistArchIdn
+	 * @return
+	 */
+	public DocSistArch getDirectorio(long sistArchIdn)  throws Exception;
+
+	/**
+	 * Anula un directorio
+	 * @param directorio
+	 */
+	public void anularDirectorio(DocSistArch directorio) throws Exception;
 }

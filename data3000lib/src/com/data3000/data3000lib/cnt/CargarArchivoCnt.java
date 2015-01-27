@@ -322,8 +322,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 
 		Comboitem ci = cmbTipoArchivo.getSelectedItem();
 		if (ci == null) {
-			throw new WrongValueException(cmbTipoArchivo,
-					Labels.getLabel("error.0005"));
+			throw new WrongValueException(cmbTipoArchivo,Labels.getLabel("error.0005"));
 		}
 
 		DocTipoArchivo tipo = ci.getValue();

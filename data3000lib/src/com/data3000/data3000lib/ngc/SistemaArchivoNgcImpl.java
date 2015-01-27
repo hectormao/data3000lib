@@ -158,7 +158,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		
 	}
 	
-	private String calcularChecksum(byte[] data) throws Exception{
+	public String calcularChecksum(byte[] data) throws Exception{
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
 		byte[] digestBytes = messageDigest.digest(data);
 		StringBuffer sb = new StringBuffer("");
@@ -229,6 +229,27 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		
 		sistemaArchivoDAO.registrarDirectorio(directorio,permisos);
 		
+		
+	}
+
+
+	@Override
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception {
+		sistemaArchivoDAO.modificarDirectorio(directorio,permisosNuevos,permisosEdicion,permisosEliminacion);
+		
+	}
+
+
+	@Override
+	public DocSistArch getDirectorio(long sistArchIdn) throws Exception{
+		
+		return sistemaArchivoDAO.getDirectorio(sistArchIdn);
+	}
+
+
+	@Override
+	public void anularDirectorio(DocSistArch directorio) throws Exception {
+		sistemaArchivoDAO.anularDirectorio(directorio);
 		
 	}
 
