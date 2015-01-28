@@ -294,6 +294,24 @@ public class EscritorioCnt extends WindowComposer {
 				}
 				
 				winCargar.setTitle(titulo);
+				
+				winCargar.addEventListener(Events.ON_CLOSE, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						String res = (String) arg0.getData();
+						if(res != null && res.equals(ConstantesAdmin.EXITO)){
+							
+							Treeitem tiSeleccion = trFileSystem.getSelectedItem();							
+							DocSistArch directorio = tiSeleccion != null ? (DocSistArch) tiSeleccion.getValue() : null;
+							if(directorio != null){							
+								actualizarTablaDatos(directorio);
+							}
+						}
+						
+					}
+				});
+				
 				winCargar.doModal();							
 			}
 		});
@@ -423,9 +441,14 @@ public class EscritorioCnt extends WindowComposer {
 		Treeitem tiSeleccion = trFileSystem.getSelectedItem();
 		
 		DocSistArch directorio = tiSeleccion != null ? (DocSistArch) tiSeleccion.getValue() : null; 
-		if(directorio !=  null){
-			actualizarTablaDatos(directorio);
+		
+		if(directorio == null){
+			directorio = new DocSistArch();
+			directorio.setSistArchIdn(0L);
 		}
+		
+		actualizarTablaDatos(directorio);
+		
 		
 		if(tiSeleccion != null){
 			

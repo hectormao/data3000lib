@@ -11,12 +11,12 @@
             	<param name="sequence">SQN_DOC_CAMP_TIPO</param>
             </generator>
         </id>
-        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" fetch="select">
+        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" lazy="false" fetch="join">
             <column name="tipo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del tipo asociado</comment>
             </column>
         </many-to-one>
-        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="select">
+        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" lazy="false" fetch="join">
             <column name="campo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del campo referenciado</comment>
             </column>

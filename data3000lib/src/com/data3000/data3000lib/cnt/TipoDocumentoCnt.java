@@ -152,6 +152,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 		
 		final Combobox cmbCampo = new Combobox();
 		cmbCampo.setConstraint("no empty");
+		cmbCampo.setWidth("80%");
 		DocCampo camposeleccionado = null;
 		if(listaCampos != null){
 			for(DocCampo campo : listaCampos){
