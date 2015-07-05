@@ -1,0 +1,62 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="winCopiar" title="${labels.data3000.copiar}"
+		apply="${copiarCnt}" sizable="true" maximizable="false"
+		minimizable="false" closable="true" width="60%" height="60%"
+		border="normal">
+		<borderlayout>
+			<north border="none" size="20%">
+			    <groupbox>
+			    <caption label="${labels.data3000.origen}"/>
+				<hbox hflex="1" vflex="1">
+					<div width="150px">
+						<label value="${labels.data3000.nombre.$}"
+							style="font-weight:bold;">
+						</label>
+					</div>
+					<textbox id="txtNombre" hflex="1" vflex="1"
+						constraint="/.{1,100}/">
+					</textbox>
+
+				</hbox>
+				</groupbox>
+			</north>
+			<center border="none">
+				<groupbox vflex="1" hflex="1">
+				<caption label="${labels.data3000.destino}"/>
+				<tree vflex="1" height="100%" width="100%"
+					id="trFileSystem" multiple="false" checkmark="true">
+					<treecols sizable="true">
+						<treecol width="100%">
+
+							<hbox width="100%" sclass="columna-arbol">
+								<div width="100%" align="left">
+									<label
+										value="${labels.data3000.sistema.directorio}">
+									</label>
+								</div>
+							</hbox>
+
+						</treecol>
+
+
+					</treecols>
+				</tree>
+				
+				</groupbox>
+			</center>
+			<south border="none" size="10%">
+				<div width="100%" align="center">
+				    <separator height="10px"></separator>
+					<hbox>
+						<button id="btnAceptar"
+							label="${labels.data3000.aceptar}" />
+						<separator width="20px" />
+						<button id="btnCancelar"
+							label="${labels.data3000.cancelar}" />
+					</hbox>
+				</div>
+			</south>
+		</borderlayout>
+	</window>
+</zk>

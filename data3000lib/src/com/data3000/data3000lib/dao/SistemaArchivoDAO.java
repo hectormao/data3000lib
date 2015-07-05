@@ -1,6 +1,7 @@
 package com.data3000.data3000lib.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -370,7 +371,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			
 			sesion.update(directorio);
-			// TODO Auto-generated method stub
+			
 			
 			for(DocAcl acl : permisosNuevos){
 				sesion.save(acl);
@@ -428,6 +429,145 @@ public class SistemaArchivoDAO extends PltDAO{
 		super.update(directorio);
 		
 	}
+
+
+	public List<DocArchivoVersion> getVersionesArchivo(DocArchivo archivo) throws Exception {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocArchivoVersion.class);
+			criteria.add(Restrictions.eq("docArchivo", archivo));
+			
+			return criteria.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+		
+	}
+
+
+	public List<DocCampArch> getCamposVersion(DocArchivoVersion version) throws Exception {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocCampArch.class);
+			criteria.add(Restrictions.eq("docArchivoVersion", version));
+			
+			return criteria.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
+	public DocSistArch getDirectorio(DocSistArch destino, String nombre) throws Exception{
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.and(
+					Restrictions.eq("docSistArch", destino),
+					Restrictions.eq("sistArchNombre", nombre)
+					));
+			
+			return (DocSistArch) criteria.uniqueResult();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
+	public void copiarArchivo(DocArchivo archivo, List<DocArchivoVersion> listaVersiones, List<DocCampArch> listaCampos, List<DocAcl> listaPermisos) throws Exception{ 
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			sesion.save(archivo);
+			for(DocArchivoVersion version : listaVersiones){
+				sesion.save(version);
+			}
+			
+			for(DocCampArch campo : listaCampos){
+				sesion.save(campo);
+			}
+			
+			for(DocAcl permiso : listaPermisos){
+				sesion.save(permiso);
+			}
+			
+			tx.commit();
+		} catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+		
+	}
+
+
+	public List<DocAcl> getPermisosArchivo(DocArchivo archivo) throws Exception {
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocAcl.class);
+			criteria.add(Restrictions.eq("docArchivo", archivo));
+			
+			return criteria.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
 	
 
 }

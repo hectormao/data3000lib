@@ -6,10 +6,15 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.zkoss.util.media.Media;
+
+
+
+
 
 
 
@@ -251,6 +256,72 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	public void anularDirectorio(DocSistArch directorio) throws Exception {
 		sistemaArchivoDAO.anularDirectorio(directorio);
 		
+	}
+
+
+	@Override
+	public void copiarArchivo(DocArchivo archivo, String nuevoNombre, DocSistArch destino) throws Exception {		
+		
+		List<DocArchivoVersion> listaVersiones = sistemaArchivoDAO.getVersionesArchivo(archivo);
+		List<Path> origenes = new ArrayList<Path>();
+		List<Path> destinos = new ArrayList<Path>();
+		List<DocCampArch> listaCampos = new ArrayList<DocCampArch>();
+		List<DocAcl> listaPermisos = sistemaArchivoDAO.getPermisosArchivo(archivo);
+		archivo.setArchIdn(0L);
+		archivo.setArchNombre(nuevoNombre);
+		archivo.setDocSistArch(destino);
+		for(DocArchivoVersion version : listaVersiones){			
+			List<DocCampArch> camposVersion = sistemaArchivoDAO.getCamposVersion(version);
+			
+			version.setArchVersIdn(0L);
+			version.setDocArchivo(archivo);
+			
+			for(DocCampArch campo : camposVersion){
+				campo.setCampArchIdn(0L);
+				campo.setDocArchivoVersion(version);
+				listaCampos.add(campo);
+			}
+			
+			//copiando los archivos
+			Path pathOrigen = getRutaArchivo(version);
+			origenes.add(pathOrigen);
+			
+			version.setArchVersRuta("XXX");
+			
+			Path pathDestino = getRutaArchivo(version);
+			destinos.add(pathDestino);			
+			
+			
+			version.setArchVersRuta(pathDestino.toAbsolutePath().toString());
+		}
+		
+		for(DocAcl permiso : listaPermisos){			
+			permiso.setAclIdn(0L);
+			permiso.setDocArchivo(archivo);			
+		}
+		
+		sistemaArchivoDAO.copiarArchivo(archivo,listaVersiones,listaCampos,listaPermisos);
+		for(int i = 0; i < origenes.size(); i++){
+			
+			Path pathOrigen = origenes.get(i);
+			Path pathDestino = destinos.get(i);
+			
+			Files.copy(pathOrigen, pathDestino);
+			
+		}
+		
+	}
+
+
+	@Override
+	public void copiarDirectorio(DocSistArch directorio, String nuevoNombre, DocSistArch destino) throws Exception {		
+		
+	}
+
+
+	@Override
+	public DocSistArch getHijo(DocSistArch destino, String nombre) throws Exception {		
+		return sistemaArchivoDAO.getDirectorio(destino,nombre);
 	}
 
 

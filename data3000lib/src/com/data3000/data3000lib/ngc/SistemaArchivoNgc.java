@@ -126,4 +126,33 @@ public interface SistemaArchivoNgc {
 	 * @param directorio
 	 */
 	public void anularDirectorio(DocSistArch directorio) throws Exception;
+
+	/**
+	 * Copiar un archivo a un destino
+	 * @param archivo
+	 * @param nuevoNombre
+	 * @param destino
+	 * @throws Exception
+	 */
+	public void copiarArchivo(DocArchivo archivo, String nuevoNombre, DocSistArch destino) throws Exception;
+
+	
+	/**
+	 * Copiar un directorio a un destino
+	 * @param directorio
+	 * @param nuevoNombre
+	 * @param destino
+	 * @throws Exception
+	 */
+	public void copiarDirectorio(DocSistArch directorio, String nuevoNombre, DocSistArch destino)  throws Exception;
+	
+	/**
+	 * Obtiene un directorio hijo que tenga ese nombre
+	 * @param destino
+	 * @param nombre
+	 * @return
+	 */
+	public DocSistArch getHijo(DocSistArch destino, String nombre)  throws Exception ;
+	
+	
 }

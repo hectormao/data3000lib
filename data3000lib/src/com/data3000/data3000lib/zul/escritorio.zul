@@ -1,6 +1,6 @@
 <?page title="Escritorio" contentType="text/html;charset=UTF-8"?>
 <zk>
-  <window id="winEscritorio" border="normal" apply="${escritorioCnt}" sizable="true" maximizable="false" minimizable="false" closable="false" width="100%" height="100%" vflex="1">
+  <window id="winEscritorio" border="normal" apply="${escritorioCnt}" sizable="true" maximizable="false" minimizable="false" closable="false" width="100%" height="100%" hflex="1" vflex="1">
   	<borderlayout>
           <west splittable="true" size="23%" collapsible="true" minsize="300">
 		
