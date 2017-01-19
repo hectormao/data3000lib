@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/07/2015 08:53:51 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="CrgCargo" table="crg_cargo" schema="data3000">
+        <id name="crgIdn" type="long">
+            <column name="crg_idn" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="crgNombre" type="string">
+            <column name="crg_nombre" length="64" not-null="true">
+                <comment>Nonbre del cargo</comment>
+            </column>
+        </property>
+        <property name="crgDescripcion" type="string">
+            <column name="crg_descripcion" length="512">
+                <comment>Descripcion del cargo</comment>
+            </column>
+        </property>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>Login usuario ultima modificacion</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="time">
+            <column name="audi_fech_modi" length="15" not-null="true">
+                <comment>Fecha ultima modificacion</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="boolean">
+            <column name="audi_si_anul" not-null="true">
+                <comment>Si registro anulado</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul" length="32">
+                <comment>Motivo anulacion del registro</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200">
+                <comment>Cehcksum del registro</comment>
+            </column>
+        </property>
+        <set name="dpnCrgUsuarios" table="dpn_crg_usuario" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="crg_idn" precision="10" scale="0">
+                    <comment>identificador del cargo</comment>
+                </column>
+            </key>
+            <one-to-many class="DpnCrgUsuario" />
+        </set>
+    </class>
+</hibernate-mapping>
