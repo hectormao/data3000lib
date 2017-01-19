@@ -568,6 +568,31 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
+	public DocArchivoVersion getVersionArchivo(Long idVersion) throws Exception {
+		 
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocArchivoVersion.class);
+			criteria.add(Restrictions.eq("archVersIdn", idVersion));
+			
+			return (DocArchivoVersion) criteria.uniqueResult();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
 	
 
 }

@@ -1,5 +1,6 @@
 package com.data3000.data3000lib.ngc;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -322,6 +323,22 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	@Override
 	public DocSistArch getHijo(DocSistArch destino, String nombre) throws Exception {		
 		return sistemaArchivoDAO.getDirectorio(destino,nombre);
+	}
+
+
+	@Override
+	public Path getArchivo(Long idVersion) throws IOException{
+		try{
+			DocArchivoVersion version = sistemaArchivoDAO.getVersionArchivo(idVersion);
+			if(version == null){
+				return null;
+			} else {
+				Path path = Paths.get(version.getArchVersRuta());
+				return path;
+			}
+		} catch(Exception ex){
+			throw new IOException(ex);
+		}
 	}
 
 

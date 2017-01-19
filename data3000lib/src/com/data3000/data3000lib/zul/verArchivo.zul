@@ -1,0 +1,9 @@
+<?page title="Ver Archivo" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id="winVerArchivo" title="" border="normal" width="80%" height="90%" apply="${verArchivoCnt}" closable="true">
+<iframe id="frmContenido" width="100%" height="100%" scrolling="auto" hflex="1" vflex="1" src="GetArchivo?idVersion=XXX">
+
+</iframe>
+
+</window>
+</zk>

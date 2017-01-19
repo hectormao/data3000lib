@@ -1,5 +1,7 @@
 package com.data3000.data3000lib.ngc;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.zkoss.util.media.Media;
@@ -153,6 +155,14 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 */
 	public DocSistArch getHijo(DocSistArch destino, String nombre)  throws Exception ;
+	
+	
+	/**
+	 * Obtiene la ruta absoluta del archivo a partir del id de la version
+	 * @param idVersion
+	 * @return
+	 */
+	public Path getArchivo(Long idVersion)  throws IOException;
 	
 	
 }
