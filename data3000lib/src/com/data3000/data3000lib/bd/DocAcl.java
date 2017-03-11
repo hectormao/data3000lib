@@ -1,6 +1,5 @@
 package com.data3000.data3000lib.bd;
-
-// Generated 23/11/2014 06:12:19 PM by Hibernate Tools 3.4.0.CR1
+// Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final
 
 import java.util.Date;
 
@@ -15,8 +14,8 @@ public class DocAcl implements java.io.Serializable {
 	private long aclIdn;
 	private PltRol pltRol;
 	private PltUsuario pltUsuario;
-	private DocArchivo docArchivo;
 	private DocSistArch docSistArch;
+	private DocArchivo docArchivo;
 	private boolean aclSiLectura;
 	private boolean aclSiEscritura;
 	private String audiUsuario;
@@ -28,11 +27,9 @@ public class DocAcl implements java.io.Serializable {
 	public DocAcl() {
 	}
 
-	public DocAcl(long aclIdn, PltUsuario pltUsuario, boolean aclSiLectura,
-			boolean aclSiEscritura, String audiUsuario, Date audiFechModi,
+	public DocAcl(long aclIdn, boolean aclSiLectura, boolean aclSiEscritura, String audiUsuario, Date audiFechModi,
 			boolean audiSiAnul) {
 		this.aclIdn = aclIdn;
-		this.pltUsuario = pltUsuario;
 		this.aclSiLectura = aclSiLectura;
 		this.aclSiEscritura = aclSiEscritura;
 		this.audiUsuario = audiUsuario;
@@ -40,16 +37,14 @@ public class DocAcl implements java.io.Serializable {
 		this.audiSiAnul = audiSiAnul;
 	}
 
-	public DocAcl(long aclIdn, PltRol pltRol, PltUsuario pltUsuario,
-			DocArchivo docArchivo, DocSistArch docSistArch,
-			boolean aclSiLectura, boolean aclSiEscritura, String audiUsuario,
-			Date audiFechModi, boolean audiSiAnul, String audiMotiAnul,
-			String audiChecksum) {
+	public DocAcl(long aclIdn, PltRol pltRol, PltUsuario pltUsuario, DocSistArch docSistArch, DocArchivo docArchivo,
+			boolean aclSiLectura, boolean aclSiEscritura, String audiUsuario, Date audiFechModi, boolean audiSiAnul,
+			String audiMotiAnul, String audiChecksum) {
 		this.aclIdn = aclIdn;
 		this.pltRol = pltRol;
 		this.pltUsuario = pltUsuario;
-		this.docArchivo = docArchivo;
 		this.docSistArch = docSistArch;
+		this.docArchivo = docArchivo;
 		this.aclSiLectura = aclSiLectura;
 		this.aclSiEscritura = aclSiEscritura;
 		this.audiUsuario = audiUsuario;
@@ -83,20 +78,20 @@ public class DocAcl implements java.io.Serializable {
 		this.pltUsuario = pltUsuario;
 	}
 
-	public DocArchivo getDocArchivo() {
-		return this.docArchivo;
-	}
-
-	public void setDocArchivo(DocArchivo docArchivo) {
-		this.docArchivo = docArchivo;
-	}
-
 	public DocSistArch getDocSistArch() {
 		return this.docSistArch;
 	}
 
 	public void setDocSistArch(DocSistArch docSistArch) {
 		this.docSistArch = docSistArch;
+	}
+
+	public DocArchivo getDocArchivo() {
+		return this.docArchivo;
+	}
+
+	public void setDocArchivo(DocArchivo docArchivo) {
+		this.docArchivo = docArchivo;
 	}
 
 	public boolean isAclSiLectura() {

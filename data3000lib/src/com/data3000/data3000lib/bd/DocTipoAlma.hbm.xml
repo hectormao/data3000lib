@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.data3000.data3000lib.bd.DocTipoAlma" table="doc_tipo_alma" schema="data3000">
+        <comment>Tipo de Archivo (almacenamiento) de la serie documental</comment>
+        <id name="tipoAlmaIdn" type="long">
+            <column name="tipo_alma_idn" precision="10" scale="0" />
+            <generator class="sequence" >
+            	<param name="sequence">SQN_DOC_TIPO_ALMA</param>
+            </generator>
+        </id>
+        <many-to-one name="docSerieDoc" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+            <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                <comment>Id de la serie documental a la que se le aplica el almacenamiento en archivo</comment>
+            </column>
+        </many-to-one>
+        <property name="tipoAlmaNombre" type="string">
+            <column name="tipo_alma_nombre" length="32" not-null="true">
+                <comment>Nombre del archivo o tipo de almacenamiento</comment>
+            </column>
+        </property>
+        <property name="tipoAlmaDescripcion" type="string">
+            <column name="tipo_alma_descripcion">
+                <comment>Descripci&#195;&#179;n del tipo de almacenamiento</comment>
+            </column>
+        </property>
+        <property name="tipoAlmaEdad" type="java.lang.Short">
+            <column name="tipo_alma_edad" precision="4" scale="0">
+                <comment>Edad hasta que el documento debe permanecer en el archivo (tipo de almacenamiento)</comment>
+            </column>
+        </property>
+        <property name="tipoAlmaDispfinal" type="string">
+            <column name="tipo_alma_dispfinal" length="4">
+                <comment>Disposici&#195;&#179;n Final del documento</comment>
+            </column>
+        </property>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>Usuario Ultima Modificaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="timestamp">
+            <column name="audi_fech_modi" length="29" not-null="true">
+                <comment>Fecha ultima modificaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="java.lang.Boolean">
+            <column name="audi_si_anul">
+                <comment>determina si el registro fue anulado</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul" length="32">
+                <comment>motivo de anulaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200" not-null="true">
+                <comment>checksum del registro</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

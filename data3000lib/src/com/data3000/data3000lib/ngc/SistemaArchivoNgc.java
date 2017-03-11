@@ -4,18 +4,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.zkoss.util.media.Media;
-
 import com.data3000.admin.bd.PltUsuario;
-import com.data3000.admin.vo.Usuario;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
-import com.data3000.data3000lib.bd.DocTipoArchivo;
 
 public interface SistemaArchivoNgc {
 	/**
@@ -38,7 +35,7 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DocCampTipo> getCamposTipo(DocTipoArchivo docTipoArchivo) throws Exception;
+	public List<DocCampTipo> getCamposTipo(DocSerieDoc docTipoArchivo) throws Exception;
 	
 	/**
 	 * Registra en la base de datos un nuevo tipo de documento
@@ -49,7 +46,7 @@ public interface SistemaArchivoNgc {
 	 * @param listaCrearCampo
 	 * @throws Exception
 	 */
-	public void registrarTipoDocumentos(DocTipoArchivo docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
 	
 	/**
 	 * Actualiza en la base de datos un tipo de documento
@@ -60,13 +57,13 @@ public interface SistemaArchivoNgc {
 	 * @param listaCrearCampo
 	 * @throws Exception
 	 */
-	public void actualizarTipoDocumentos(DocTipoArchivo docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
 	
 	/**
 	 * Obtiene los tipos de documentos registrados
 	 * @return
 	 */
-	public List<DocTipoArchivo> getTipos() throws Exception;
+	public List<DocSerieDoc> getTipos() throws Exception;
 	
 	/**
 	 * Obtiene un archivo por su nombre en un directorio
@@ -90,7 +87,7 @@ public interface SistemaArchivoNgc {
 	 * @param docTipoArchivo
 	 * @throws Exception
 	 */
-	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception ;
+	public void anularTipoDocumentos(DocSerieDoc docTipoArchivo) throws Exception ;
 
 	/**
 	 * Crea un nuevo directorio

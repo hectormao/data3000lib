@@ -47,12 +47,12 @@ import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
-import com.data3000.data3000lib.bd.DocTipoArchivo;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 
 public class CargarArchivoCnt extends WindowComposer implements
-		ComboitemRenderer<DocTipoArchivo>, ListitemRenderer<DocCampTipo> {
+		ComboitemRenderer<DocSerieDoc>, ListitemRenderer<DocCampTipo> {
 
 	/**
 	 * BEANS
@@ -79,9 +79,9 @@ public class CargarArchivoCnt extends WindowComposer implements
 	public void doAfterCompose(Window winTipoDocumento) throws Exception {
 		super.doAfterCompose(winTipoDocumento);
 
-		List<DocTipoArchivo> listaTipos = sistemaArchivoNgc.getTipos();
+		List<DocSerieDoc> listaTipos = sistemaArchivoNgc.getTipos();
 
-		ListModelList<DocTipoArchivo> modelo = new ListModelList<DocTipoArchivo>();
+		ListModelList<DocSerieDoc> modelo = new ListModelList<DocSerieDoc>();
 		modelo.addAll(listaTipos);
 
 		cmbTipoArchivo.setModel(modelo);
@@ -250,7 +250,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 	public void onSelect$cmbTipoArchivo(Event evt) throws Exception {
 		Comboitem ci = cmbTipoArchivo.getSelectedItem();
 		if (ci != null) {
-			DocTipoArchivo tipo = ci.getValue();
+			DocSerieDoc tipo = ci.getValue();
 			List<DocCampTipo> campos = sistemaArchivoNgc.getCamposTipo(tipo);
 
 			ListModel<DocCampTipo> modeloCampos = lstMeta.getModel();
@@ -275,10 +275,10 @@ public class CargarArchivoCnt extends WindowComposer implements
 	}
 
 	@Override
-	public void render(Comboitem ci, DocTipoArchivo tipo, int idx)
+	public void render(Comboitem ci, DocSerieDoc tipo, int idx)
 			throws Exception {
-		ci.setLabel(tipo.getTipoArchNombre());
-		ci.setDescription(tipo.getTipoArchDescripcion());
+		ci.setLabel(tipo.getSerieDocNombre());
+		ci.setDescription(tipo.getSerieDocDescripcion());
 		ci.setValue(tipo);
 	}
 
@@ -325,7 +325,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 			throw new WrongValueException(cmbTipoArchivo,Labels.getLabel("error.0005"));
 		}
 
-		DocTipoArchivo tipo = ci.getValue();
+		DocSerieDoc tipo = ci.getValue();
 
 		try {
 
@@ -345,7 +345,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 				docArchivo.setAudiSiAnul(false);
 				docArchivo.setAudiUsuario(usuario.getLogin());
 				docArchivo.setDocSistArch(directorio);
-				docArchivo.setDocTipoArchivo(tipo);
+				docArchivo.setDocSerieDoc(tipo);
 				docArchivo.setPltUsuario((PltUsuario)usuario);
 			}
 

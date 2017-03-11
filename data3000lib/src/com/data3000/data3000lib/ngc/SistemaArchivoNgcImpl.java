@@ -7,32 +7,21 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.zkoss.util.media.Media;
-
-
-
-
-
-
 
 import com.data3000.admin.bd.PltRol;
 import com.data3000.admin.bd.PltUsuaRol;
 import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.ngc.PlataformaNgc;
-import com.data3000.admin.utl.ConstantesAdmin;
-import com.data3000.admin.vo.Usuario;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
-import com.data3000.data3000lib.bd.DocTipoArchivo;
 import com.data3000.data3000lib.dao.SistemaArchivoDAO;
 import com.data3000.data3000lib.utl.ConstantesData3000;
 
@@ -101,14 +90,14 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 	
 	@Override
-	public void registrarTipoDocumentos(DocTipoArchivo docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		sistemaArchivoDAO.registrarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo);
 		
 	}
 
 
 	@Override
-	public void actualizarTipoDocumentos(DocTipoArchivo docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		sistemaArchivoDAO.actualizarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo);
 		
 	}
@@ -117,7 +106,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	
 	
 	@Override
-	public List<DocCampTipo> getCamposTipo(DocTipoArchivo docTipoArchivo) throws Exception {
+	public List<DocCampTipo> getCamposTipo(DocSerieDoc docTipoArchivo) throws Exception {
 		return sistemaArchivoDAO.getCamposTipo(docTipoArchivo);
 	}
 	
@@ -199,7 +188,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 	
 	@Override
-	public List<DocTipoArchivo> getTipos() throws Exception {
+	public List<DocSerieDoc> getTipos() throws Exception {
 	
 		return sistemaArchivoDAO.getTipos();
 	}
@@ -224,7 +213,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 
 	@Override
-	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception {
+	public void anularTipoDocumentos(DocSerieDoc docTipoArchivo) throws Exception {
 		this.sistemaArchivoDAO.anularTipoDocumentos(docTipoArchivo);
 		
 	}

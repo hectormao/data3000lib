@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.data3000.data3000lib.bd.DocSerieDoc" table="doc_serie_doc" schema="data3000">
+        <comment>Tipo de archivo que se cargara en la aplicaci&#195;&#179;n</comment>
+        <id name="serieDocIdn" type="long">
+            <column name="serie_doc_idn" precision="10" scale="0" />
+            <generator class="sequence" >
+            	<param name="sequence">SQN_DOC_SERIE_DOC</param>
+            </generator>
+        </id>
+        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
+            <column name="sist_arch_idn" precision="10" scale="0">
+                <comment>Identificador unico del registro de sistema de archivos</comment>
+            </column>
+        </many-to-one>
+        <property name="serieDocNombre" type="string">
+            <column name="serie_doc_nombre" length="100" not-null="true" unique="true">
+                <comment>Nombre del tipo de archivo</comment>
+            </column>
+        </property>
+        <property name="serieDocDescripcion" type="string">
+            <column name="serie_doc_descripcion">
+                <comment>Tag o c&#195;&#179;digo con el que se identifica la version</comment>
+            </column>
+        </property>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>Login de usuario de la persona que realizo la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="timestamp">
+            <column name="audi_fech_modi" length="29" not-null="true">
+                <comment>Fecha de la ultima modificaci&#195;&#179;n del registro</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="boolean">
+            <column name="audi_si_anul" not-null="true">
+                <comment>Indica si el registro fue anulado (true) o no (false)</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul" length="32">
+                <comment>Motivo de anulacion del registro</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200">
+                <comment>Checksum del registro con SHA1</comment>
+            </column>
+        </property>
+        <property name="serieDocPadre" type="java.lang.Long">
+            <column name="serie_doc_padre" precision="10" scale="0">
+                <comment>Padre de la serie documental</comment>
+            </column>
+        </property>
+        <property name="serieDocTipo" type="string">
+            <column name="serie_doc_tipo" length="4">
+                <comment>Tipo de serie documental, SER (serie), SUB (subserie), TIP (tipo documento), traer del dominio TIPO_SERIE_DOCUMENTAL</comment>
+            </column>
+        </property>
+        <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                    <comment>id del tipo asociado</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
+        </set>
+        <set name="docArchivos" table="doc_archivo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                    <comment>Tipo de archivo al que pertenece el archivo</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocArchivo" />
+        </set>
+        <set name="docTipoAlmas" table="doc_tipo_alma" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                    <comment>Id de la serie documental a la que se le aplica el almacenamiento en archivo</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocTipoAlma" />
+        </set>
+    </class>
+</hibernate-mapping>

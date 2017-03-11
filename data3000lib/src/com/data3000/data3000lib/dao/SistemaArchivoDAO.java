@@ -1,9 +1,7 @@
 package com.data3000.data3000lib.dao;
 
 import java.util.List;
-import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -11,7 +9,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.dao.PltDAO;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
@@ -19,8 +16,8 @@ import com.data3000.data3000lib.bd.DocArchivoVersion;
 import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
-import com.data3000.data3000lib.bd.DocTipoArchivo;
 
 public class SistemaArchivoDAO extends PltDAO{
 	
@@ -120,7 +117,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public List<DocCampTipo> getCamposTipo(DocTipoArchivo docTipoArchivo) throws Exception {
+	public List<DocCampTipo> getCamposTipo(DocSerieDoc docTipoArchivo) throws Exception {
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -147,7 +144,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarTipoDocumentos(DocTipoArchivo docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
 		Transaction tx = sesion.getTransaction();
@@ -192,12 +189,12 @@ public class SistemaArchivoDAO extends PltDAO{
 		}
 		
 	}
-	public void anularTipoDocumentos(DocTipoArchivo docTipoArchivo) throws Exception {
+	public void anularTipoDocumentos(DocSerieDoc docTipoArchivo) throws Exception {
 		super.update(docTipoArchivo);
 		
 	}
 
-	public void actualizarTipoDocumentos(DocTipoArchivo docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
 		Transaction tx = sesion.getTransaction();
@@ -240,7 +237,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public List<DocTipoArchivo> getTipos() throws Exception{
+	public List<DocSerieDoc> getTipos() throws Exception{
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -250,7 +247,7 @@ public class SistemaArchivoDAO extends PltDAO{
 				tx.begin();
 			}
 			
-			Criteria criteria = sesion.createCriteria(DocTipoArchivo.class);
+			Criteria criteria = sesion.createCriteria(DocSerieDoc.class);
 			
 			criteria.addOrder(Order.asc("tipoArchNombre"));
 			

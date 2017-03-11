@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/07/2014 10:02:48 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocArchivo" table="doc_archivo" schema="data3000">
         <id name="archIdn" type="long">
             <column name="arch_idn" precision="10" scale="0" />
-            <generator class="sequence">
+            <generator class="sequence" >
             	<param name="sequence">SQN_DOC_ARCHIVO</param>
             </generator>
         </id>
-        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" fetch="select">
-            <column name="tipo_arch_idn" precision="10" scale="0" not-null="true">
+        <many-to-one name="docSerieDoc" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+            <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
                 <comment>Tipo de archivo al que pertenece el archivo</comment>
             </column>
         </many-to-one>
-        <many-to-one name="pltUsuario" class="com.data3000.admin.bd.PltUsuario" fetch="select">
+        <many-to-one name="pltUsuario" class="com.data3000.data3000lib.bd.PltUsuario" fetch="select">
             <column name="usua_idn" precision="10" scale="0" not-null="true">
                 <comment>Id del usuario propietario del archivo</comment>
             </column>
@@ -60,6 +60,14 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
+        <set name="docAcls" table="doc_acl" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="arch_idn" precision="10" scale="0">
+                    <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocAcl" />
+        </set>
         <set name="docArchivoVersions" table="doc_archivo_version" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="arch_idn" precision="10" scale="0" not-null="true">
@@ -67,14 +75,6 @@
                 </column>
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocArchivoVersion" />
-        </set>
-        <set name="docAcls" table="doc_acl" inverse="true" lazy="false" fetch="join">
-            <key>
-                <column name="arch_idn" precision="10" scale="0">
-                    <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
-                </column>
-            </key>
-            <one-to-many class="com.data3000.data3000lib.bd.DocAcl" />
         </set>
     </class>
 </hibernate-mapping>
