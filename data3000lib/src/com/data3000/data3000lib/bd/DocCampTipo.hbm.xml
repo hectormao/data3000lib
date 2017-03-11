@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocCampTipo" table="doc_camp_tipo" schema="data3000">
         <comment>campos asociados al tipo de archivo</comment>
         <id name="campTipoIdn" type="long">
             <column name="camp_tipo_idn" precision="10" scale="0" />
-            <generator class="sequence">
+            <generator class="sequence" >
             	<param name="sequence">SQN_DOC_CAMP_TIPO</param>
             </generator>
         </id>
-        <many-to-one name="docTipoArchivo" class="com.data3000.data3000lib.bd.DocTipoArchivo" lazy="false" fetch="join">
-            <column name="tipo_idn" precision="10" scale="0" not-null="true">
+        <many-to-one name="docSerieDoc" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+            <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
                 <comment>id del tipo asociado</comment>
             </column>
         </many-to-one>
-        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" lazy="false" fetch="join">
+        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="select">
             <column name="campo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del campo referenciado</comment>
             </column>

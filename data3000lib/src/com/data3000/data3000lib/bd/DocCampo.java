@@ -1,6 +1,5 @@
 package com.data3000.data3000lib.bd;
-
-// Generated 27/07/2014 03:16:04 PM by Hibernate Tools 3.4.0.CR1
+// Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -21,12 +20,13 @@ public class DocCampo implements java.io.Serializable {
 	private String audiMotiAnul;
 	private String audiChecksum;
 	private Set<DocCampTipo> docCampTipos = new HashSet<DocCampTipo>(0);
+	private Set<DocCampArch> docCampArches = new HashSet<DocCampArch>(0);
 
 	public DocCampo() {
 	}
 
-	public DocCampo(long campoIdn, String campoNombre, byte campoTipo,
-			String audiUsuario, Date audiFechModi, boolean audiSiAnul) {
+	public DocCampo(long campoIdn, String campoNombre, byte campoTipo, String audiUsuario, Date audiFechModi,
+			boolean audiSiAnul) {
 		this.campoIdn = campoIdn;
 		this.campoNombre = campoNombre;
 		this.campoTipo = campoTipo;
@@ -35,10 +35,9 @@ public class DocCampo implements java.io.Serializable {
 		this.audiSiAnul = audiSiAnul;
 	}
 
-	public DocCampo(long campoIdn, String campoNombre, String campoDescripcion,
-			byte campoTipo, String audiUsuario, Date audiFechModi,
-			boolean audiSiAnul, String audiMotiAnul, String audiChecksum,
-			Set<DocCampTipo> docCampTipos) {
+	public DocCampo(long campoIdn, String campoNombre, String campoDescripcion, byte campoTipo, String audiUsuario,
+			Date audiFechModi, boolean audiSiAnul, String audiMotiAnul, String audiChecksum,
+			Set<DocCampTipo> docCampTipos, Set<DocCampArch> docCampArches) {
 		this.campoIdn = campoIdn;
 		this.campoNombre = campoNombre;
 		this.campoDescripcion = campoDescripcion;
@@ -49,6 +48,7 @@ public class DocCampo implements java.io.Serializable {
 		this.audiMotiAnul = audiMotiAnul;
 		this.audiChecksum = audiChecksum;
 		this.docCampTipos = docCampTipos;
+		this.docCampArches = docCampArches;
 	}
 
 	public long getCampoIdn() {
@@ -130,10 +130,13 @@ public class DocCampo implements java.io.Serializable {
 	public void setDocCampTipos(Set<DocCampTipo> docCampTipos) {
 		this.docCampTipos = docCampTipos;
 	}
-	
-	@Override
-	public String toString(){
-		return getCampoNombre();
+
+	public Set<DocCampArch> getDocCampArches() {
+		return this.docCampArches;
+	}
+
+	public void setDocCampArches(Set<DocCampArch> docCampArches) {
+		this.docCampArches = docCampArches;
 	}
 
 }

@@ -88,7 +88,7 @@ public class EscritorioCnt extends WindowComposer {
 		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
 		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formulario);
 		parametros.put(ConstantesAdmin.ARG_CLASE,DocArchivo.class);
-		parametros.put(ConstantesAdmin.ARG_CAMPOS_TABLA, DocArchivo.getCamposTabla());
+		
 		
 		winTablaDatos = (Window) Executions.createComponentsDirectly(zulReader,"zul",divTrabajo,parametros) ;
 		winTablaDatos.setTitle(null);

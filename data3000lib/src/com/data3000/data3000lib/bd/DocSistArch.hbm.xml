@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 29/04/2014 06:42:38 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.data3000.data3000lib.bd.DocSistArch" table="doc_sist_arch">
+    <class name="com.data3000.data3000lib.bd.DocSistArch" table="doc_sist_arch" schema="data3000">
         <comment>Tabla que representa el sistema de archivos donde se almacena los documentos en el sistema</comment>
         <id name="sistArchIdn" type="long">
             <column name="sist_arch_idn" precision="10" scale="0" />
-            <generator class="sequence">
+            <generator class="sequence" >
             	<param name="sequence">SQN_DOC_SIST_ARCH</param>
             </generator>
         </id>
@@ -56,7 +56,20 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
-        <set name="docAcls" table="doc_acl" inverse="true" lazy="false" fetch="join">
+        <property name="sistArchTipo" type="string">
+            <column name="sist_arch_tipo" length="4">
+                <comment>Tipo de sistema de Archivos ENT: entidad, DEP: dependencia, DIR: directorio</comment>
+            </column>
+        </property>
+        <set name="docSistArches" table="doc_sist_arch" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sist_arch_padre" precision="10" scale="0">
+                    <comment>identificador del padre de este directorio (null) cuando pertenece a la raiz</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocSistArch" />
+        </set>
+        <set name="docAcls" table="doc_acl" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="sist_arch_idn" precision="10" scale="0">
                     <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
@@ -64,13 +77,13 @@
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocAcl" />
         </set>
-        <set name="docSistArchs" table="doc_sist_arch" inverse="true" lazy="true" fetch="select">
+        <set name="docSerieDocs" table="doc_serie_doc" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="sist_arch_padre" precision="10" scale="0">
-                    <comment>identificador del padre de este directorio (null) cuando pertenece a la raiz</comment>
+                <column name="sist_arch_idn" precision="10" scale="0">
+                    <comment>Identificador unico del registro de sistema de archivos</comment>
                 </column>
             </key>
-            <one-to-many class="com.data3000.data3000lib.bd.DocSistArch" />
+            <one-to-many class="com.data3000.data3000lib.bd.DocSerieDoc" />
         </set>
         <set name="docArchivos" table="doc_archivo" inverse="true" lazy="true" fetch="select">
             <key>

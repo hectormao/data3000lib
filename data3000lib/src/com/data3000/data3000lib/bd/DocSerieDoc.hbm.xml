@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 27/07/2014 02:43:01 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.data3000.data3000lib.bd.DocTipoArchivo" table="doc_tipo_archivo" schema="data3000">
+    <class name="com.data3000.data3000lib.bd.DocSerieDoc" table="doc_serie_doc" schema="data3000">
         <comment>Tipo de archivo que se cargara en la aplicaci&#195;&#179;n</comment>
-        <id name="tipoArchIdn" type="long">
-            <column name="tipo_arch_idn" precision="10" scale="0" />
-            <generator class="sequence">
-            	<param name="sequence">SQN_DOC_TIPO_ARCHIVO</param>
+        <id name="serieDocIdn" type="long">
+            <column name="serie_doc_idn" precision="10" scale="0" />
+            <generator class="sequence" >
+            	<param name="sequence">SQN_DOC_SERIE_DOC</param>
             </generator>
         </id>
-        <property name="tipoArchNombre" type="string">
-            <column name="tipo_arch_nombre" length="100" not-null="true" unique="true">
+        
+        <property name="serieDocNombre" type="string">
+            <column name="serie_doc_nombre" length="100" not-null="true" unique="true">
                 <comment>Nombre del tipo de archivo</comment>
             </column>
         </property>
-        <property name="tipoArchDescripcion" type="string">
-            <column name="tipo_arch_descripcion">
+        <property name="serieDocDescripcion" type="string">
+            <column name="serie_doc_descripcion">
                 <comment>Tag o c&#195;&#179;digo con el que se identifica la version</comment>
             </column>
         </property>
@@ -46,21 +47,39 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
+        <property name="serieDocPadre" type="java.lang.Long">
+            <column name="serie_doc_padre" precision="10" scale="0">
+                <comment>Padre de la serie documental</comment>
+            </column>
+        </property>
+        <property name="serieDocTipo" type="string">
+            <column name="serie_doc_tipo" length="4">
+                <comment>Tipo de serie documental, SER (serie), SUB (subserie), TIP (tipo documento), traer del dominio TIPO_SERIE_DOCUMENTAL</comment>
+            </column>
+        </property>
+        <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                    <comment>id del tipo asociado</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
+        </set>
         <set name="docArchivos" table="doc_archivo" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="tipo_arch_idn" precision="10" scale="0" not-null="true">
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
                     <comment>Tipo de archivo al que pertenece el archivo</comment>
                 </column>
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocArchivo" />
         </set>
-        <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">
+        <set name="docTipoAlmas" table="doc_tipo_alma" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="tipo_idn" precision="10" scale="0" not-null="true">
-                    <comment>id del tipo asociado</comment>
+                <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                    <comment>Id de la serie documental a la que se le aplica el almacenamiento en archivo</comment>
                 </column>
             </key>
-            <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
+            <one-to-many class="com.data3000.data3000lib.bd.DocTipoAlma" />
         </set>
     </class>
 </hibernate-mapping>

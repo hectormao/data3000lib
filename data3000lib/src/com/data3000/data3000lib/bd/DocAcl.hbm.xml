@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 23/11/2014 06:12:19 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.data3000.data3000lib.bd.DocAcl" table="doc_acl">
+    <class name="com.data3000.data3000lib.bd.DocAcl" table="doc_acl" schema="data3000">
         <comment>Lista de control de acceso a archivos y/o directorios</comment>
         <id name="aclIdn" type="long">
             <column name="acl_idn" precision="10" scale="0" />
-            <generator class="sequence">
-            	<param name="sequence">sqn_doc_acl</param>
+            
+             <generator class="sequence" >
+            	<param name="sequence">SQN_DOC_ACL</param>
             </generator>
         </id>
         <many-to-one name="pltRol" class="com.data3000.admin.bd.PltRol" fetch="select">
@@ -21,14 +22,14 @@
                 <comment>Usuario al que se le asigna el permiso, el permiso sobre el usuario prevalece sobre el del rol</comment>
             </column>
         </many-to-one>
-        <many-to-one name="docArchivo" class="com.data3000.data3000lib.bd.DocArchivo" fetch="select">
-            <column name="arch_idn" precision="10" scale="0">
-                <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
-            </column>
-        </many-to-one>
         <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
             <column name="sist_arch_idn" precision="10" scale="0">
                 <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="docArchivo" class="com.data3000.data3000lib.bd.DocArchivo" fetch="select">
+            <column name="arch_idn" precision="10" scale="0">
+                <comment>Identificador del archivo al que pertenece el permiso, puede ser null</comment>
             </column>
         </many-to-one>
         <property name="aclSiLectura" type="boolean">

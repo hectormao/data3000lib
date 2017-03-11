@@ -1,10 +1,5 @@
 package com.data3000.data3000lib.bd;
-
-// Generated 29/04/2014 06:42:38 PM by Hibernate Tools 3.4.0.CR1
-
-
-
-
+// Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,30 +22,32 @@ public class DocSistArch implements java.io.Serializable {
 	private boolean audiSiAnul;
 	private String audiMotiAnul;
 	private String audiChecksum;
+	private String sistArchTipo;
+	private Set<DocSistArch> docSistArches = new HashSet<DocSistArch>(0);
 	private Set<DocAcl> docAcls = new HashSet<DocAcl>(0);
-	private Set<DocSistArch> docSistArchs = new HashSet<DocSistArch>(0);
+	private Set<DocSerieDoc> docSerieDocs = new HashSet<DocSerieDoc>(0);
 	private Set<DocArchivo> docArchivos = new HashSet<DocArchivo>(0);
 
 	public DocSistArch() {
 	}
 
-	public DocSistArch(long sistArchIdn, PltUsuario pltUsuario, String sistArchNombre,
-			String audiUsuario, Date audiFechModi, boolean audiSiAnul) {
+	public DocSistArch(long sistArchIdn, PltUsuario pltUsuario, String sistArchNombre, String audiUsuario,
+			Date audiFechModi, boolean audiSiAnul) {
 		this.sistArchIdn = sistArchIdn;
+		this.pltUsuario = pltUsuario;
 		this.sistArchNombre = sistArchNombre;
 		this.audiUsuario = audiUsuario;
 		this.audiFechModi = audiFechModi;
 		this.audiSiAnul = audiSiAnul;
-		this.pltUsuario = pltUsuario;
 	}
 
-	public DocSistArch(long sistArchIdn, DocSistArch docSistArch, PltUsuario pltUsuario,
-			String sistArchNombre, String sistArchDescripcion,
-			String audiUsuario, Date audiFechModi, boolean audiSiAnul,
-			String audiMotiAnul, String audiChecksum,
-			Set<DocAcl> docAcls, Set<DocSistArch> docSistArchs, Set<DocArchivo> docArchivos) {
+	public DocSistArch(long sistArchIdn, DocSistArch docSistArch, PltUsuario pltUsuario, String sistArchNombre,
+			String sistArchDescripcion, String audiUsuario, Date audiFechModi, boolean audiSiAnul, String audiMotiAnul,
+			String audiChecksum, String sistArchTipo, Set<DocSistArch> docSistArches, Set<DocAcl> docAcls,
+			Set<DocSerieDoc> docSerieDocs, Set<DocArchivo> docArchivos) {
 		this.sistArchIdn = sistArchIdn;
 		this.docSistArch = docSistArch;
+		this.pltUsuario = pltUsuario;
 		this.sistArchNombre = sistArchNombre;
 		this.sistArchDescripcion = sistArchDescripcion;
 		this.audiUsuario = audiUsuario;
@@ -58,10 +55,11 @@ public class DocSistArch implements java.io.Serializable {
 		this.audiSiAnul = audiSiAnul;
 		this.audiMotiAnul = audiMotiAnul;
 		this.audiChecksum = audiChecksum;
-		this.docSistArchs = docSistArchs;
-		this.docArchivos = docArchivos;
-		this.pltUsuario = pltUsuario;
+		this.sistArchTipo = sistArchTipo;
+		this.docSistArches = docSistArches;
 		this.docAcls = docAcls;
+		this.docSerieDocs = docSerieDocs;
+		this.docArchivos = docArchivos;
 	}
 
 	public long getSistArchIdn() {
@@ -78,6 +76,14 @@ public class DocSistArch implements java.io.Serializable {
 
 	public void setDocSistArch(DocSistArch docSistArch) {
 		this.docSistArch = docSistArch;
+	}
+
+	public PltUsuario getPltUsuario() {
+		return this.pltUsuario;
+	}
+
+	public void setPltUsuario(PltUsuario pltUsuario) {
+		this.pltUsuario = pltUsuario;
 	}
 
 	public String getSistArchNombre() {
@@ -136,12 +142,36 @@ public class DocSistArch implements java.io.Serializable {
 		this.audiChecksum = audiChecksum;
 	}
 
-	public Set<DocSistArch> getDocSistArchs() {
-		return this.docSistArchs;
+	public String getSistArchTipo() {
+		return this.sistArchTipo;
 	}
 
-	public void setDocSistArchs(Set<DocSistArch> docSistArchs) {
-		this.docSistArchs = docSistArchs;
+	public void setSistArchTipo(String sistArchTipo) {
+		this.sistArchTipo = sistArchTipo;
+	}
+
+	public Set<DocSistArch> getDocSistArches() {
+		return this.docSistArches;
+	}
+
+	public void setDocSistArches(Set<DocSistArch> docSistArches) {
+		this.docSistArches = docSistArches;
+	}
+
+	public Set<DocAcl> getDocAcls() {
+		return this.docAcls;
+	}
+
+	public void setDocAcls(Set<DocAcl> docAcls) {
+		this.docAcls = docAcls;
+	}
+
+	public Set<DocSerieDoc> getDocSerieDocs() {
+		return this.docSerieDocs;
+	}
+
+	public void setDocSerieDocs(Set<DocSerieDoc> docSerieDocs) {
+		this.docSerieDocs = docSerieDocs;
 	}
 
 	public Set<DocArchivo> getDocArchivos() {
@@ -151,28 +181,5 @@ public class DocSistArch implements java.io.Serializable {
 	public void setDocArchivos(Set<DocArchivo> docArchivos) {
 		this.docArchivos = docArchivos;
 	}
-	
-	@Override
-	public String toString(){
-		return getSistArchNombre();
-	}
 
-	public PltUsuario getPltUsuario() {
-		return pltUsuario;
-	}
-
-	public void setPltUsuario(PltUsuario pltUsuario) {
-		this.pltUsuario = pltUsuario;
-	}
-
-	public Set<DocAcl> getDocAcls() {
-		return docAcls;
-	}
-
-	public void setDocAcls(Set<DocAcl> docAcls) {
-		this.docAcls = docAcls;
-	}
-	
-	
-	
 }

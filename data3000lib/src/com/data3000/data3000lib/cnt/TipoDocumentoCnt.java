@@ -3,7 +3,6 @@ package com.data3000.data3000lib.cnt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -14,7 +13,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -27,7 +25,7 @@ import com.data3000.admin.utl.TipoCampo;
 import com.data3000.admin.utl.WindowComposer;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
-import com.data3000.data3000lib.bd.DocTipoArchivo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 
 public class TipoDocumentoCnt extends WindowComposer {
@@ -54,19 +52,19 @@ public class TipoDocumentoCnt extends WindowComposer {
 	private List<DocCampTipo> listaCrear = new ArrayList<DocCampTipo>();
 	private List<DocCampo> listaCrearCampo = new ArrayList<DocCampo>();
 	
-	private DocTipoArchivo docTipoArchivo;
+	private DocSerieDoc docSerieDoc;
 	private List<DocCampTipo> listaCampos;
 	
 	
 	@Override
 	public void doAfterCompose(Window winTipoDocumento) throws Exception{		
 		super.doAfterCompose(winTipoDocumento);
-		docTipoArchivo = (DocTipoArchivo) argumentos.get(ConstantesAdmin.ARG_SELECCION);
-		if(docTipoArchivo == null){
-			docTipoArchivo = new DocTipoArchivo();
+		docSerieDoc = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+		if(docSerieDoc == null){
+			docSerieDoc = new DocSerieDoc();
 			listaCampos = new ArrayList<DocCampTipo>();			
 		} else {
-			listaCampos = sistemaArchivoNgc.getCamposTipo(docTipoArchivo);
+			listaCampos = sistemaArchivoNgc.getCamposTipo(docSerieDoc);
 			cargarDatos();
 		}
 		
@@ -84,9 +82,9 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	private void cargarDatos() throws Exception{
 		
-		if(docTipoArchivo !=  null){
-			txtNombre.setValue(docTipoArchivo.getTipoArchNombre());
-			txtDescripcion.setValue(docTipoArchivo.getTipoArchDescripcion());
+		if(docSerieDoc !=  null){
+			txtNombre.setValue(docSerieDoc.getSerieDocNombre());
+			txtDescripcion.setValue(docSerieDoc.getSerieDocDescripcion());
 		}
 		
 		if(listaCampos != null && ! listaCampos.isEmpty()){
@@ -270,18 +268,18 @@ public class TipoDocumentoCnt extends WindowComposer {
 		
 		if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			establecerDatos();
-			sistemaArchivoNgc.registrarTipoDocumentos(docTipoArchivo,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
+			sistemaArchivoNgc.registrarTipoDocumentos(docSerieDoc,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
 		} else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
 			establecerDatos();
-			sistemaArchivoNgc.actualizarTipoDocumentos(docTipoArchivo,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
+			sistemaArchivoNgc.actualizarTipoDocumentos(docSerieDoc,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
 		} else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 			String nota = solicitarNota();
 			
-			docTipoArchivo.setAudiFechModi(new Date());
-			docTipoArchivo.setAudiMotiAnul(nota);
-			docTipoArchivo.setAudiSiAnul(true);
-			docTipoArchivo.setAudiUsuario(usuario.getLogin());
-			sistemaArchivoNgc.anularTipoDocumentos(docTipoArchivo);
+			docSerieDoc.setAudiFechModi(new Date());
+			docSerieDoc.setAudiMotiAnul(nota);
+			docSerieDoc.setAudiSiAnul(true);
+			docSerieDoc.setAudiUsuario(usuario.getLogin());
+			sistemaArchivoNgc.anularTipoDocumentos(docSerieDoc);
 			
 		}
 		
@@ -294,14 +292,14 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	private void establecerDatos() throws Exception {
 		
-		docTipoArchivo.setTipoArchNombre(txtNombre.getValue());
-		docTipoArchivo.setTipoArchDescripcion(txtDescripcion.getValue());
+		docSerieDoc.setSerieDocDescripcion(txtNombre.getValue());
+		docSerieDoc.setSerieDocDescripcion(txtDescripcion.getValue());
 		
-		docTipoArchivo.setAudiFechModi(new Date());
-		docTipoArchivo.setAudiChecksum(null);
-		docTipoArchivo.setAudiMotiAnul(null);
-		docTipoArchivo.setAudiSiAnul(false);
-		docTipoArchivo.setAudiUsuario(usuario.getLogin());
+		docSerieDoc.setAudiFechModi(new Date());
+		docSerieDoc.setAudiChecksum(null);
+		docSerieDoc.setAudiMotiAnul(null);
+		docSerieDoc.setAudiSiAnul(false);
+		docSerieDoc.setAudiUsuario(usuario.getLogin());
 		
 		int orden = 0;
 		for(Listitem li : lstMetadato.getItems()){
@@ -311,7 +309,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 				//crear objeto
 				campoTipo = new DocCampTipo();				
 				establecerCampo(campoTipo,li);
-				campoTipo.setDocTipoArchivo(docTipoArchivo);
+				campoTipo.setDocSerieDoc(docSerieDoc);
 				campoTipo.setCampTipoOrden((short)orden);				
 				
 				campoTipo.setCampTipoRequerido(chkRequerido.isChecked());
@@ -400,7 +398,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 		campoTipo.setDocCampo(campo);
 		
 	}
-
+	
 
 
 

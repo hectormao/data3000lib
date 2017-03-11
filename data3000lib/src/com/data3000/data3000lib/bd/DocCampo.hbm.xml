@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 27/07/2014 03:16:04 PM by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.data3000.data3000lib.bd.DocCampo" table="doc_campo" schema="data3000">
         <comment>Versi&#195;&#179;n del documento cargado a la plataforma</comment>
         <id name="campoIdn" type="long">
             <column name="campo_idn" precision="10" scale="0" />
-            <generator class="sequence">
+            <generator class="sequence" >
             	<param name="sequence">SQN_DOC_CAMPO</param>
             </generator>
         </id>
@@ -58,6 +58,14 @@
                 </column>
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocCampTipo" />
+        </set>
+        <set name="docCampArches" table="doc_camp_arch" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="campo_idn" precision="10" scale="0" not-null="true">
+                    <comment>id del campo referenciado</comment>
+                </column>
+            </key>
+            <one-to-many class="com.data3000.data3000lib.bd.DocCampArch" />
         </set>
     </class>
 </hibernate-mapping>
