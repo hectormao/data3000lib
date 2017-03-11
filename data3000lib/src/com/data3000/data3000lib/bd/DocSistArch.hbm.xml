@@ -16,7 +16,7 @@
                 <comment>identificador del padre de este directorio (null) cuando pertenece a la raiz</comment>
             </column>
         </many-to-one>
-        <many-to-one name="pltUsuario" class="com.data3000.data3000lib.bd.PltUsuario" fetch="select">
+        <many-to-one name="pltUsuario" class="com.data3000.admin.bd.PltUsuario" fetch="select">
             <column name="usua_idn" precision="10" scale="0" not-null="true">
                 <comment>Id del usuario propietario (creador) del directorio</comment>
             </column>

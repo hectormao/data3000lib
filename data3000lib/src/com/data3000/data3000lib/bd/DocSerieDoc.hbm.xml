@@ -11,11 +11,7 @@
             	<param name="sequence">SQN_DOC_SERIE_DOC</param>
             </generator>
         </id>
-        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
-            <column name="sist_arch_idn" precision="10" scale="0">
-                <comment>Identificador unico del registro de sistema de archivos</comment>
-            </column>
-        </many-to-one>
+        
         <property name="serieDocNombre" type="string">
             <column name="serie_doc_nombre" length="100" not-null="true" unique="true">
                 <comment>Nombre del tipo de archivo</comment>
