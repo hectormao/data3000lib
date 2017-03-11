@@ -58,6 +58,7 @@ public class EscritorioCnt extends WindowComposer {
 	private Toolbarbutton btnNuevoDirectorio;
 	private Toolbarbutton btnEditarDirectorio;
 	private Toolbarbutton btnEliminarDirectorio;
+	private Toolbarbutton btnCrearEntidad;
 	
 	
 	private DocSistArch seleccion = null;
@@ -252,6 +253,41 @@ public class EscritorioCnt extends WindowComposer {
 			});
 			
 		}
+		
+		String nombreFormularioCrearEntidad = (String) btnCrearEntidad.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
+		final Formulario frmCrearEntidad = getFormulario(nombreFormularioCrearEntidad);
+		if(frmEliminarDirectorio == null){
+			btnCrearEntidad.setDisabled(true);
+			btnCrearEntidad.setVisible(false);
+		} else {
+			
+			btnCrearEntidad.setImage(frmCrearEntidad.getUrlIcono());
+			btnCrearEntidad.setTooltip(frmCrearEntidad.getTooltip());
+			
+			btnCrearEntidad.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+						 @Override
+							public void onEvent(Event arg0) throws Exception {
+							 
+						 }
+					 
+					 };
+					 
+					 Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+						
+					 DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+						
+					abrirFormulario(frmCrearEntidad, directorioPadre, eventoCerrar);
+				}
+				
+				
+				
+			});
+		}
+		
+		
 		
 		cargarArbol();
 	}
