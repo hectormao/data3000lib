@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 11/03/2017 10:49:44 AM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.data3000.data3000lib.bd.DocSerieSist" table="doc_serie_sist" schema="data3000">
+        <comment>Tabla que asocia una serie documental a una o varias entidades</comment>
+        <id name="serieSistIdn" type="long">
+            <column name="serie_sist_idn" precision="10" scale="0" />
+            <generator class="sequence" >
+            	<param name="sequence">SQN_DOC_SERIE_SIST</param>
+            </generator>
+        </id>
+        <many-to-one name="docSerieDoc" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+            <column name="serie_doc_idn" precision="10" scale="0" not-null="true">
+                <comment>Identificador unico del registro de tipo de archivo</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
+            <column name="sist_arch_idn" precision="10" scale="0" not-null="true">
+                <comment>Identificador unico del registro de sistema de archivos</comment>
+            </column>
+        </many-to-one>
+        <property name="audiUsuario" type="string">
+            <column name="audi_usuario" length="32" not-null="true">
+                <comment>usuario ultima modificaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiFechModi" type="timestamp">
+            <column name="audi_fech_modi" length="29" not-null="true">
+                <comment>Fecha ultima modificaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiSiAnul" type="boolean">
+            <column name="audi_si_anul" not-null="true">
+                <comment>Si el registro ha sido anulado</comment>
+            </column>
+        </property>
+        <property name="audiMotiAnul" type="string">
+            <column name="audi_moti_anul">
+                <comment>Notas de anulaci&#195;&#179;n</comment>
+            </column>
+        </property>
+        <property name="audiChecksum" type="string">
+            <column name="audi_checksum" length="200">
+                <comment>checksum del registro</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>
