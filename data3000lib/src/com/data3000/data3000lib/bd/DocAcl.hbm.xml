@@ -7,7 +7,7 @@
         <comment>Lista de control de acceso a archivos y/o directorios</comment>
         <id name="aclIdn" type="long">
             <column name="acl_idn" precision="10" scale="0" />
-            <column name="usua_rol_idn" precision="10" scale="0" />
+            
              <generator class="sequence" >
             	<param name="sequence">SQN_DOC_ACL</param>
             </generator>
