@@ -23,19 +23,22 @@ public class DocSerieDoc implements java.io.Serializable {
 	@Columna(orden=3)
 	private String serieDocDescripcion;
 	
-	@Columna(orden=4)
+	@Columna(orden=6)
 	private String audiUsuario;
 	
-	@Columna(orden=5)
+	@Columna(orden=7)
 	private Date audiFechModi;
 	
 	private boolean audiSiAnul;
 	private String audiMotiAnul;
 	private String audiChecksum;
-	private Long serieDocPadre;
+	private DocSerieDoc serieDocPadre;
 	
-	@Columna(orden=6)
+	@Columna(orden=4)
 	private String serieDocTipo;
+	
+	@Columna(orden=5)
+	private String serieDocSoporte;
 	
 	@Columna(orden=1)
 	private String serieDocCodigo;
@@ -58,7 +61,7 @@ public class DocSerieDoc implements java.io.Serializable {
 
 	public DocSerieDoc(long serieDocIdn, String serieDocNombre, String serieDocDescripcion,
 			String audiUsuario, Date audiFechModi, boolean audiSiAnul, String audiMotiAnul, String audiChecksum,
-			Long serieDocPadre, String serieDocTipo, Set<DocCampTipo> docCampTipos, Set<DocArchivo> docArchivos,
+			DocSerieDoc serieDocPadre, String serieDocTipo, Set<DocCampTipo> docCampTipos, Set<DocArchivo> docArchivos,
 			Set<DocTipoAlma> docTipoAlmas) {
 		this.serieDocIdn = serieDocIdn;
 		
@@ -141,11 +144,11 @@ public class DocSerieDoc implements java.io.Serializable {
 		this.audiChecksum = audiChecksum;
 	}
 
-	public Long getSerieDocPadre() {
+	public DocSerieDoc getSerieDocPadre() {
 		return this.serieDocPadre;
 	}
 
-	public void setSerieDocPadre(Long serieDocPadre) {
+	public void setSerieDocPadre(DocSerieDoc serieDocPadre) {
 		this.serieDocPadre = serieDocPadre;
 	}
 
@@ -180,5 +183,23 @@ public class DocSerieDoc implements java.io.Serializable {
 	public void setDocTipoAlmas(Set<DocTipoAlma> docTipoAlmas) {
 		this.docTipoAlmas = docTipoAlmas;
 	}
+
+	public String getSerieDocSoporte() {
+		return serieDocSoporte;
+	}
+
+	public void setSerieDocSoporte(String serieDocSoporte) {
+		this.serieDocSoporte = serieDocSoporte;
+	}
+
+	public String getSerieDocCodigo() {
+		return serieDocCodigo;
+	}
+
+	public void setSerieDocCodigo(String serieDocCodigo) {
+		this.serieDocCodigo = serieDocCodigo;
+	}
+	
+	
 
 }

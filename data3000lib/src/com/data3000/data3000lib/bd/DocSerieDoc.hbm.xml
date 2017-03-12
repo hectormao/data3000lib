@@ -11,7 +11,11 @@
             	<param name="sequence">SQN_DOC_SERIE_DOC</param>
             </generator>
         </id>
-        
+        <many-to-one name="serieDocPadre" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+            <column name="serie_doc_padre" precision="10" scale="0">
+                <comment>identificador del padre de esta serie documental (null) cuando pertenece a la raiz</comment>
+            </column>
+        </many-to-one>
         <property name="serieDocNombre" type="string">
             <column name="serie_doc_nombre" length="100" not-null="true" unique="true">
                 <comment>Nombre del tipo de archivo</comment>
@@ -47,14 +51,22 @@
                 <comment>Checksum del registro con SHA1</comment>
             </column>
         </property>
-        <property name="serieDocPadre" type="java.lang.Long">
-            <column name="serie_doc_padre" precision="10" scale="0">
-                <comment>Padre de la serie documental</comment>
-            </column>
-        </property>
+        
         <property name="serieDocTipo" type="string">
             <column name="serie_doc_tipo" length="4">
                 <comment>Tipo de serie documental, SER (serie), SUB (subserie), TIP (tipo documento), traer del dominio TIPO_SERIE_DOCUMENTAL</comment>
+            </column>
+        </property>
+        
+        <property name="serieDocCodigo" type="string">
+            <column name="serie_doc_codigo" length="16">
+                <comment>Codigo de la serie documental</comment>
+            </column>
+        </property>
+        
+        <property name="serieDocSoporte" type="string">
+            <column name="serie_doc_soporte" length="4">
+                <comment>Soporte del almacenamiento</comment>
             </column>
         </property>
         <set name="docCampTipos" table="doc_camp_tipo" inverse="true" lazy="true" fetch="select">

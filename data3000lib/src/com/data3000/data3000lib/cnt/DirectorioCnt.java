@@ -46,7 +46,7 @@ public class DirectorioCnt extends WindowComposer {
 	/**
 	 * BEANS
 	 */
-	private PlataformaNgc plataformaNgc;
+	
 	private UsuarioNgc usuarioNgc;
 	private SistemaArchivoNgc sistemaArchivoNgc;
 	
@@ -432,14 +432,7 @@ public class DirectorioCnt extends WindowComposer {
 		
 	}
 
-	public PlataformaNgc getPlataformaNgc() {
-		return plataformaNgc;
-	}
-
-	public void setPlataformaNgc(PlataformaNgc plataformaNgc) {
-		this.plataformaNgc = plataformaNgc;
-	}
-
+	
 	public UsuarioNgc getUsuarioNgc() {
 		return usuarioNgc;
 	}

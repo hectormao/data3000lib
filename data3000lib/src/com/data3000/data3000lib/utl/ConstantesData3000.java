@@ -5,6 +5,7 @@ public class ConstantesData3000 {
 	static public final String ATRIBUTO_MAPA_DIR = "mapaDir";
 	public static final String ATRIBUTO_LISTA_DIR = "listaDir";
 	public static final String ATRIBUTO_ACL = "acl";
+	public static final Object SERIE = "SER";
 	
 	
 	/**
@@ -39,6 +40,7 @@ public class ConstantesData3000 {
 	 * ==========================================================
 	 */
 	public static final String BEAN_SISTEMA = "sistemaArchivoNgc";
+	
 	
 	
 	

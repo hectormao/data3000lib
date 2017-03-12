@@ -18,6 +18,7 @@ import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
+import com.data3000.data3000lib.bd.DocTipoAlma;
 
 public class SistemaArchivoDAO extends PltDAO{
 	
@@ -128,7 +129,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			}
 			
 			Criteria criteria = sesion.createCriteria(DocCampTipo.class);
-			criteria.add(Restrictions.eq("docTipoArchivo", docTipoArchivo));
+			criteria.add(Restrictions.eq("docSerieDoc", docTipoArchivo));
 			criteria.addOrder(Order.asc("campTipoOrden"));
 			
 			return criteria.list();
@@ -144,7 +145,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo,List<Object> listaCrear, List<Object> listaActualizar,List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
 		Transaction tx = sesion.getTransaction();
@@ -161,16 +162,16 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			sesion.save(docTipoArchivo);
 			
-			for(DocCampTipo campoTipo : listaEliminar){
+			for(Object campoTipo : listaEliminar){
 				sesion.delete(campoTipo);
 			}
 			
 			
-			for(DocCampTipo campoTipo : listaActualizar){
+			for(Object campoTipo : listaActualizar){
 				sesion.update(campoTipo);
 			}
 			
-			for(DocCampTipo campoTipo : listaCrear){
+			for(Object campoTipo : listaCrear){
 				sesion.save(campoTipo);
 			}
 			
@@ -194,7 +195,7 @@ public class SistemaArchivoDAO extends PltDAO{
 		
 	}
 
-	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo,List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar,List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo,List<Object> listaCrear, List<Object> listaActualizar,List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
 		Transaction tx = sesion.getTransaction();
@@ -211,16 +212,16 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			sesion.merge(docTipoArchivo);
 			
-			for(DocCampTipo campoTipo : listaEliminar){
+			for(Object campoTipo : listaEliminar){
 				sesion.delete(campoTipo);
 			}
 			
 			
-			for(DocCampTipo campoTipo : listaActualizar){
+			for(Object campoTipo : listaActualizar){
 				sesion.merge(campoTipo);
 			}
 			
-			for(DocCampTipo campoTipo : listaCrear){
+			for(Object campoTipo : listaCrear){
 				sesion.save(campoTipo);
 			}
 			
@@ -579,6 +580,145 @@ public class SistemaArchivoDAO extends PltDAO{
 			criteria.add(Restrictions.eq("archVersIdn", idVersion));
 			
 			return (DocArchivoVersion) criteria.uniqueResult();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
+	public DocSerieDoc getSerieDoc(long idSerie) {
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocSerieDoc.class);
+			criteria.add(Restrictions.eq("serieDocIdn", idSerie));
+			
+			return (DocSerieDoc) criteria.uniqueResult();
+			
+		} catch(Exception ex){			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
+	public List<DocSerieDoc> getHijosRaizSerie() {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			
+			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre is null order by ser.serieDocNombre";
+			
+			Query query = sesion.createQuery(hql);
+			
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.isNull("docSistArch"));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
+			
+			return query.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		} finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+	
+	public List<DocSerieDoc> getHijosSerie() {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			
+			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre is null order by ser.serieDocNombre";
+			
+			Query query = sesion.createQuery(hql);
+			
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.isNull("docSistArch"));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
+			
+			return query.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		} finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+	
+	public List<DocSerieDoc> getHijosSerie(DocSerieDoc padre) {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.eq("docSistArch",padre));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
+			
+			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre = :padre order by ser.serieDocNombre";
+			
+			Query query = sesion.createQuery(hql);
+			query.setEntity("padre", padre);
+			
+			return query.list();
+			
+		} catch(Exception ex){
+			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
+	public List<DocTipoAlma> getTiposAlmacenamientoSerie(DocSerieDoc docSerieDoc) {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Criteria criteria = sesion.createCriteria(DocTipoAlma.class);
+			criteria.add(Restrictions.eq("docSerieDoc", docSerieDoc));
+			criteria.addOrder(Order.asc("tipoAlmaIdn"));
+			
+			return criteria.list();
 			
 		} catch(Exception ex){			
 			throw ex;

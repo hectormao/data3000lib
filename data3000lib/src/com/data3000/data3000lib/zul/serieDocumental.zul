@@ -1,0 +1,44 @@
+<?page title="Escritorio" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window id="winSerieDocumental" border="normal" apply="${serieDocumentalCnt}" sizable="true" maximizable="false" minimizable="false" closable="false" width="100%" height="100%" hflex="1" vflex="1">
+  	<borderlayout>
+          <west splittable="true" size="23%" collapsible="true" minsize="300">
+		
+        	<tree vflex="1" height="100%" width="100%" id="trSerie" multiple="false" checkmark="true" >
+				<treecols sizable="true">
+					<treecol width="100%">
+						
+							<hbox width="100%" sclass="columna-arbol">
+								<div width="100%" align="left">
+									<label value="${labels.data3000.sistema.serie}"></label>
+								</div>
+								<div width="100%" align="right">
+									<toolbarbutton id="btnNuevo">
+										<custom-attributes formulario="form.1001"/>
+									</toolbarbutton>
+									<toolbarbutton id="btnEditar">
+										<custom-attributes formulario="form.1004"/>
+									</toolbarbutton>
+									<toolbarbutton id="btnEliminar">
+										<custom-attributes formulario="form.1005"/>
+									</toolbarbutton>
+								</div>
+							</hbox>
+						
+					</treecol >
+					
+					
+				</treecols>
+            </tree>
+				
+   </west>
+    
+ <center>    	 
+    	 <div id="divTrabajo" hflex="1" vflex="1" /> 		
+ </center>
+  	</borderlayout>
+  	<menupopup id="menuSerie">
+  		
+  	</menupopup>
+  </window>
+</zk>

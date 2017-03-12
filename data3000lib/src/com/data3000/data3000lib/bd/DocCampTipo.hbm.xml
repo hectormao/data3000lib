@@ -16,7 +16,7 @@
                 <comment>id del tipo asociado</comment>
             </column>
         </many-to-one>
-        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="select">
+        <many-to-one name="docCampo" class="com.data3000.data3000lib.bd.DocCampo" fetch="join" lazy="false">
             <column name="campo_idn" precision="10" scale="0" not-null="true">
                 <comment>id del campo referenciado</comment>
             </column>

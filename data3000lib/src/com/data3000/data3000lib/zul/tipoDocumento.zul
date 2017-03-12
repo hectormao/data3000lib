@@ -7,9 +7,31 @@
 		<vbox>
 			<hbox>
 				<div width="150px">
+					<label id="lblCodigo" value="${labels.data3000.codigo}" style="font-weight:bold;"></label>
+				</div>
+				<textbox id="txtCodigo" width="150px" constraint="/.{1,16}/"></textbox>
+			</hbox>
+			<hbox>
+				<div width="150px">
 					<label id="lblNombre" value="${labels.data3000.nombre.$}" style="font-weight:bold;"></label>
 				</div>
 				<textbox id="txtNombre" width="150px" constraint="/.{1,100}/"></textbox>
+			</hbox>
+			<hbox>
+				<div width="150px">
+					<label id="lblTipo" value="${labels.data3000.tipo.clasificacion}" style="font-weight:bold;"></label>
+				</div>
+				<combobox id="cmbTipo" width="150px">
+					<custom-attributes dominio="TIPO_CLASIFICACION_DOCUMENTAL"/>
+				</combobox>
+			</hbox>
+			<hbox>
+				<div width="150px">
+					<label id="lblSoporte" value="${labels.data3000.soporte}" style="font-weight:bold;"></label>
+				</div>
+				<combobox id="cmbSoporte" width="150px">
+					<custom-attributes dominio="SOPORTE"/>
+				</combobox>
 			</hbox>
 			<vbox>
 				<div width="150px">
@@ -19,23 +41,52 @@
 			</vbox>
 		</vbox>
 	</groupbox>	
-	<groupbox>
-		<caption label="${labels.data3000.metadatos}" id="grdMetaDatos"/>
-		<toolbar>
-			<toolbarbutton id="btnNuevoCampo" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.campo}"></toolbarbutton>
-			<toolbarbutton id="btnEliminarCampo" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.campo}"></toolbarbutton>
-		</toolbar>
-		<listbox id="lstMetadato" rows="4" multiple="true" checkmark="true">
-			<listhead>
-				<listheader label="${labels.data3000.nombre.$}" style="font-weight:bold;" width="200px" />
-				<listheader label="${labels.data3000.tipo}" style="font-weight:bold;" width="200px" />
-				<listheader label="${labels.data3000.descripcion.$}" />
-				<listheader label="${labels.data3000.requerido}" style="font-weight:bold;" width="100px" />
-			</listhead>		
-		</listbox>
-		
-		
-	</groupbox>
+	<tabbox>
+	<tabs>
+		<tab label="${labels.data3000.metadatos}"></tab>
+		<tab label="${labels.data3000.alma}"></tab>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<groupbox>
+				<caption label="${labels.data3000.metadatos}" id="grdMetaDatos"/>
+				<toolbar>
+					<toolbarbutton id="btnNuevoCampo" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.campo}"></toolbarbutton>
+					<toolbarbutton id="btnEliminarCampo" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.campo}"></toolbarbutton>
+				</toolbar>
+				<listbox id="lstMetadato" rows="4" multiple="true" checkmark="true">
+					<listhead>
+						<listheader label="${labels.data3000.nombre.$}" style="font-weight:bold;" width="200px" />
+						<listheader label="${labels.data3000.tipo.dato}" style="font-weight:bold;" width="200px" />
+						<listheader label="${labels.data3000.descripcion.$}" />
+						<listheader label="${labels.data3000.requerido}" style="font-weight:bold;" width="100px" />
+					</listhead>		
+				</listbox>
+				
+				
+			</groupbox>
+		</tabpanel>
+		<tabpanel>
+			<groupbox>
+				<caption label="${labels.data3000.alma}" id="grdArchivo"/>
+				<toolbar>
+					<toolbarbutton id="btnNuevoAlma" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.alma}"></toolbarbutton>
+					<toolbarbutton id="btnEliminarAlma" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.alma}"></toolbarbutton>
+				</toolbar>
+				<listbox id="lstAlma" rows="4" multiple="true" checkmark="true">
+					<listhead>
+						<listheader label="${labels.data3000.nombre.$}" style="font-weight:bold;" width="200px" />
+						<listheader label="${labels.data3000.descripcion.$}"  />
+						<listheader label="${labels.data3000.edad}" style="font-weight:bold;" width="100px" />
+						<listheader label="${labels.data3000.disposicion}" style="font-weight:bold;" width="200px" />
+					</listhead>		
+				</listbox>
+				
+				
+			</groupbox>
+		</tabpanel>
+	</tabpanels>
+	</tabbox>
 	<div width="100%" align="center">
 	<hbox>
 		<button id="btnAceptar" label="${labels.data3000.aceptar}"/>

@@ -22,6 +22,7 @@ import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
+import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.dao.SistemaArchivoDAO;
 import com.data3000.data3000lib.utl.ConstantesData3000;
 
@@ -90,14 +91,14 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 	
 	@Override
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		sistemaArchivoDAO.registrarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo);
 		
 	}
 
 
 	@Override
-	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
 		sistemaArchivoDAO.actualizarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo);
 		
 	}
@@ -328,6 +329,30 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		} catch(Exception ex){
 			throw new IOException(ex);
 		}
+	}
+
+
+	@Override
+	public DocSerieDoc getSerieDoc(long idSerie) throws IOException {
+		
+		return sistemaArchivoDAO.getSerieDoc(idSerie);
+	}
+
+
+	@Override
+	public List<DocSerieDoc> getHijosSerie(DocSerieDoc padre, PltUsuario usuario) throws Exception {
+		if(padre == null){
+			return sistemaArchivoDAO.getHijosRaizSerie();
+		} else {
+			return sistemaArchivoDAO.getHijosSerie(padre);
+		}
+	}
+
+
+	@Override
+	public List<DocTipoAlma> getTiposAlmacenamientoSerie(DocSerieDoc docSerieDoc) {
+		
+		return sistemaArchivoDAO.getTiposAlmacenamientoSerie(docSerieDoc);
 	}
 
 

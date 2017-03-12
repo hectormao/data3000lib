@@ -57,7 +57,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 	/**
 	 * BEANS
 	 */
-	private PlataformaNgc plataformaNgc;
+	
 	private UsuarioNgc usuarioNgc;
 	private SistemaArchivoNgc sistemaArchivoNgc;
 
@@ -470,13 +470,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 		Events.sendEvent(new Event(Events.ON_CLOSE, this.self, null));
 	}
 
-	public PlataformaNgc getPlataformaNgc() {
-		return plataformaNgc;
-	}
-
-	public void setPlataformaNgc(PlataformaNgc plataformaNgc) {
-		this.plataformaNgc = plataformaNgc;
-	}
+	
 
 	public UsuarioNgc getUsuarioNgc() {
 		return usuarioNgc;
