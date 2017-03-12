@@ -318,16 +318,16 @@ public class SerieDocumentalCnt extends WindowComposer {
 	private void cargarArbol() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("Consultando arbol ...");
 		
-		/*Treechildren raiz = new Treechildren();		
+		Treechildren raiz = new Treechildren();		
 		trSerie.appendChild(raiz);
 		
 		Treeitem tiRaiz = new Treeitem();
 		tiRaiz.setLabel(Labels.getLabel("data3000.raiz"));
-		raiz.appendChild(tiRaiz);*/
+		raiz.appendChild(tiRaiz);
 		
 		
 		Treechildren hijosRaiz = new Treechildren();
-		trSerie.appendChild(hijosRaiz);
+		tiRaiz.appendChild(hijosRaiz);
 		
 		cargarArbol(null, hijosRaiz);
 	}
@@ -435,10 +435,7 @@ public class SerieDocumentalCnt extends WindowComposer {
 		
 		DocSerieDoc serie = tiSeleccion != null ? (DocSerieDoc) tiSeleccion.getValue() : null; 
 		
-		if(serie == null){
-			serie = new DocSerieDoc();
-			serie.setSerieDocIdn(0L);
-		}
+		
 		
 		actualizarTablaDatos(serie);
 		
@@ -469,6 +466,10 @@ public class SerieDocumentalCnt extends WindowComposer {
 		Map<String,Object> datos = new HashMap<String, Object>();
 		datos.put(ConstantesAdmin.ACCION, ConstantesAdmin.EVENTO_REFRESCAR);
 		datos.put(ConstantesAdmin.OBJETO_PADRE, serie);
+		if(serie == null){
+			datos.put(ConstantesAdmin.NOMBRE_ATRIBUTO_PADRE, "serieDocPadre");
+			datos.put(ConstantesAdmin.FILTRAR_PADRE_NULL, true);
+		}
 		
 		Events.sendEvent(Events.ON_USER, winTablaDatos, datos);
 		
