@@ -51,8 +51,7 @@ import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 
-public class CargarArchivoCnt extends WindowComposer implements
-		ComboitemRenderer<DocSerieDoc>, ListitemRenderer<DocCampTipo> {
+public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer<DocCampTipo> {
 
 	/**
 	 * BEANS
@@ -62,7 +61,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 	private SistemaArchivoNgc sistemaArchivoNgc;
 
 	private Window winCargarArchivo;
-	private Combobox cmbTipoArchivo;
+	private Tree trSerie;
 	private Listbox lstMeta;
 	private Textbox txtArchivo;
 	private Textbox txtDescripcion;
@@ -79,14 +78,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 	public void doAfterCompose(Window winTipoDocumento) throws Exception {
 		super.doAfterCompose(winTipoDocumento);
 
-		List<DocSerieDoc> listaTipos = sistemaArchivoNgc.getTipos();
-
-		ListModelList<DocSerieDoc> modelo = new ListModelList<DocSerieDoc>();
-		modelo.addAll(listaTipos);
-
-		cmbTipoArchivo.setModel(modelo);
-		cmbTipoArchivo.setItemRenderer(this);
-
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 		txtTagVersion.setValue(sdf.format(new Date()));
@@ -94,7 +86,57 @@ public class CargarArchivoCnt extends WindowComposer implements
 		directorio = (DocSistArch) argumentos.get(ConstantesAdmin.OBJETO_PADRE);
 
 		cargarArbolPermisos();
+		
+		cargarArbolSeries();
 
+	}
+
+	private void cargarArbolSeries() throws Exception {
+		
+		List<DocSerieDoc> series = sistemaArchivoNgc.getSeriesDirectorio(directorio);
+		
+		Treechildren hijosRaiz = new Treechildren();
+		trSerie.appendChild(hijosRaiz);
+		
+		for(DocSerieDoc serie : series){
+			Treeitem tiSerie = new Treeitem();
+			tiSerie.setLabel(serie.toString());
+			tiSerie.setTooltiptext(serie.getSerieDocDescripcion());
+			tiSerie.setValue(serie);
+			hijosRaiz.appendChild(tiSerie);
+			
+			Treechildren hijosSerie = new Treechildren();
+			tiSerie.appendChild(hijosSerie);
+			
+			cargarArbolSeries(hijosSerie,serie);
+		}
+		
+		
+	}
+	
+	
+
+	
+
+	private void cargarArbolSeries(Treechildren hijosSerie, DocSerieDoc serie) throws Exception {
+		List<DocSerieDoc> series = sistemaArchivoNgc.getHijosSerie(serie, (PltUsuario) usuario);
+		if(series == null || (series != null && series.isEmpty())){		
+			return;
+		}
+		
+		for(DocSerieDoc serieHija : series){
+			Treeitem tiSerieHija = new Treeitem();
+			tiSerieHija.setLabel(serieHija.toString());
+			tiSerieHija.setTooltiptext(serieHija.getSerieDocDescripcion());
+			tiSerieHija.setValue(serieHija);
+			hijosSerie.appendChild(tiSerieHija);
+			
+			Treechildren hijosSerieHija = new Treechildren();
+			tiSerieHija.appendChild(hijosSerieHija);
+			
+			cargarArbolSeries(hijosSerieHija,serieHija);
+		}
+		
 	}
 
 	private void cargarArbolPermisos() throws Exception {
@@ -247,8 +289,8 @@ public class CargarArchivoCnt extends WindowComposer implements
 		}
 	}
 
-	public void onSelect$cmbTipoArchivo(Event evt) throws Exception {
-		Comboitem ci = cmbTipoArchivo.getSelectedItem();
+	public void onSelect$trSerie(Event evt) throws Exception {
+		Treeitem ci = trSerie.getSelectedItem();
 		if (ci != null) {
 			DocSerieDoc tipo = ci.getValue();
 			List<DocCampTipo> campos = sistemaArchivoNgc.getCamposTipo(tipo);
@@ -274,13 +316,7 @@ public class CargarArchivoCnt extends WindowComposer implements
 		this.sistemaArchivoNgc = sistemaArchivoNgc;
 	}
 
-	@Override
-	public void render(Comboitem ci, DocSerieDoc tipo, int idx)
-			throws Exception {
-		ci.setLabel(tipo.getSerieDocNombre());
-		ci.setDescription(tipo.getSerieDocDescripcion());
-		ci.setValue(tipo);
-	}
+	
 
 	@Override
 	public void render(Listitem li, DocCampTipo campoTipo, int idx)
@@ -320,9 +356,9 @@ public class CargarArchivoCnt extends WindowComposer implements
 					Labels.getLabel("error.1001"));
 		}
 
-		Comboitem ci = cmbTipoArchivo.getSelectedItem();
+		Treeitem ci = trSerie.getSelectedItem();
 		if (ci == null) {
-			throw new WrongValueException(cmbTipoArchivo,Labels.getLabel("error.0005"));
+			throw new WrongValueException(trSerie,Labels.getLabel("error.0005"));
 		}
 
 		DocSerieDoc tipo = ci.getValue();

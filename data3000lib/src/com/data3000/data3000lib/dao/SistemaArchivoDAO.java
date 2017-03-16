@@ -730,6 +730,34 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
+	public List<DocSerieDoc> getSeriesDirectorio(DocSistArch dir) {
+		
+		String hql = "select distinct ser.docSerieDoc from DocSerieSist ser where ser.docSistArch = :dir";
+		
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			Query query = sesion.createQuery(hql);
+			query.setEntity("dir", dir);
+			
+			return query.list();
+			
+		} catch(Exception ex){
+			
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+
+
 	
 
 }

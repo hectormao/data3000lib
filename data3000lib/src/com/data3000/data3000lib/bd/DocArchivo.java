@@ -22,6 +22,8 @@ public class DocArchivo implements java.io.Serializable {
 	
 	@Columna(orden = 1)
 	private long archIdn;
+	
+	@Columna(orden = 3)
 	private DocSerieDoc docSerieDoc;
 	private PltUsuario pltUsuario;
 	private DocSistArch docSistArch;
@@ -29,15 +31,15 @@ public class DocArchivo implements java.io.Serializable {
 	@Columna(orden = 2)
 	private String archNombre;
 	
-	@Columna(orden = 3)
+	@Columna(orden = 4)
 	private String archDescripcion;
 	private String audiUsuario;
 	private Date audiFechModi;
 	
-	@Columna(orden = 4)
+	@Columna(orden = 5)
 	private boolean audiSiAnul;
 	
-	@Columna(orden = 5)
+	@Columna(orden = 6)
 	private String audiMotiAnul;
 	private String audiChecksum;
 	private Set<DocAcl> docAcls = new HashSet<DocAcl>(0);

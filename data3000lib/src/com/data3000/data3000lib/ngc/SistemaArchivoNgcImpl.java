@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -353,6 +355,40 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	public List<DocTipoAlma> getTiposAlmacenamientoSerie(DocSerieDoc docSerieDoc) {
 		
 		return sistemaArchivoDAO.getTiposAlmacenamientoSerie(docSerieDoc);
+	}
+
+
+	@Override
+	public List<DocSerieDoc> getSeriesDirectorio(DocSistArch dir) {
+		if(dir == null){
+			return null;
+		}
+		
+		List<DocSerieDoc> resultado =  sistemaArchivoDAO.getSeriesDirectorio(dir);
+		if(resultado != null){
+			
+			Collections.sort(resultado, new Comparator<DocSerieDoc>() {
+
+				@Override
+				public int compare(DocSerieDoc o1, DocSerieDoc o2) {
+					
+					int cmp = o1.getSerieDocCodigo().compareTo(o2.getSerieDocCodigo());
+					if(cmp == 0){
+						cmp = o1.getSerieDocNombre().compareTo(o2.getSerieDocNombre());
+					}
+					return cmp;
+				}
+			});
+			
+			return resultado;
+		} else {
+			DocSistArch padre = dir.getDocSistArch();
+			if(padre == null){
+				return null;
+			} else {
+				return getSeriesDirectorio(padre);
+			}
+		}
 	}
 
 

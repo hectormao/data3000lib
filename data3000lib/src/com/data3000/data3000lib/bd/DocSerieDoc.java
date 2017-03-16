@@ -200,6 +200,10 @@ public class DocSerieDoc implements java.io.Serializable {
 		this.serieDocCodigo = serieDocCodigo;
 	}
 	
+	@Override
+	public String toString(){
+		return getSerieDocCodigo() + " - " + getSerieDocNombre();
+	}
 	
 
 }

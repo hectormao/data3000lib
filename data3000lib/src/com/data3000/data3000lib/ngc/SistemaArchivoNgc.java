@@ -186,6 +186,14 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 */
 	public List<DocTipoAlma> getTiposAlmacenamientoSerie(DocSerieDoc docSerieDoc);
+	
+	
+	/**
+	 * Retorna las series documentales asociadas a un directorio
+	 * @param dir
+	 * @return
+	 */
+	public List<DocSerieDoc> getSeriesDirectorio(DocSistArch dir);
 
 	
 	

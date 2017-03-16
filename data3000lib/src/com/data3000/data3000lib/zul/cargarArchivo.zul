@@ -19,9 +19,14 @@
 		
 		<hbox>
 		<div width="150px">
-			<label value="${labels.data3000.tipo}"></label>
+			<label value="${labels.data3000.clasificacion}"></label>
 		</div>
-		<combobox id="cmbTipoArchivo" width="150px" constraint="no empty"/>
+		<tree vflex="1" height="100%" width="100%" id="trSerie" multiple="false" checkmark="true" rows="4" >
+				<treecols sizable="true">
+					<treecol width="100%">
+					</treecol >
+				</treecols>
+            </tree>
 		</hbox>
 		<hbox>
 		<div width="150px">
