@@ -1,7 +1,7 @@
 <?page title="Directorio" contentType="text/html;charset=UTF-8"?>
 <zk>
 
-	<window id="winDirectorio" title="Directorio" border="normal"
+	<window id="winDirectorio" title="Sistema de archivos" border="normal"
 		width="60%" height="80%" sizable="true" maximizable="true"
 		closable="true" apply="${directorioCnt}">
 		<borderlayout>

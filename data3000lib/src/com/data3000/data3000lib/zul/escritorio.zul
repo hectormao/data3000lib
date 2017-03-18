@@ -22,7 +22,7 @@
 									<toolbarbutton id="btnEliminarDirectorio">
 										<custom-attributes formulario="form.1012"/>
 									</toolbarbutton>
-									<toolbarbutton id="btnCrearEntidad">
+									<toolbarbutton id="btnCrearSistemaArchivo">
 										<custom-attributes formulario="form.1015"/>
 									</toolbarbutton>
 								</div>

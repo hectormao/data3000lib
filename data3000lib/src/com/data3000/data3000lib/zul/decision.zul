@@ -1,0 +1,8 @@
+<?page title="Directorio" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="winTomarDecision" title="Sistema de archivos" border="normal"
+		width="60%" height="80%" sizable="true" maximizable="true"
+		closable="true" apply="${tomarDecision}" >
+		<label value="pppp"></label>
+	</window>
+</zk>

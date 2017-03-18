@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.event.EventListenerList;
+
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Tbody;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -32,6 +35,7 @@ import com.data3000.admin.ngc.UsuarioNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.WindowComposer;
 import com.data3000.data3000lib.bd.DocAcl;
+import com.data3000.data3000lib.bd.DocArchivo;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 import com.data3000.data3000lib.utl.ConstantesData3000;
@@ -70,6 +74,18 @@ public class DirectorioCnt extends WindowComposer {
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			directorioPadre = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			directorio = new DocSistArch();
+			if(directorioPadre == null){
+				winDirectorio.setTitle("Crear Entidad");
+				directorioPadre = new DocSistArch();
+				directorioPadre.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_ENTIDAD);
+				
+			}else if(directorioPadre.getSistArchTipo() == ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA){
+				winDirectorio.setTitle("Crear Dependencia");
+				directorioPadre.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA);
+			}else if(directorioPadre.getSistArchTipo() == ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO){
+				winDirectorio.setTitle("Crear Directorio");
+				throw new PltException(ConstantesData3000.ERR1007);
+			}
 		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			directorioPadre = directorio.getDocSistArch();
@@ -305,7 +321,6 @@ public class DirectorioCnt extends WindowComposer {
 	public void onClick$btnAceptar(Event event) throws Exception{
 		
 		
-		
 		directorio.setAudiChecksum(null);
 		directorio.setAudiFechModi(new Date());
 		directorio.setAudiMotiAnul(null);
@@ -315,6 +330,39 @@ public class DirectorioCnt extends WindowComposer {
 		directorio.setSistArchDescripcion(txtDescripcion.getValue());
 		directorio.setSistArchNombre(txtNombre.getValue());
 		
+//		java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream("com/data3000/data3000lib/zul/decision.zul");
+//		
+//		java.io.Reader zulReader = new java.io.InputStreamReader(zulInput);
+//		
+//		Window decision = zulInput.read(b);
+//		
+
+		java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream("com/data3000/data3000lib/zul/decision.zul");
+		
+    	java.io.Reader zulReader = new java.io.InputStreamReader(zulInput);
+    	
+    	Map<String,Object> parametros = new HashMap<String, Object>();
+		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
+		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formulario);
+		parametros.put(ConstantesAdmin.ARG_CLASE,DocArchivo.class);
+		
+		
+		
+    	 Window win = (Window) Executions.createComponentsDirectly(zulReader,"zul",null,parametros);
+    	 win.setVisible(true);
+    	 win.doModal();
+    	 win.setTitle(null);
+		 
+		 win.addEventListener(Events.ON_CLOSE, new EventListener<Event>(){
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				directorio.setSistArchTipo((String) arg0.getData());
+			}
+		 });
+
+		 
+		 
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			directorio.setPltUsuario((PltUsuario)usuario);
 		}
