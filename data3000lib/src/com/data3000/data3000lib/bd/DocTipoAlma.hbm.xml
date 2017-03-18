@@ -57,7 +57,7 @@
             </column>
         </property>
         <property name="audiChecksum" type="string">
-            <column name="audi_checksum" length="200" not-null="true">
+            <column name="audi_checksum" length="200">
                 <comment>checksum del registro</comment>
             </column>
         </property>

@@ -3,6 +3,7 @@ package com.data3000.data3000lib.ngc;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 import com.data3000.admin.bd.PltUsuario;
 import com.data3000.data3000lib.bd.DocAcl;
@@ -13,6 +14,7 @@ import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
+import com.data3000.data3000lib.bd.DocTipoAlma;
 
 public interface SistemaArchivoNgc {
 	/**
@@ -46,7 +48,7 @@ public interface SistemaArchivoNgc {
 	 * @param listaCrearCampo
 	 * @throws Exception
 	 */
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
 	
 	/**
 	 * Actualiza en la base de datos un tipo de documento
@@ -57,7 +59,7 @@ public interface SistemaArchivoNgc {
 	 * @param listaCrearCampo
 	 * @throws Exception
 	 */
-	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<DocCampTipo> listaCrear, List<DocCampTipo> listaActualizar, List<DocCampTipo> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
+	public void actualizarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
 	
 	/**
 	 * Obtiene los tipos de documentos registrados
@@ -160,6 +162,39 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 */
 	public Path getArchivo(Long idVersion)  throws IOException;
+	
+	/**
+	 * Obtiene una serie Documental por su id
+	 * @param idSerie
+	 * @return
+	 * @throws IOException
+	 */
+	public DocSerieDoc getSerieDoc(long idSerie) throws IOException;
+	
+	/**
+	 * Obtiene las series hijas
+	 * @param padre
+	 * @param usuario 
+	 * @return
+	 */
+	public List<DocSerieDoc> getHijosSerie(DocSerieDoc padre, PltUsuario usuario)  throws Exception;
+	
+	
+	/**
+	 * Obtiene los tipos de almacenamiento de una serie documental
+	 * @param docSerieDoc
+	 * @return
+	 */
+	public List<DocTipoAlma> getTiposAlmacenamientoSerie(DocSerieDoc docSerieDoc);
+	
+	
+	/**
+	 * Retorna las series documentales asociadas a un directorio
+	 * @param dir
+	 * @return
+	 */
+	public List<DocSerieDoc> getSeriesDirectorio(DocSistArch dir);
+
 	
 	
 }

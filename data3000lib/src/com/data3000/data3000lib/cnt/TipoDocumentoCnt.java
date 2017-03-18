@@ -3,16 +3,21 @@ package com.data3000.data3000lib.cnt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import javax.print.Doc;
 
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -23,20 +28,26 @@ import org.zkoss.zul.Window;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.TipoCampo;
 import com.data3000.admin.utl.WindowComposer;
+import com.data3000.admin.vo.Dominio;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
+import com.data3000.data3000lib.utl.ConstantesData3000;
 
 public class TipoDocumentoCnt extends WindowComposer {
 	
 	
 	private Window winTipoDocumento;
+	private Textbox txtCodigo;
 	private Textbox txtNombre;
 	private Textbox txtDescripcion;
+	private Combobox cmbTipo;
+	private Combobox cmbSoporte;
 	private Listbox lstMetadato;
-	private Toolbarbutton btnNuevoCampo;
-	private Toolbarbutton btnEliminarCampo;
+	private Listbox lstAlma;
+	
 	
 	private SistemaArchivoNgc sistemaArchivoNgc;
 	
@@ -47,21 +58,33 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	private Logger logger = Logger.getLogger(this.getClass());
 	
-	private List<DocCampTipo> listaEliminar = new ArrayList<DocCampTipo>();
-	private List<DocCampTipo> listaActualizar = new ArrayList<DocCampTipo>();
-	private List<DocCampTipo> listaCrear = new ArrayList<DocCampTipo>();
+	private List<Object> listaEliminar = new ArrayList<>();
+	private List<Object> listaActualizar = new ArrayList<>();
+	private List<Object> listaCrear = new ArrayList<>();
+	
 	private List<DocCampo> listaCrearCampo = new ArrayList<DocCampo>();
 	
 	private DocSerieDoc docSerieDoc;
 	private List<DocCampTipo> listaCampos;
 	
+	private DocSerieDoc padre;
+	
 	
 	@Override
 	public void doAfterCompose(Window winTipoDocumento) throws Exception{		
 		super.doAfterCompose(winTipoDocumento);
-		docSerieDoc = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
-		if(docSerieDoc == null){
+		
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
+			padre = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			docSerieDoc = new DocSerieDoc();
+			
+		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			docSerieDoc = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+			padre = docSerieDoc.getSerieDocPadre();
+		}
+		
+		
+		if(docSerieDoc.getSerieDocIdn() == 0L){			
 			listaCampos = new ArrayList<DocCampTipo>();			
 		} else {
 			listaCampos = sistemaArchivoNgc.getCamposTipo(docSerieDoc);
@@ -83,8 +106,11 @@ public class TipoDocumentoCnt extends WindowComposer {
 	private void cargarDatos() throws Exception{
 		
 		if(docSerieDoc !=  null){
+			txtCodigo.setValue(docSerieDoc.getSerieDocCodigo());
 			txtNombre.setValue(docSerieDoc.getSerieDocNombre());
 			txtDescripcion.setValue(docSerieDoc.getSerieDocDescripcion());
+			seleccionarComboDominio(cmbTipo, docSerieDoc.getSerieDocTipo());
+			seleccionarComboDominio(cmbSoporte, docSerieDoc.getSerieDocSoporte());
 		}
 		
 		if(listaCampos != null && ! listaCampos.isEmpty()){
@@ -94,9 +120,170 @@ public class TipoDocumentoCnt extends WindowComposer {
 			
 		}
 		
+		List<DocTipoAlma> almas = sistemaArchivoNgc.getTiposAlmacenamientoSerie(docSerieDoc);
+		if(almas != null && ! almas.isEmpty()){
+			for(DocTipoAlma alma : almas){
+				agregarAlma(alma);
+			}
+		}
+		
 	}
 
+	
+	/**
+	 * metodo para agregar un nuevo campo al tipo de documento
+	 * @param evt
+	 */
+	public void onClick$btnNuevoAlma(Event evt){
+		try{
+			DocTipoAlma alma = new DocTipoAlma();
+			alma.setDocSerieDoc(docSerieDoc);
+			agregarAlma(alma);
+			listaCrear.add(alma);
+		} catch(Exception ex){
+			logger.error(new StringBuilder("Error al crear fila tipo campo: ").append(ex.getClass().getName()).append(": ").append(ex.getMessage()).toString(),ex);
+			Messagebox.show(ex.getMessage(), Labels.getLabel("data3000.error"), Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+	
+	public void onClick$btnEliminarAlma(Event evt){
+		
+		try{
+			while(true){
+				Listitem li = lstAlma.getSelectedItem();
+				if(li == null){
+					break;
+				}
+				if(li != null){				
+					DocTipoAlma campoAlma = li.getValue();				
+					if(campoAlma != null && campoAlma.getTipoAlmaIdn() > 0L){
+						listaEliminar.add(campoAlma);					
+					} else {
+						listaCrear.remove(campoAlma);
+					}
+					
+					lstAlma.removeChild(li);				
+				}
+			}
+			
+		} catch(Exception ex){
+			logger.error(new StringBuilder("Error al eliminar fila alma: ").append(ex.getClass().getName()).append(": ").append(ex.getMessage()).toString(),ex);
+			Messagebox.show(ex.getMessage(), Labels.getLabel("data3000.error"), Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+	
+	
+	
+	private void agregarAlma(final DocTipoAlma alma) throws Exception{
+		Listitem li = new Listitem();
+		
+		
+		
+		
+		final Textbox txtNombre = new Textbox();
+		txtNombre.setValue(alma.getTipoAlmaNombre());
+		txtNombre.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
 
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				
+				
+				
+				alma.setTipoAlmaNombre(txtNombre.getText());
+				if(alma.getTipoAlmaIdn() > 0L && ! listaActualizar.contains(alma)){
+					listaActualizar.add(alma);
+				}
+			}
+		});
+		
+		
+		Listcell celdaNombre = new Listcell();
+		celdaNombre.appendChild(txtNombre);		
+		li.appendChild(celdaNombre);
+		
+		
+		final Textbox txtDescripcion = new Textbox();
+		txtDescripcion.setValue(alma.getTipoAlmaDescripcion());
+		txtDescripcion.setWidth("100%");
+		txtDescripcion.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				alma.setTipoAlmaDescripcion(txtDescripcion.getText());
+				if(alma.getTipoAlmaIdn() > 0L && ! listaActualizar.contains(alma)){
+					listaActualizar.add(alma);
+				}
+			}
+		});
+		
+		
+		Listcell celdaDescripcion = new Listcell();
+		celdaDescripcion.appendChild(txtDescripcion);		
+		li.appendChild(celdaDescripcion);
+		
+		
+		final Intbox intEdad = new Intbox();
+		int valorInt = 0;
+		
+		Short valorEdad = alma.getTipoAlmaEdad();
+		if(valorEdad != null){
+			valorInt = valorEdad.intValue();
+		}
+		
+		
+		intEdad.setValue(valorInt);
+		intEdad.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				short valor = 0;
+				Integer valorInt = intEdad.getValue();
+				if(valorInt != null){
+					valor = valorInt.shortValue();
+				}
+				
+				alma.setTipoAlmaEdad(valor);
+				if(alma.getTipoAlmaIdn() > 0L && ! listaActualizar.contains(alma)){
+					listaActualizar.add(alma);
+				}
+			}
+		});
+		
+		
+		Listcell celdaEdad = new Listcell();
+		celdaEdad.appendChild(intEdad);		
+		li.appendChild(celdaEdad);
+		
+		final Combobox cmbDisposicion = new Combobox();
+		cmbDisposicion.setAttribute(ConstantesAdmin.DOMINIO, "DISPOSICION_FINAL");
+		llenarComboDominio(cmbDisposicion, "DISPOSICION_FINAL");
+		seleccionarComboDominio(cmbDisposicion, alma.getTipoAlmaDispfinal());
+		
+		
+		cmbDisposicion.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				
+				Comboitem ci = cmbDisposicion.getSelectedItem();
+				Dominio dominio = (Dominio) ci.getValue();
+				if(dominio == null){
+					throw new WrongValueException(cmbDisposicion, Labels.getLabel("error.1007"));
+				}
+				alma.setTipoAlmaDispfinal(dominio.getValor());
+				if(alma.getTipoAlmaIdn() > 0L && ! listaActualizar.contains(alma)){
+					listaActualizar.add(alma);
+				}
+			}
+		});
+		
+		Listcell celdaDisposicion = new Listcell();
+		celdaDisposicion.appendChild(cmbDisposicion);		
+		li.appendChild(celdaDisposicion);
+		
+		li.setValue(alma);
+		lstAlma.appendChild(li);
+	}
 
 
 	/**
@@ -173,9 +360,9 @@ public class TipoDocumentoCnt extends WindowComposer {
 		
 		
 		TipoCampo[] tipos = TipoCampo.values();
-		final Combobox cmbTipo = new Combobox();
-		cmbTipo.setConstraint("no empty");
-		cmbTipo.setReadonly(true);
+		final Combobox cmbTipoCampo = new Combobox();
+		cmbTipoCampo.setConstraint("no empty");
+		cmbTipoCampo.setReadonly(true);
 		for(TipoCampo tipo : tipos){
 			
 			Comboitem ci = new Comboitem();
@@ -186,17 +373,17 @@ public class TipoDocumentoCnt extends WindowComposer {
 			}
 			ci.setLabel(nombre);
 			ci.setValue(tipo);
-			cmbTipo.appendChild(ci);
+			cmbTipoCampo.appendChild(ci);
 			
 			if(tipoCampo != null && ((int) tipoCampo.getCampoTipo()) == tipo.getId()){
-				cmbTipo.setSelectedItem(ci);
+				cmbTipoCampo.setSelectedItem(ci);
 			}
 		}
 		
 		
 		
 		Listcell celdaTipo = new Listcell();
-		celdaTipo.appendChild(cmbTipo);		
+		celdaTipo.appendChild(cmbTipoCampo);		
 		li.appendChild(celdaTipo);
 		
 		final Textbox txtDescripcion = new Textbox();
@@ -217,7 +404,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 		li.appendChild(celdaRequerido);
 		
 		li.setAttribute(TIPO_NOMBRE, cmbCampo);
-		li.setAttribute(TIPO_TIPO, cmbTipo);
+		li.setAttribute(TIPO_TIPO, cmbTipoCampo);
 		li.setAttribute(TIPO_DESCRIPCION, txtDescripcion);
 		li.setAttribute(TIPO_REQUERIDO, chkRequerido);
 		
@@ -231,19 +418,19 @@ public class TipoDocumentoCnt extends WindowComposer {
 					
 					DocCampo campo = ci.getValue();
 					
-					cmbTipo.setDisabled(true);
+					cmbTipoCampo.setDisabled(true);
 					txtDescripcion.setDisabled(true);
-					for(Comboitem ciTipo : cmbTipo.getItems()){
+					for(Comboitem ciTipo : cmbTipoCampo.getItems()){
 						TipoCampo tipo = ciTipo.getValue();
 						if(tipo.getId() == (int)campo.getCampoTipo()){
-							cmbTipo.setSelectedItem(ciTipo);
+							cmbTipoCampo.setSelectedItem(ciTipo);
 							break;
 						}
 					}
 					txtDescripcion.setValue(campo.getCampoDescripcion());
 				} else {
-					cmbTipo.setDisabled(false);
-					cmbTipo.setSelectedIndex(-1);
+					cmbTipoCampo.setDisabled(false);
+					cmbTipoCampo.setSelectedIndex(-1);
 					
 					txtDescripcion.setValue(null);
 					txtDescripcion.setDisabled(false);
@@ -254,7 +441,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 		
 		
 		if(camposeleccionado != null){
-			cmbTipo.setDisabled(true);
+			cmbTipoCampo.setDisabled(true);
 			txtDescripcion.setDisabled(true);
 		}
 		
@@ -292,14 +479,99 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	private void establecerDatos() throws Exception {
 		
-		docSerieDoc.setSerieDocDescripcion(txtNombre.getValue());
+		docSerieDoc.setSerieDocCodigo(txtCodigo.getValue());
+		docSerieDoc.setSerieDocNombre(txtNombre.getValue());
 		docSerieDoc.setSerieDocDescripcion(txtDescripcion.getValue());
+		String tipoSerie = getSeleccionComboDominio(cmbTipo, true);
+		docSerieDoc.setSerieDocTipo(tipoSerie);
+		docSerieDoc.setSerieDocSoporte(getSeleccionComboDominio(cmbSoporte, true));
+		
+		if(tipoSerie.equals(ConstantesData3000.SERIE)){
+			docSerieDoc.setSerieDocPadre(null);
+		} else {
+			if(padre == null){
+				throw new WrongValueException(cmbTipo, Labels.getLabel("error.1008"));
+			}
+			docSerieDoc.setSerieDocPadre(padre);
+		}
 		
 		docSerieDoc.setAudiFechModi(new Date());
 		docSerieDoc.setAudiChecksum(null);
 		docSerieDoc.setAudiMotiAnul(null);
 		docSerieDoc.setAudiSiAnul(false);
 		docSerieDoc.setAudiUsuario(usuario.getLogin());
+		
+		
+		//recorrer la lista de crear y actualizar para establecer los datos de auditoria
+		for(Object obj : listaCrear){
+			if(obj instanceof DocTipoAlma){
+				DocTipoAlma alma = (DocTipoAlma)obj;
+				
+				alma.setAudiFechModi(new Date());
+				alma.setAudiChecksum(null);
+				alma.setAudiMotiAnul(null);
+				alma.setAudiSiAnul(false);
+				alma.setAudiUsuario(usuario.getLogin());
+			} else if(obj instanceof DocCampTipo) {
+				
+				DocCampTipo campoTipo = (DocCampTipo) obj;
+				
+				
+				campoTipo.setAudiFechModi(new Date());
+				campoTipo.setAudiChecksum(null);
+				campoTipo.setAudiMotiAnul(null);
+				campoTipo.setAudiSiAnul(false);
+				campoTipo.setAudiUsuario(usuario.getLogin());
+				
+			}
+		}
+		
+		for(Object obj : listaActualizar){
+			if(obj instanceof DocTipoAlma){
+				DocTipoAlma alma = (DocTipoAlma)obj;
+				
+				alma.setAudiFechModi(new Date());
+				alma.setAudiChecksum(null);
+				alma.setAudiMotiAnul(null);
+				alma.setAudiSiAnul(false);
+				alma.setAudiUsuario(usuario.getLogin());
+			} else if(obj instanceof DocCampTipo) {
+				
+				DocCampTipo campoTipo = (DocCampTipo) obj;
+				
+				
+				campoTipo.setAudiFechModi(new Date());
+				campoTipo.setAudiChecksum(null);
+				campoTipo.setAudiMotiAnul(null);
+				campoTipo.setAudiSiAnul(false);
+				campoTipo.setAudiUsuario(usuario.getLogin());
+				
+			}
+		}
+		
+		for(Object obj : listaEliminar){
+			if(obj instanceof DocTipoAlma){
+				DocTipoAlma alma = (DocTipoAlma)obj;
+				
+				alma.setAudiFechModi(new Date());
+				alma.setAudiChecksum(null);
+				alma.setAudiMotiAnul(null);
+				alma.setAudiSiAnul(true);
+				alma.setAudiUsuario(usuario.getLogin());
+			} else if(obj instanceof DocCampTipo) {
+				
+				DocCampTipo campoTipo = (DocCampTipo) obj;
+				
+				
+				campoTipo.setAudiFechModi(new Date());
+				campoTipo.setAudiChecksum(null);
+				campoTipo.setAudiMotiAnul(null);
+				campoTipo.setAudiSiAnul(true);
+				campoTipo.setAudiUsuario(usuario.getLogin());
+				
+			}
+		}
+		
 		
 		int orden = 0;
 		for(Listitem li : lstMetadato.getItems()){
@@ -367,14 +639,14 @@ public class TipoDocumentoCnt extends WindowComposer {
 		 
 		
 		Combobox cmbCampo = (Combobox) li.getAttribute(TIPO_NOMBRE);
-		Combobox cmbTipo = (Combobox) li.getAttribute(TIPO_TIPO);
+		Combobox cmbTipoCampo = (Combobox) li.getAttribute(TIPO_TIPO);
 		Textbox txtDescripcion = (Textbox) li.getAttribute(TIPO_DESCRIPCION);
 		
 		
 		Comboitem ci = cmbCampo.getSelectedItem();
 			
 		DocCampo campo = null;		
-		TipoCampo tipo = cmbTipo.getSelectedItem().getValue();
+		TipoCampo tipo = cmbTipoCampo.getSelectedItem().getValue();
 		String descripcion = txtDescripcion.getValue();
 		
 		if(ci == null){

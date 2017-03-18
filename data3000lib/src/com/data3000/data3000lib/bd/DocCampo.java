@@ -138,5 +138,10 @@ public class DocCampo implements java.io.Serializable {
 	public void setDocCampArches(Set<DocCampArch> docCampArches) {
 		this.docCampArches = docCampArches;
 	}
+	
+	@Override
+	public String toString(){
+		return getCampoNombre();
+	}
 
 }

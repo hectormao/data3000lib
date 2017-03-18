@@ -143,4 +143,5 @@ public class DocCampTipo implements java.io.Serializable {
 		this.audiChecksum = audiChecksum;
 	}
 
+	
 }

@@ -50,7 +50,7 @@ public class EscritorioCnt extends WindowComposer {
 	
 	
 	private SistemaArchivoNgc sistemaArchivoNgc;
-	private PlataformaNgc plataformaNgc;
+	
 	
 	private Div divTrabajo;
 	
@@ -535,13 +535,7 @@ public class EscritorioCnt extends WindowComposer {
 		this.sistemaArchivoNgc = sistemaArchivoNgc;
 	}
 
-	public PlataformaNgc getPlataformaNgc() {
-		return plataformaNgc;
-	}
-
-	public void setPlataformaNgc(PlataformaNgc plataformaNgc) {
-		this.plataformaNgc = plataformaNgc;
-	}
+	
 	
 	
 	
