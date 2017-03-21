@@ -1,10 +1,15 @@
 package com.data3000.data3000lib.cnt;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.zkoss.util.media.Media;
@@ -16,6 +21,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -50,6 +56,8 @@ import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
+import com.data3000.data3000lib.utl.Anexo;
+import com.data3000.data3000lib.utl.ConstantesData3000;
 
 public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer<DocCampTipo> {
 
@@ -67,13 +75,22 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 	private Textbox txtDescripcion;
 	private Textbox txtTagVersion;
 	private Tree trPermisos;
+	private Listbox lstAnexo;
 
 	private Media archivo;
 
 	private DocSistArch directorio;
 
 	private Logger logger = Logger.getLogger(this.getClass());
-
+	
+	
+	private String rutaTmp;
+	
+	class AnexoTmp {
+		String nombreArchivo;
+		Path archivoTmp;
+	}
+	
 	@Override
 	public void doAfterCompose(Window winTipoDocumento) throws Exception {
 		super.doAfterCompose(winTipoDocumento);
@@ -84,7 +101,10 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 		txtTagVersion.setValue(sdf.format(new Date()));
 
 		directorio = (DocSistArch) argumentos.get(ConstantesAdmin.OBJETO_PADRE);
-
+		
+		
+		rutaTmp = plataformaNgc.getEnv(ConstantesData3000.RUTA_TMP);
+		
 		cargarArbolPermisos();
 		
 		cargarArbolSeries();
@@ -115,7 +135,90 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 	}
 	
 	
+	public void onClick$btnNuevoAnexo(Event evt){
+		
+		final Listitem li = new Listitem();
+		
+		Listcell cldArchivo = new Listcell();
+		final Textbox txtNombreArchivo = new Textbox();
+		txtNombreArchivo.setWidth("90%");
+		txtNombreArchivo.setReadonly(true);
+		cldArchivo.appendChild(txtNombreArchivo);		
+		li.appendChild(cldArchivo);
+		
+		Listcell cldBoton = new Listcell();
+		final Button btnCarga = new Button();
+		btnCarga.setWidth("80%");
+		btnCarga.setUpload("zk.Data3000UF");
+		btnCarga.setLabel("...");
+		cldBoton.appendChild(btnCarga);
+		
+		btnCarga.addEventListener(Events.ON_UPLOAD, new EventListener<Event>() {
 
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				
+				UploadEvent evtUpd = (UploadEvent) arg0;
+				
+				Media archivo = evtUpd.getMedia();
+				
+				txtNombreArchivo.setValue(archivo.getName());
+				
+				Path tmp = Paths.get(rutaTmp);
+				
+				if(! Files.exists(tmp)){
+					Files.createDirectories(tmp);
+				}
+				
+				Path ruta = Files.createTempFile(tmp,"ANX_", ".tmp");
+				
+				AnexoTmp anexo = new AnexoTmp();
+				anexo.archivoTmp = ruta;
+				anexo.nombreArchivo = archivo.getName();
+				
+				Files.write(ruta, archivo.getByteData(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+				
+				li.setValue(anexo);
+				
+				btnCarga.setDisabled(true);
+				
+				
+				
+			}
+		});
+		
+		
+		li.appendChild(cldBoton);
+		
+		lstAnexo.appendChild(li);
+		
+		
+	}
+	
+	public void onClick$btnEliminarAnexo(Event evt) throws Exception{
+		
+		int idx = 0;
+		while(idx < lstAnexo.getItemCount()){
+			
+			Listitem li = lstAnexo.getItemAtIndex(idx);
+			
+			if(li.isSelected()){
+			
+				AnexoTmp anexo = li.getValue();
+				if(anexo != null){
+					Path ruta = anexo.archivoTmp;
+					Files.deleteIfExists(ruta);
+				}
+				
+				lstAnexo.removeChild(li);
+				idx = 0;
+			} else {
+				idx ++;
+			}
+		}
+		
+		
+	}
 	
 
 	private void cargarArbolSeries(Treechildren hijosSerie, DocSerieDoc serie) throws Exception {
@@ -432,8 +535,33 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 			Treechildren hijosRaiz = trPermisos.getTreechildren();
 			tomarPermisos(docArchivo, permisos, hijosRaiz);
 			
+			List<Anexo> anexos = new ArrayList<>();
 			
-			sistemaArchivoNgc.cargarArchivo(docArchivo, version, archivo.getByteData(), listaMeta, permisos);
+			for(Listitem li : lstAnexo.getItems()){
+				AnexoTmp anexoTmp = li.getValue();
+				if(anexoTmp != null){
+					Anexo anexo = new Anexo();
+					
+					anexo.setArchVersChecksum("XXX");
+					anexo.setArchVersDescripcion(null);
+					anexo.setArchVersRuta("XXX");
+					anexo.setArchVersTag(null);
+					anexo.setAudiChecksum(null);
+					anexo.setAudiFechModi(new Date());
+					anexo.setAudiSiAnul(false);
+					anexo.setAudiUsuario(usuario.getLogin());
+					anexo.setDocArchivo(docArchivo);
+					anexo.setAudiMotiAnul(null);
+					anexo.setDocArchivoVersion(version);
+					anexo.setArchivoTmp(anexoTmp.archivoTmp);
+					anexo.setNombreArchivo(anexoTmp.nombreArchivo);
+					
+					anexos.add(anexo);
+				}
+			}
+			
+			
+			sistemaArchivoNgc.cargarArchivo(docArchivo, version, archivo.getByteData(), listaMeta, permisos, anexos);
 
 			Events.sendEvent(new Event(Events.ON_CLOSE, this.self, ConstantesAdmin.EXITO));
 		} catch (Exception ex) {

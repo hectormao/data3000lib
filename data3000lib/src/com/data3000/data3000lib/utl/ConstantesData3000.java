@@ -13,6 +13,7 @@ public class ConstantesData3000 {
 	 */
 	
 	public static final String RUTA_ARCHIVOS = "RUTA_ARCHIVOS"; 
+	public static final String RUTA_TMP = "RUTA_TMP";
 	
 	
 	/* ==========================================================

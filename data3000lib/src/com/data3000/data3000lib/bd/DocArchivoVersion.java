@@ -35,6 +35,8 @@ public class DocArchivoVersion implements java.io.Serializable {
 	private String audiMotiAnul;
 	private String audiChecksum;
 	private Set<DocCampArch> docCampArches = new HashSet<DocCampArch>(0);
+	
+	private DocArchivoVersion docArchivoVersion;
 
 	public DocArchivoVersion() {
 	}
@@ -53,7 +55,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 
 	public DocArchivoVersion(long archVersIdn, DocArchivo docArchivo, String archVersTag, String archVersRuta,
 			String archVersChecksum, String archVersDescripcion, String audiUsuario, Date audiFechModi,
-			boolean audiSiAnul, String audiMotiAnul, String audiChecksum, Set<DocCampArch> docCampArches) {
+			boolean audiSiAnul, String audiMotiAnul, String audiChecksum, Set<DocCampArch> docCampArches, DocArchivoVersion docArchivoVersion) {
 		this.archVersIdn = archVersIdn;
 		this.docArchivo = docArchivo;
 		this.archVersTag = archVersTag;
@@ -66,6 +68,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 		this.audiMotiAnul = audiMotiAnul;
 		this.audiChecksum = audiChecksum;
 		this.docCampArches = docCampArches;
+		this.docArchivoVersion = docArchivoVersion;
 	}
 
 	public long getArchVersIdn() {
@@ -163,5 +166,15 @@ public class DocArchivoVersion implements java.io.Serializable {
 	public void setDocCampArches(Set<DocCampArch> docCampArches) {
 		this.docCampArches = docCampArches;
 	}
+
+	public DocArchivoVersion getDocArchivoVersion() {
+		return docArchivoVersion;
+	}
+
+	public void setDocArchivoVersion(DocArchivoVersion docArchivoVersion) {
+		this.docArchivoVersion = docArchivoVersion;
+	}
+	
+	
 
 }

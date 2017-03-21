@@ -26,6 +26,7 @@ import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.dao.SistemaArchivoDAO;
+import com.data3000.data3000lib.utl.Anexo;
 import com.data3000.data3000lib.utl.ConstantesData3000;
 
 public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
@@ -121,10 +122,10 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 
 	@Override
-	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception {
+	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos, List<Anexo> anexos) throws Exception {
 		
 		
-		sistemaArchivoDAO.registrarArchivo(docArchivo,version, listaMeta, permisos);
+		sistemaArchivoDAO.registrarArchivo(docArchivo,version, listaMeta, permisos, anexos);
 		
 		try{
 			Path archivo = getRutaArchivo(version);
@@ -137,7 +138,23 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 			//actualizar ruta de la version
 			version.setArchVersRuta(archivo.toAbsolutePath().toString());
 			
-			sistemaArchivoDAO.update(version);
+			
+			
+			for(Anexo anexo : anexos){
+				Path ruta = getRutaArchivo(anexo);
+				Files.move(anexo.getArchivoTmp(), ruta);
+				
+				byte[] dataAnx = Files.readAllBytes(ruta);				
+				//calcular checksum 
+				String checksumAnx = calcularChecksum(dataAnx);
+				anexo.setArchVersChecksum(checksumAnx);
+				//actualizar ruta de la version
+				anexo.setArchVersRuta(ruta.toAbsolutePath().toString());
+				
+			}
+			
+			sistemaArchivoDAO.modificarVersion(version,anexos);
+			
 		} catch (Exception e) {
 			//eliminar version
 			sistemaArchivoDAO.delete(version);
@@ -174,9 +191,27 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 			
 			String nombreDirectorio = new StringBuilder("DIR_").append(version.getDocArchivo().getDocSistArch().getSistArchIdn()).toString();
 			String nombreArchivo = new StringBuilder("ARC_").append(version.getDocArchivo().getArchIdn()).toString();
-			String nombreVersion = new StringBuilder("VER_").append(version.getArchVersIdn()).toString();
 			
-			Path archivo = Paths.get(rutaArchivos, nombreDirectorio, nombreArchivo, nombreVersion, version.getDocArchivo().getArchNombre());
+			
+			Long idVersion = null;
+			String nombre = null;
+			
+			if(version instanceof Anexo){
+				DocArchivoVersion padre = version.getDocArchivoVersion();
+				// es un anexo entonces tomo el id de version del padre
+				idVersion = padre.getArchVersIdn();
+				nombre = ((Anexo)version).getNombreArchivo();
+			} else {
+				// es el archivo normal entonces tomo el id de la version
+				idVersion = version.getArchVersIdn();
+				nombre = version.getDocArchivo().getArchNombre();
+			}
+			String nombreVersion = new StringBuilder("VER_").append(idVersion).toString();
+			
+			
+			
+			
+			Path archivo = Paths.get(rutaArchivos, nombreDirectorio, nombreArchivo, nombreVersion, nombre);
 			if(! Files.exists(archivo.getParent())){
 				Files.createDirectories(archivo.getParent());
 			}

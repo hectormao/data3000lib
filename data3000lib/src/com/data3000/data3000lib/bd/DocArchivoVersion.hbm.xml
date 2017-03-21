@@ -16,8 +16,13 @@
                 <comment>Identificador del archivo al que pertenece la versi&#195;&#179;n</comment>
             </column>
         </many-to-one>
+        <many-to-one name="docArchivoVersion" class="com.data3000.data3000lib.bd.DocArchivoVersion" fetch="select">
+            <column name="arch_vers_padre" precision="10" scale="0" not-null="false">
+                <comment>Identificador de la versión a la que pertenece el anexo</comment>
+            </column>
+        </many-to-one>
         <property name="archVersTag" type="string">
-            <column name="arch_vers_tag" length="50" not-null="true">
+            <column name="arch_vers_tag" length="50" not-null="false">
                 <comment>Tag o c&#195;&#179;digo con el que se identifica la version</comment>
             </column>
         </property>
