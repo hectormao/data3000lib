@@ -1,6 +1,8 @@
 package com.data3000.data3000lib.bd;
 // Generated 11/03/2017 08:16:33 AM by Hibernate Tools 3.5.0.Final
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,19 +19,19 @@ public class DocArchivoVersion implements java.io.Serializable {
 	private long archVersIdn;
 	private DocArchivo docArchivo;
 	
-	@Columna(orden=1)
+	@Columna(orden=1, aplica={"form.1008"})
 	private String archVersTag;
 	
 	private String archVersRuta;
 	private String archVersChecksum;
 	
-	@Columna(orden=2)
+	@Columna(orden=3, aplica={"form.1008"})
 	private String archVersDescripcion;
 	
-	@Columna(orden=3)
+	@Columna(orden=4)
 	private String audiUsuario;
 	
-	@Columna(orden=4)
+	@Columna(orden=5)
 	private Date audiFechModi;
 	private boolean audiSiAnul;
 	private String audiMotiAnul;
@@ -37,6 +39,9 @@ public class DocArchivoVersion implements java.io.Serializable {
 	private Set<DocCampArch> docCampArches = new HashSet<DocCampArch>(0);
 	
 	private DocArchivoVersion docArchivoVersion;
+	
+	@Columna(orden=2, aplica={"form.1019"})
+	private String nombreArchivo;
 
 	public DocArchivoVersion() {
 	}
@@ -47,6 +52,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 		this.docArchivo = docArchivo;
 		this.archVersTag = archVersTag;
 		this.archVersRuta = archVersRuta;
+		extraerNombreArchivo(archVersRuta);
 		this.archVersChecksum = archVersChecksum;
 		this.audiUsuario = audiUsuario;
 		this.audiFechModi = audiFechModi;
@@ -60,6 +66,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 		this.docArchivo = docArchivo;
 		this.archVersTag = archVersTag;
 		this.archVersRuta = archVersRuta;
+		extraerNombreArchivo(archVersRuta);
 		this.archVersChecksum = archVersChecksum;
 		this.archVersDescripcion = archVersDescripcion;
 		this.audiUsuario = audiUsuario;
@@ -70,7 +77,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 		this.docCampArches = docCampArches;
 		this.docArchivoVersion = docArchivoVersion;
 	}
-
+	
 	public long getArchVersIdn() {
 		return this.archVersIdn;
 	}
@@ -101,6 +108,7 @@ public class DocArchivoVersion implements java.io.Serializable {
 
 	public void setArchVersRuta(String archVersRuta) {
 		this.archVersRuta = archVersRuta;
+		extraerNombreArchivo(archVersRuta);
 	}
 
 	public String getArchVersChecksum() {
@@ -174,7 +182,20 @@ public class DocArchivoVersion implements java.io.Serializable {
 	public void setDocArchivoVersion(DocArchivoVersion docArchivoVersion) {
 		this.docArchivoVersion = docArchivoVersion;
 	}
+
+	public String getNombreArchivo() {
+		return nombreArchivo;
+	}
+
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
+	}
 	
-	
+	private void extraerNombreArchivo(String ruta){
+		Path path = Paths.get(ruta);
+		
+		setNombreArchivo(path.getFileName().toString());
+		
+	}
 
 }
