@@ -413,6 +413,7 @@ public class EscritorioCnt extends WindowComposer {
 			Treeitem tiRaiz = new Treeitem();
 			tiRaiz.setLabel(docSistArch.getSistArchNombre());
 			tiRaiz.setValue(docSistArch);
+			tiRaiz.setImage("img/iconos/entidad.png");
 			raiz.appendChild(tiRaiz);
 			
 			Treechildren hijosRaiz = new Treechildren();
@@ -456,6 +457,11 @@ public class EscritorioCnt extends WindowComposer {
 				celda.setTooltiptext(hijo.getSistArchDescripcion());
 				fila.appendChild(celda);
 				item.appendChild(fila);
+				if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA)){
+					item.setImage("img/iconos/dependencia.png");
+				}else if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO)){
+					item.setImage("img/iconos/direct.png");
+				}
 				fila.setContext(menuArchivo);
 				fila.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
 
