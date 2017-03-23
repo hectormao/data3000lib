@@ -51,9 +51,25 @@
 		</listbox>
 	</groupbox>
 	</vbox>
-	<groupbox vflex="1">
+	<vbox>
+	<groupbox >
+		<caption>${labels.data3000.anexos}</caption>
+		<toolbar>
+			<toolbarbutton id="btnNuevoAnexo" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.anexo}"></toolbarbutton>
+			<toolbarbutton id="btnEliminarAnexo" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.anexo}"></toolbarbutton>
+		</toolbar>
+		<listbox id="lstAnexo" rows="2" multiple="true" checkmark="true">
+			<listhead>
+				<listheader label="${labels.data3000.archivo}" ></listheader>
+				<listheader label="${labels.data3000.agregar.archivo}" width="20%"></listheader>
+			</listhead>
+		</listbox>
+		<separator height="26px"></separator>
+	</groupbox>
+	<groupbox >
+	
 					<caption label="${labels.data3000.seguridad}"></caption>
-						<tree id="trPermisos" vflex="1" width="100%" height="100%">
+						<tree id="trPermisos" rows="8">
 							<treecols>
 								<treecol
 									label="${labels.data3000.rolusuario}" />
@@ -63,7 +79,9 @@
 									label="${labels.data3000.siEscritura}" width="10%"/>
 							</treecols>
 						</tree>
+						<separator height="21px"></separator>
 					</groupbox>
+	</vbox>
 	</hbox>
 	<div width="100%" align="center">
 	<hbox>

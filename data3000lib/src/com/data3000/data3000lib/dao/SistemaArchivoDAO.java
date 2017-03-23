@@ -23,6 +23,7 @@ import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.utl.ConstantesData3000;
+import com.data3000.data3000lib.utl.Anexo;
 
 public class SistemaArchivoDAO extends PltDAO{
 	
@@ -296,7 +297,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarArchivo(DocArchivo docArchivo, DocArchivoVersion version, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception{
+	public void registrarArchivo(DocArchivo docArchivo, DocArchivoVersion version, List<DocCampArch> listaMeta, List<DocAcl> permisos, List<Anexo> anexos) throws Exception{
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -317,6 +318,10 @@ public class SistemaArchivoDAO extends PltDAO{
 			
 			for(DocAcl acl : permisos){
 				sesion.save(acl);
+			}
+			
+			for(Anexo anexo : anexos){
+				sesion.save(DocArchivoVersion.class.getName(), anexo);
 			}
 			
 			tx.commit();
@@ -830,6 +835,34 @@ public class SistemaArchivoDAO extends PltDAO{
 				session.close();
 			}
 		}
+	}
+
+
+	public void modificarVersion(DocArchivoVersion version, List<Anexo> anexos) {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			sesion.update(version);
+			
+			for(Anexo anexo : anexos){
+				sesion.update(DocArchivoVersion.class.getName(), anexo);
+			}
+			
+			tx.commit();
+		} catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		}finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+		
 	}
 
 

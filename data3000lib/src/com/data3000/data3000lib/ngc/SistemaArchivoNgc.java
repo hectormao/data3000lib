@@ -16,6 +16,7 @@ import com.data3000.data3000lib.bd.DocSerieDoc;
 import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
+import com.data3000.data3000lib.utl.Anexo;
 
 public interface SistemaArchivoNgc {
 	/**
@@ -83,7 +84,7 @@ public interface SistemaArchivoNgc {
 	 * @param permisos 
 	 * @param archivo
 	 */
-	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos) throws Exception;
+	public void cargarArchivo(DocArchivo docArchivo, DocArchivoVersion version, byte[] data, List<DocCampArch> listaMeta, List<DocAcl> permisos, List<Anexo> anexos) throws Exception;
 	
 	/**
 	 * Anula o elimina un tipo de archivo del sistema
