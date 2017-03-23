@@ -13,6 +13,7 @@ import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
 
@@ -96,7 +97,7 @@ public interface SistemaArchivoNgc {
 	 * @param directorio
 	 * @param permisos
 	 */
-	public void registrarDirectorio(DocSistArch directorio,	List<DocAcl> permisos) throws Exception;
+	public long registrarDirectorio(DocSistArch directorio,	List<DocAcl> permisos) throws Exception;
 	
 	
 	
@@ -194,6 +195,23 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 */
 	public List<DocSerieDoc> getSeriesDirectorio(DocSistArch dir);
+    /**
+     * returna todas las entidades
+     * @return
+     */
+	public List<DocSistArch> getEntidades();
+	
+	/**
+	 * metodo para optener todas las series documentales para relacionar sistema de 
+	 * archivos con series
+	 * @return
+	 */
+	public List<DocSerieDoc> getSeriesDocumentales();
+	/**
+	 * metodo que registra las relaciones entre series y sistemas de archivos
+	 * @param docSerieSist
+	 */
+	public void RegistrarSeriesSistema(DocSerieSist docSerieSist);
 
 	
 	

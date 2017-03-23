@@ -1,17 +1,31 @@
 <?page title="Directorio" contentType="text/html;charset=UTF-8"?>
 <zk>
 
-	<window id="winSistemaArchivos" title="Directorio" border="normal"
-		width="60%" height="80%" sizable="true" maximizable="true"
-		closable="true" apply="${directorioCnt}">
-		<borderlayout>
-			
+	<window id="winSistemaArchivos" title="Sistema de archivos" border="normal"
+		width="60%" height="550px" sizable="true" maximizable="true"
+		closable="true" apply="${dependenciaCnt}">
+		<borderlayout height="150px">
+			<north size="150px" border="none">
+				<groupbox >
+					<caption label="${labels.data3000.seriesDoc}">
+					</caption>
+					<listbox height="100px" id="lbxSeriesDoc" multiple="true" checkmark="true">
+						<listhead>
+							<listheader
+								label="${labels.data3000.serie}">
+							</listheader>
+						</listhead>
+
+					</listbox>
+				</groupbox>
+			</north>
+		</borderlayout>
+		<borderlayout height="350px">
 			<center border="none">
 				<borderlayout>
-					<north size="140px" border="none">
-						<groupbox height="100%">
-							<caption
-								label="${labels.data3000.datos}">
+					<north size="150px" border="none">
+						<groupbox height="90%">
+							<caption label="${labels.data3000.datos}">
 							</caption>
 							<vbox width="100%">
 								<hbox width="50%">
@@ -40,8 +54,7 @@
 						</groupbox>
 					</north>
 					<center border="none">
-
-						<groupbox height="100%">
+						<groupbox height="150px">
 							<caption
 								label="${labels.data3000.seguridad}">
 							</caption>
@@ -57,11 +70,10 @@
 								</treecols>
 							</tree>
 						</groupbox>
-
 					</center>
 				</borderlayout>
 			</center>
-			<south size="30px" border="none">
+			<south size="40px" border="none" top="10px">
 				<hbox align="center" pack="center" width="100%">
 					<button id="btnAceptar"
 						label="${labels.app.aceptar}" />

@@ -1,5 +1,6 @@
 package com.data3000.data3000lib.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -8,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.mapping.Value;
 
 import com.data3000.admin.dao.PltDAO;
 import com.data3000.data3000lib.bd.DocAcl;
@@ -17,8 +19,10 @@ import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
+import com.data3000.data3000lib.utl.ConstantesData3000;
 
 public class SistemaArchivoDAO extends PltDAO{
 	
@@ -328,7 +332,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception{
+	public long registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception{
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -353,6 +357,8 @@ public class SistemaArchivoDAO extends PltDAO{
 				sesion.close();
 			}
 		}
+		
+		return  directorio.getSistArchIdn();
 		
 	}
 
@@ -753,6 +759,75 @@ public class SistemaArchivoDAO extends PltDAO{
 		}finally{
 			if(sesion.isOpen()){
 				sesion.close();
+			}
+		}
+	}
+	
+	/**
+	 * metodo para cargar las entidades del sistema
+	 * @return
+	 */
+	public List<DocSistArch> getEntidades(){
+		
+		Session session = super.getSessionFactory().getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocSistArch> lista = new ArrayList<DocSistArch>();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocSistArch.class.getName()).append(" as o");
+			hql.append(" where o.sistArchTipo = '").append(ConstantesData3000.SISTEMA_ARCHIVO_ENTIDAD).append("'");
+			hql.append(" and o.docSistArch is null and o.audiSiAnul = false");
+			Query  query = session.createQuery(hql.toString());
+			lista = query.list();
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+	}
+	
+	public List<DocSerieDoc> getSeriesDocumentales(){
+		Session session = super.getSessionFactory().getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocSerieDoc.class.getName()).append(" as o");
+			hql.append(" where o.audiSiAnul = ").append(false);
+			Query query = session.createQuery(hql.toString());
+			lista = query.list();
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+	}
+	
+	public void registrarSeriesSistema(DocSerieSist docSerieSist){
+		Session session = super.sessionFactory.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			session.save(docSerieSist);
+			tx.commit();
+		}catch(Exception ex){
+			tx.rollback();
+			throw ex;
+		}finally{
+			if(session.isOpen()){
+				session.close();
 			}
 		}
 	}

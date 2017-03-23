@@ -41,6 +41,13 @@ public class ConstantesData3000 {
 	 */
 	public static final String ERR1007 = "error.1007";
 	
+	/**
+	 * solo se pueden crear dependencias dentro de entidades o las mismas dependencias
+	 */
+	public static final String ERR1010 = "error.1010";
+	
+	public static final String ERR1011 = "error.1011";
+	
 	/* ==========================================================
 	 *                    NOMBRE DE BEANS
 	 * ==========================================================

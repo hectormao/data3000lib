@@ -8,16 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.event.EventListenerList;
-
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zhtml.Tbody;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -30,22 +29,24 @@ import org.zkoss.zul.Window;
 import com.data3000.admin.bd.PltRol;
 import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.exc.PltException;
-import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.ngc.UsuarioNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.WindowComposer;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
+import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 import com.data3000.data3000lib.utl.ConstantesData3000;
 
-public class DirectorioCnt extends WindowComposer {
-	
+public class DependenciaCnt extends WindowComposer{
+
 	private Window winSistemaArchivos;
 	private Textbox txtNombre;
 	private Textbox txtDescripcion;
 	private Tree trPermisos;
+	private Listbox lbxSeriesDoc;
 	
 	/**
 	 * BEANS
@@ -74,7 +75,7 @@ public class DirectorioCnt extends WindowComposer {
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			directorioPadre = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			directorio = new DocSistArch();
-			
+		  
 //			if(directorioPadre == null){
 //				winSistemaArchivos.setTitle("Crear Entidad");
 //				directorioPadre = new DocSistArch();
@@ -122,13 +123,24 @@ public class DirectorioCnt extends WindowComposer {
 	public void onCreate$winSistemaArchivos(Event evt) throws Exception{
 		
 		try{
+			List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
+			lista = sistemaArchivoNgc.getSeriesDocumentales();
+			for (DocSerieDoc docSerieDoc : lista) {
+				Listitem item = new Listitem();
+				item.setValue(docSerieDoc);
+				item.setLabel(docSerieDoc.getSerieDocNombre());
+				item.setTooltiptext("Código:"+docSerieDoc.getSerieDocCodigo());
+				lbxSeriesDoc.appendChild(item);
+			}
 			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
 					throw new PltException(ConstantesData3000.ERR1005);
 				}
 			}
-			if(directorioPadre == null){
-				throw new PltException(ConstantesData3000.ERR1011);
+		   if(directorioPadre==null){
+			    	throw new PltException(ConstantesData3000.ERR1010);
+			}else if(directorioPadre.getSistArchTipo().equalsIgnoreCase(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO)){
+					throw new PltException(ConstantesData3000.ERR1010);
 			}
 		} catch(PltException ex){
 			Events.sendEvent(Events.ON_CLOSE, this.self, null);
@@ -333,7 +345,7 @@ public class DirectorioCnt extends WindowComposer {
 		directorio.setDocSistArch(directorioPadre);
 		directorio.setSistArchDescripcion(txtDescripcion.getValue());
 		directorio.setSistArchNombre(txtNombre.getValue());
-		directorio.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO);
+		directorio.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA);
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			directorio.setPltUsuario((PltUsuario)usuario);
@@ -352,8 +364,20 @@ public class DirectorioCnt extends WindowComposer {
 		directorio.getDocAcls().addAll(permisosEdicion);
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
-			sistemaArchivoNgc.registrarDirectorio(directorio,permisosNuevos);
-		}
+			long id = sistemaArchivoNgc.registrarDirectorio(directorio,permisosNuevos);
+			directorio.setSistArchIdn(id);
+			for (Listitem docAcl : lbxSeriesDoc.getItems()) {
+				if(docAcl.isSelected()){
+					DocSerieSist docSerieSist = new DocSerieSist();
+					docSerieSist.setDocSerieDoc(docAcl.getValue());
+					docSerieSist.setDocSistArch(directorio);
+					docSerieSist.setAudiUsuario(usuario.getLogin());
+					docSerieSist.setAudiFechModi(new Date());
+					docSerieSist.setAudiSiAnul(false);
+					sistemaArchivoNgc.RegistrarSeriesSistema(docSerieSist);
+				}
+			}
+		} 
 //		else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
 //			sistemaArchivoNgc.modificarDirectorio(directorio,permisosNuevos, permisosEdicion, permisosEliminacion);
 //		}else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
@@ -472,4 +496,5 @@ public class DirectorioCnt extends WindowComposer {
 	
 	
 	
+
 }
