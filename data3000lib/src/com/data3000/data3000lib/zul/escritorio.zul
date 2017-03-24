@@ -52,15 +52,22 @@
 									</bandbox>
 								</div>
 								<div width="100%" align="right">
+								<toolbarbutton id="btnCrearEntidad">
+										<custom-attributes formulario="form.1016"/>
+									</toolbarbutton>
+									<toolbarbutton id="btnCrearDependencia">
+										<custom-attributes formulario="form.1017"/>
+									</toolbarbutton>
 									<toolbarbutton id="btnNuevoDirectorio">
-										<custom-attributes formulario="form.1007"/>
+										<custom-attributes formulario="form.1018"/>
 									</toolbarbutton>
-									<toolbarbutton id="btnEditarDirectorio">
-										<custom-attributes formulario="form.1011"/>
-									</toolbarbutton>
-									<toolbarbutton id="btnEliminarDirectorio">
-										<custom-attributes formulario="form.1012"/>
-									</toolbarbutton>
+<!-- 									<toolbarbutton id="btnEditarDirectorio"> -->
+<!-- 										<custom-attributes formulario="form.1011"/> -->
+<!-- 									</toolbarbutton> -->
+<!-- 									<toolbarbutton id="btnEliminarDirectorio"> -->
+<!-- 										<custom-attributes formulario="form.1012"/> -->
+<!-- 									</toolbarbutton> -->
+									
 								</div>
 							</hbox>
 						

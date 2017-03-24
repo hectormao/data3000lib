@@ -36,6 +36,19 @@ public class ConstantesData3000 {
 	 */
 	public static final String ERR1005 = "error.1005";
 	
+	/**
+	 * solo se pueden crear directorios dentro de dependencias
+	 *
+	 */
+	public static final String ERR1007 = "error.1007";
+	
+	/**
+	 * solo se pueden crear dependencias dentro de entidades o las mismas dependencias
+	 */
+	public static final String ERR1010 = "error.1010";
+	
+	public static final String ERR1011 = "error.1011";
+	
 	/* ==========================================================
 	 *                    NOMBRE DE BEANS
 	 * ==========================================================
@@ -43,6 +56,16 @@ public class ConstantesData3000 {
 	public static final String BEAN_SISTEMA = "sistemaArchivoNgc";
 	
 	
+	/* ==========================================================
+	 *              CONSTANTES DE SISTEMA DE ARCHIVOS
+	 * ==========================================================
+	 */
+	
+	public static final String SISTEMA_ARCHIVO_ENTIDAD = "ENT";
+	
+	public static final String SISTEMA_ARCHIVO_DEPENDENCIA = "DEP";
+	
+	public static final String SISTEMA_ARCHIVO_DIRECTORIO = "DIR";
 	
 	
 	

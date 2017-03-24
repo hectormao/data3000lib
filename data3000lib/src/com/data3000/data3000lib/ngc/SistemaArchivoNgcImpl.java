@@ -23,6 +23,7 @@ import com.data3000.data3000lib.bd.DocCampArch;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
 import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.dao.SistemaArchivoDAO;
@@ -258,9 +259,9 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 
 	@Override
-	public void registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception {
+	public long registrarDirectorio(DocSistArch directorio, List<DocAcl> permisos) throws Exception {
 		
-		sistemaArchivoDAO.registrarDirectorio(directorio,permisos);
+		return sistemaArchivoDAO.registrarDirectorio(directorio,permisos);
 		
 		
 	}
@@ -424,6 +425,24 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 				return getSeriesDirectorio(padre);
 			}
 		}
+	}
+
+
+	@Override
+	public List<DocSistArch> getEntidades() {
+		return sistemaArchivoDAO.getEntidades();
+	}
+
+
+	@Override
+	public List<DocSerieDoc> getSeriesDocumentales() {
+		return sistemaArchivoDAO.getSeriesDocumentales();
+	}
+
+
+	@Override
+	public void RegistrarSeriesSistema(DocSerieSist docSerieSist) {
+		sistemaArchivoDAO.registrarSeriesSistema(docSerieSist);
 	}
 
 
