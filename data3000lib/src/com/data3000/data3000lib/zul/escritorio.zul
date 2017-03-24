@@ -10,7 +10,46 @@
 						
 							<hbox width="100%" sclass="columna-arbol">
 								<div width="100%" align="left">
-									<label value="${labels.data3000.sistema.directorio}"></label>
+									<bandbox id="buscarArchivo" mold="rounded" autodrop="true" tooltiptext="${labels.data3000.buscar.archivo}" >
+										 <bandpopup>
+										 	<groupbox>
+										 		<caption label="${labels.data3000.buscar.$}"></caption>
+										 		<vbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.nombre.$}" ></label>
+										 				</div>
+										 				<textbox id="txtNombre" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 				<label value="${labels.data3000.sistema.serie}"></label>
+										 				</div>
+										 				<tree width="300px" id="trSerie" multiple="false" checkmark="true" rows="4" >
+															<treecols sizable="true">
+																<treecol width="100%">
+																</treecol >
+															</treecols>
+											            </tree>
+													
+										 			</hbox>  
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.descripcion.$}" ></label>
+										 				</div>
+										 				<textbox id="txtDescripcion" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.tagversion}" ></label>
+										 				</div>
+										 				<textbox id="txtTagVersion" width="200px"></textbox>
+										 			</hbox>
+										 		</vbox>
+										 	</groupbox>
+										 
+										 </bandpopup>
+									</bandbox>
 								</div>
 								<div width="100%" align="right">
 									<toolbarbutton id="btnNuevoDirectorio">
