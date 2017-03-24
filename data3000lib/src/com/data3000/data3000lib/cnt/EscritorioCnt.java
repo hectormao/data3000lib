@@ -413,7 +413,7 @@ public class EscritorioCnt extends WindowComposer {
 			Treeitem tiRaiz = new Treeitem();
 			tiRaiz.setLabel(docSistArch.getSistArchNombre());
 			tiRaiz.setValue(docSistArch);
-			tiRaiz.setImage("img/iconos/entidad.png");
+			tiRaiz.setImage("img/iconos/entidadIconp.png");
 			raiz.appendChild(tiRaiz);
 			
 			Treechildren hijosRaiz = new Treechildren();
@@ -458,9 +458,9 @@ public class EscritorioCnt extends WindowComposer {
 				fila.appendChild(celda);
 				item.appendChild(fila);
 				if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA)){
-					item.setImage("img/iconos/dependencia.png");
+					item.setImage("img/iconos/usuarioPequeno.png");
 				}else if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO)){
-					item.setImage("img/iconos/direct.png");
+					item.setImage("img/iconos/folderPequeno.png");
 				}
 				fila.setContext(menuArchivo);
 				fila.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
@@ -496,7 +496,6 @@ public class EscritorioCnt extends WindowComposer {
 				if(! inserto){
 					arbolPadre.appendChild(item);
 				}
-				
 			} else {
 				if(! dirAux.dir.getSistArchNombre().equals(hijo.getSistArchNombre())){
 					//cambiar nombre
