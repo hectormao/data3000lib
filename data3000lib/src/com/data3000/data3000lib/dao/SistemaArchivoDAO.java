@@ -637,7 +637,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			}
 			
 			
-			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre is null order by ser.serieDocNombre";
+			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre is null order by ser.serieDocCodigo, ser.serieDocNombre";
 			
 			Query query = sesion.createQuery(hql);
 			
@@ -698,7 +698,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			criteria.add(Restrictions.eq("docSistArch",padre));
 			criteria.addOrder(Order.asc("sistArchNombre"));*/
 			
-			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre = :padre order by ser.serieDocNombre";
+			String hql = "from " + DocSerieDoc.class.getName() + " ser where ser.audiSiAnul = false and ser.serieDocPadre = :padre order by ser.serieDocCodigo, ser.serieDocNombre";
 			
 			Query query = sesion.createQuery(hql);
 			query.setEntity("padre", padre);

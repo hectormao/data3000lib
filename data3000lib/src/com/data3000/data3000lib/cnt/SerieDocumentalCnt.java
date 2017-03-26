@@ -116,10 +116,12 @@ public class SerieDocumentalCnt extends WindowComposer {
 
 							@Override
 							public void onEvent(Event arg0) throws Exception {
-								String res = (String) arg0.getData();
-								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+								DocSerieDoc res = (DocSerieDoc) arg0.getData();
+								if(res != null ){
+									if(res.getSerieDocPadre() == null){
+										trSerie.setSelectedItem(null);
+									}
 									onSelect$trSerie(arg0);
-									cargarArbol(null, trSerie.getTreechildren());
 								}
 								
 							}
@@ -321,15 +323,9 @@ public class SerieDocumentalCnt extends WindowComposer {
 		Treechildren raiz = new Treechildren();		
 		trSerie.appendChild(raiz);
 		
-		Treeitem tiRaiz = new Treeitem();
-		tiRaiz.setLabel(Labels.getLabel("data3000.raiz"));
-		raiz.appendChild(tiRaiz);
 		
 		
-		Treechildren hijosRaiz = new Treechildren();
-		tiRaiz.appendChild(hijosRaiz);
-		
-		cargarArbol(null, hijosRaiz);
+		cargarArbol(null, raiz);
 	}
 	
 	private void cargarArbol(DocSerieDoc padre, Treechildren arbolPadre) throws Exception{
@@ -360,7 +356,7 @@ public class SerieDocumentalCnt extends WindowComposer {
 				Treeitem item = new Treeitem();
 				item.setValue(hijo);
 				Treerow fila = new Treerow();
-				Treecell celda = new Treecell(hijo.getSerieDocNombre());
+				Treecell celda = new Treecell(hijo.getSerieDocCodigo() + " - " + hijo.getSerieDocNombre());
 				celda.setTooltiptext(hijo.getSerieDocDescripcion());
 				fila.appendChild(celda);
 				item.appendChild(fila);
@@ -387,13 +383,14 @@ public class SerieDocumentalCnt extends WindowComposer {
 				boolean inserto = false;
 				for(Treeitem itemHijo : arbolPadre.getItems()){
 					DocSerieDoc hijoComparar = itemHijo.getValue();
-					if(logger.isDebugEnabled()) logger.debug(new StringBuilder("hijoComparar: ").append(hijoComparar.getSerieDocNombre()).append(" vs. hijo: ").append(hijo.getSerieDocNombre()).append(" resultado: ").append(hijoComparar.getSerieDocNombre().compareTo(hijo.getSerieDocNombre())).toString());					
-					if(hijoComparar.getSerieDocNombre().compareTo(hijo.getSerieDocNombre()) > 0){
+										
+					if(hijoComparar != null && hijoComparar.toString().compareTo(hijo.toString()) > 0){
+						if(logger.isDebugEnabled()) logger.debug(new StringBuilder("hijoComparar: ").append(hijoComparar.getSerieDocNombre()).append(" vs. hijo: ").append(hijo.getSerieDocNombre()).append(" resultado: ").append(hijoComparar.getSerieDocNombre().compareTo(hijo.getSerieDocNombre())).toString());
 						if(logger.isDebugEnabled()) logger.debug(new StringBuilder("Insertando antes de: ").append(hijoComparar.getSerieDocNombre()).toString());
 						arbolPadre.insertBefore(item, itemHijo);
 						inserto = true;
 						break;
-					}
+					} 
 				}
 				
 				if(! inserto){
@@ -452,8 +449,9 @@ public class SerieDocumentalCnt extends WindowComposer {
 						
 			
 		} else {
-			Treechildren hijos = trSerie.getTreechildren();
-			cargarArbol(null, hijos);
+			Treechildren raiz = trSerie.getTreechildren();
+			
+			cargarArbol(null, raiz);
 		}
 		
 	}

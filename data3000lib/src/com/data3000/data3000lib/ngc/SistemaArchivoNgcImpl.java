@@ -430,7 +430,20 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 	@Override
 	public List<DocSistArch> getEntidades() {
-		return sistemaArchivoDAO.getEntidades();
+		
+		List<DocSistArch> listaEntidades = sistemaArchivoDAO.getEntidades(); 
+		
+		if(listaEntidades != null && ! listaEntidades.isEmpty()){
+			Collections.sort(listaEntidades, new Comparator<DocSistArch>() {
+
+				@Override
+				public int compare(DocSistArch o1, DocSistArch o2) {					
+					return o1.getSistArchNombre().toUpperCase().compareTo(o2.getSistArchNombre().toUpperCase());
+				}
+			});
+		}
+		
+		return listaEntidades;
 	}
 
 

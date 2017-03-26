@@ -128,8 +128,12 @@ public class EscritorioCnt extends WindowComposer {
 					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
 						 @Override
 							public void onEvent(Event arg0) throws Exception {
-							 
-						 }
+							 String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+								 	Treechildren raiz = trFileSystem.getTreechildren();
+								 	cargarArbol(null,raiz);
+								}
+						 	}
 					 
 					 };
 					 
@@ -163,8 +167,11 @@ public class EscritorioCnt extends WindowComposer {
 					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
 						 @Override
 							public void onEvent(Event arg0) throws Exception {
-							 
-						 }
+							 	String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									onSelect$trFileSystem(arg0);
+								}						 
+						 	}
 					 
 					 };
 					 
@@ -408,16 +415,46 @@ public class EscritorioCnt extends WindowComposer {
 		
 		List<DocSistArch> lista = new ArrayList<DocSistArch>();
 		lista = sistemaArchivoNgc.getEntidades();
+		
+		Map<Long,ItemDir> mapaDir = new HashMap<>();
+		raiz.setAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR, mapaDir);
+		
+		
 		for (DocSistArch docSistArch : lista) {
 			
-			Treeitem tiRaiz = new Treeitem();
-			tiRaiz.setLabel(docSistArch.getSistArchNombre());
-			tiRaiz.setValue(docSistArch);
-			tiRaiz.setImage("img/iconos/entidadIconp.png");
-			raiz.appendChild(tiRaiz);
+			Treeitem tiEntidad = new Treeitem();
+			tiEntidad.setValue(docSistArch);
+			Treerow fila = new Treerow();
+			Treecell celda = new Treecell(docSistArch.getSistArchNombre());
+			celda.setTooltiptext(docSistArch.getSistArchDescripcion());
+			fila.appendChild(celda);
+			
+			fila.setContext(menuArchivo);
+			fila.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					seleccion = docSistArch;
+				}
+			});
+			
+			
+			tiEntidad.appendChild(fila);
+			tiEntidad.setImage("img/iconos/entidadIconp.png");
+			
+			
+			raiz.appendChild(tiEntidad);
 			
 			Treechildren hijosRaiz = new Treechildren();
-			tiRaiz.appendChild(hijosRaiz);
+			tiEntidad.appendChild(hijosRaiz);
+			
+			ItemDir itemDir = new ItemDir();
+			itemDir.dir = docSistArch;
+			itemDir.item = tiEntidad;
+			itemDir.celda = celda;
+			
+			mapaDir.put(docSistArch.getSistArchIdn(), itemDir);
+			
 			
 			cargarArbol(docSistArch, hijosRaiz);
 		}
@@ -431,7 +468,7 @@ public class EscritorioCnt extends WindowComposer {
 		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre, (PltUsuario) usuario);
 		
 		Map<Long,ItemDir> mapaDir = (Map<Long, ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR);
-		List<ItemDir> listaDir = (List<ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_LISTA_DIR);
+		//List<ItemDir> listaDir = (List<ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_LISTA_DIR);
 		
 		
 		if(mapaDir == null){
@@ -461,6 +498,8 @@ public class EscritorioCnt extends WindowComposer {
 					item.setImage("img/iconos/usuarioPequeno.png");
 				}else if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO)){
 					item.setImage("img/iconos/folderPequeno.png");
+				}else if(hijo.getSistArchTipo().equals(ConstantesData3000.SISTEMA_ARCHIVO_ENTIDAD)){
+					item.setImage("img/iconos/entidadIconp.png");
 				}
 				fila.setContext(menuArchivo);
 				fila.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
@@ -485,7 +524,7 @@ public class EscritorioCnt extends WindowComposer {
 				for(Treeitem itemHijo : arbolPadre.getItems()){
 					DocSistArch hijoComparar = itemHijo.getValue();
 					if(logger.isDebugEnabled()) logger.debug(new StringBuilder("hijoComparar: ").append(hijoComparar.getSistArchNombre()).append(" vs. hijo: ").append(hijo.getSistArchNombre()).append(" resultado: ").append(hijoComparar.getSistArchNombre().compareTo(hijo.getSistArchNombre())).toString());					
-					if(hijoComparar.getSistArchNombre().compareTo(hijo.getSistArchNombre()) > 0){
+					if(hijoComparar.getSistArchNombre().toUpperCase().compareTo(hijo.getSistArchNombre().toUpperCase()) > 0){
 						if(logger.isDebugEnabled()) logger.debug(new StringBuilder("Insertando antes de: ").append(hijoComparar.getSistArchNombre()).toString());
 						arbolPadre.insertBefore(item, itemHijo);
 						inserto = true;

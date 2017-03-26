@@ -34,12 +34,6 @@
 			</div>
 			<textbox id="txtTagVersion" width="150px" constraint="no empty"/>
 		</hbox>
-		<hbox>
-			<div width="150px">
-				<label value="${labels.data3000.tagversion}"></label>
-			</div>
-			<textbox id="txtTagVersion" width="150px" constraint="no empty"/>
-		</hbox>
 		</vbox>
 	</groupbox>
 	<groupbox>
