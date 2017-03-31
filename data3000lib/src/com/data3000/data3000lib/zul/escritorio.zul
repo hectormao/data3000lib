@@ -19,13 +19,13 @@
 										 				<div width="150px">
 										 					<label value="${labels.data3000.nombre.$}" ></label>
 										 				</div>
-										 				<textbox id="txtNombre" width="200px"></textbox>
+										 				<textbox id="txtBscNombre" width="200px"></textbox>
 										 			</hbox>
 										 			<hbox>
 										 				<div width="150px">
 										 				<label value="${labels.data3000.sistema.serie}"></label>
 										 				</div>
-										 				<tree width="300px" id="trSerie" multiple="false" checkmark="true" rows="4" >
+										 				<tree width="300px" id="trBscSerie" multiple="false" checkmark="true" rows="4" >
 															<treecols sizable="true">
 																<treecol width="100%">
 																</treecol >
@@ -37,13 +37,13 @@
 										 				<div width="150px">
 										 					<label value="${labels.data3000.descripcion.$}" ></label>
 										 				</div>
-										 				<textbox id="txtDescripcion" width="200px"></textbox>
+										 				<textbox id="txtBscDescripcion" width="200px"></textbox>
 										 			</hbox>
 										 			<hbox>
 										 				<div width="150px">
 										 					<label value="${labels.data3000.tagversion}" ></label>
 										 				</div>
-										 				<textbox id="txtTagVersion" width="200px"></textbox>
+										 				<textbox id="txtBscTagVersion" width="200px"></textbox>
 										 			</hbox>
 										 		</vbox>
 										 	</groupbox>

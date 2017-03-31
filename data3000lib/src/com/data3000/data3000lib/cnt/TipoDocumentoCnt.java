@@ -111,7 +111,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 			txtDescripcion.setValue(docSerieDoc.getSerieDocDescripcion());
 			seleccionarComboDominio(cmbTipo, docSerieDoc.getSerieDocTipo());
 			seleccionarComboDominio(cmbSoporte, docSerieDoc.getSerieDocSoporte());
-		}
+		} 
 		
 		if(listaCampos != null && ! listaCampos.isEmpty()){
 			for(DocCampTipo campoTipo : listaCampos){
@@ -126,6 +126,8 @@ public class TipoDocumentoCnt extends WindowComposer {
 				agregarAlma(alma);
 			}
 		}
+		
+		
 		
 	}
 
@@ -471,7 +473,7 @@ public class TipoDocumentoCnt extends WindowComposer {
 		}
 		
 		
-		Events.sendEvent(new Event(Events.ON_CLOSE,this.self,ConstantesAdmin.EXITO));
+		Events.sendEvent(new Event(Events.ON_CLOSE,this.self,docSerieDoc));
 	}
 	
 	
@@ -487,12 +489,30 @@ public class TipoDocumentoCnt extends WindowComposer {
 		docSerieDoc.setSerieDocSoporte(getSeleccionComboDominio(cmbSoporte, true));
 		
 		if(tipoSerie.equals(ConstantesData3000.SERIE)){
-			docSerieDoc.setSerieDocPadre(null);
+			
 		} else {
-			if(padre == null){
-				throw new WrongValueException(cmbTipo, Labels.getLabel("error.1008"));
+			
+			switch (tipoSerie) {
+				case ConstantesData3000.SERIE:{
+					docSerieDoc.setSerieDocPadre(null);
+				}break;
+				case ConstantesData3000.SUBSERIE:{
+					if(padre == null || (padre != null && ! padre.getSerieDocTipo().equals(ConstantesData3000.SERIE))){
+						throw new WrongValueException(cmbTipo, Labels.getLabel("error.1008"));
+					}
+					docSerieDoc.setSerieDocPadre(padre);
+				}break;
+				case ConstantesData3000.TIPO_DOCUMENTO:{
+					if(padre == null || (padre != null && ! padre.getSerieDocTipo().equals(ConstantesData3000.SUBSERIE))){
+						throw new WrongValueException(cmbTipo, Labels.getLabel("error.1008"));
+					}
+					docSerieDoc.setSerieDocPadre(padre);
+				}break;
+	
+				default:
+					break;
 			}
-			docSerieDoc.setSerieDocPadre(padre);
+			
 		}
 		
 		docSerieDoc.setAudiFechModi(new Date());

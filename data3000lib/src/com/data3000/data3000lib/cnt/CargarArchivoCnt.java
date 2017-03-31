@@ -105,9 +105,7 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 		
 		rutaTmp = plataformaNgc.getEnv(ConstantesData3000.RUTA_TMP);
 		
-		cargarArbolPermisos();
 		
-		cargarArbolSeries();
 
 	}
 
@@ -381,6 +379,10 @@ public class CargarArchivoCnt extends WindowComposer implements ListitemRenderer
 			if (directorio == null) {
 				throw new Exception(Labels.getLabel("error.1002"));
 			}
+			
+			cargarArbolPermisos();
+			
+			cargarArbolSeries();
 		} catch (Exception ex) {
 			logger.error(
 					new StringBuilder("Error al abrir cargar archivo: ")

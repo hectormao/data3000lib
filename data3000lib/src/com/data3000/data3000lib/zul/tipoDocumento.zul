@@ -1,6 +1,6 @@
 <?page title="Tipo Documento" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="winTipoDocumento" apply="${tipoDocumentoCnt}" border="normal" closable="true">
+<window id="winTipoDocumento" apply="${tipoDocumentoCnt}" border="normal" closable="true" position="center,center">
 <vbox>
 	<groupbox>
 		<caption label="${labels.data3000.informacion.general}" />
