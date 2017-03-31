@@ -1,10 +1,12 @@
 package com.data3000.data3000lib.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -368,35 +370,57 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception{
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion, List<DocAcl> permisosAnterior) throws Exception{
 		
 		Session sesion = super.getSessionFactory().getCurrentSession();		
+
+		Session sesion2 = super.getSessionFactory().getCurrentSession();
 		Transaction tx = sesion.getTransaction();
+		Transaction TX2 = sesion2.getTransaction();
 		try{
 			
 			if(! tx.isActive()){
 				tx.begin();
 			}
+			if(!TX2.isActive()){
+				TX2.begin();
+			}
 			
 			
+			if(directorio != null){
 			sesion.update(directorio);
+			}
 			
-			
+			if(permisosNuevos.size() != 0){
 			for(DocAcl acl : permisosNuevos){
 				sesion.save(acl);
 			}
-			
-			for(DocAcl acl : permisosEdicion){				
-				
-				sesion.update(acl);				
+			tx.commit();
 			}
 			
+			if(permisosAnterior.size()!=0){
+			for (DocAcl docAcl : permisosAnterior) {
+				sesion.delete(docAcl);
+			}
+			tx.commit();
+			}
+			
+			if(permisosEdicion.size() != 0){
+				insertarEdicionPermisos(permisosEdicion);
+			
+			}
+			if(permisosEliminacion.size() !=  0){
 			for(DocAcl acl : permisosEliminacion){
 				
 				sesion.delete(acl);
 			}
-			
 			tx.commit();
+			}
+			
+			if(!tx.wasCommitted()){
+				tx.commit();	
+			}
+			
 		} catch(Exception ex){
 			tx.rollback();
 			throw ex;
@@ -407,7 +431,34 @@ public class SistemaArchivoDAO extends PltDAO{
 		}
 		
 	}
-
+    
+	public void insertarEdicionPermisos(List<DocAcl> lista){
+		Session session = super.getSessionFactory().getCurrentSession();
+		Transaction tx = session.getTransaction();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			
+			for(DocAcl acl : lista){
+				if(!session.isOpen()){
+					session = super.getSessionFactory().getCurrentSession();
+				}
+				session.save(acl);
+			}
+			if(!tx.wasCommitted()){
+				tx.commit();	
+			}
+		} catch (Exception e) {
+			tx.rollback();
+			throw e;
+		} finally {
+			if(session.isOpen()){
+				session.close();
+			}
+		}
+	}
+	 
 
 	public DocSistArch getDirectorio(long sistArchIdn) throws Exception {
 		
@@ -860,6 +911,75 @@ public class SistemaArchivoDAO extends PltDAO{
 		}finally{
 			if(sesion.isOpen()){
 				sesion.close();
+			}
+		}
+		
+	}
+	
+	public List<DocAcl> ConsultarPermisos(long id){
+		Session session = super.sessionFactory.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocAcl> lista = new ArrayList<DocAcl>();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocAcl.class.getName()).append(" as o");
+			hql.append(" where o.docSistArch.sistArchIdn = ").append(id);
+			Query query = session.createQuery(hql.toString());
+			lista = query.list();
+		} catch (Exception e) {
+			tx.rollback();
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+	}
+	
+	public List<DocSerieSist> consultarSeriesSeleccionadas(long id){
+		Session session = super.sessionFactory.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocSerieSist> lista = new ArrayList<DocSerieSist>();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocSerieSist.class.getName()).append(" as o");
+			hql.append(" where o.docSistArch.sistArchIdn = ").append(id);
+			Query query = session.createQuery(hql.toString());
+			lista = query.list();
+		}catch (Exception e) {
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+		
+	}
+	
+	public void ClearSeriesSistema(List<DocSerieSist> lista){
+		Session session = super.getSessionFactory().getCurrentSession();
+		Transaction tx = session.getTransaction();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			for (DocSerieSist docSerieSist : lista) {
+				session.delete(docSerieSist);
+				
+			}
+			tx.commit();
+		} catch (Exception e) {
+			tx.rollback();
+			throw e;
+		}finally {
+			if(session.isOpen()){
+			 session.close();
 			}
 		}
 		

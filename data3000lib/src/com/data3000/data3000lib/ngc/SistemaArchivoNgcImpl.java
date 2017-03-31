@@ -268,8 +268,8 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 
 	@Override
-	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception {
-		sistemaArchivoDAO.modificarDirectorio(directorio,permisosNuevos,permisosEdicion,permisosEliminacion);
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion, List<DocAcl> permisosAnterior) throws Exception {
+		sistemaArchivoDAO.modificarDirectorio(directorio,permisosNuevos,permisosEdicion,permisosEliminacion,permisosAnterior);
 		
 	}
 
@@ -444,6 +444,26 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	public void RegistrarSeriesSistema(DocSerieSist docSerieSist) {
 		sistemaArchivoDAO.registrarSeriesSistema(docSerieSist);
 	}
+
+
+	@Override
+	public List<DocAcl> getObtenerPermisosRol(long id) {
+		return sistemaArchivoDAO.ConsultarPermisos(id);
+	}
+
+
+	@Override
+	public List<DocSerieSist> getSeriesSisEditar(long sisArchi) {
+		return sistemaArchivoDAO.consultarSeriesSeleccionadas(sisArchi);
+	}
+
+
+	@Override
+	public void ClearSeriesDocumentales(List<DocSerieSist> lista) {
+		sistemaArchivoDAO.ClearSeriesSistema(lista);
+		
+	}
+	
 
 
 }

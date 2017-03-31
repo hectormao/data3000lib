@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Toolbarbutton;
@@ -58,6 +59,21 @@ public class EscritorioCnt extends WindowComposer {
 	private Toolbarbutton btnCrearEntidad;
 	private Toolbarbutton btnCrearDependencia;
 	private Toolbarbutton btnNuevoDirectorio;
+	private Menu menuEntidad;
+	private Menu menuDependencia;
+	private Menu menuDirectorio;
+	private Menuitem iteCrearE;
+	private Menuitem iteCrearD;
+	private Menuitem iteCrearDi;
+	private Menuitem iteEditarE;
+	private Menuitem iteEliminarE;
+	private Menuitem iteEditarD;
+	private Menuitem iteEliminarD;
+	private Menuitem iteEditarDi;
+	private Menuitem iteEliminarDi;
+	
+	
+	
 //	private Toolbarbutton btnEditarDirectorio;
 //	private Toolbarbutton btnEliminarDirectorio;
 //	private Toolbarbutton btnCrearSistemaArchivo;
@@ -110,24 +126,35 @@ public class EscritorioCnt extends WindowComposer {
 		}
 		
 		
+		/**
+		 * ===================== Entidad ===================
+		 */
 		
-		String nombreFormularioCrearEntidad = (String) btnCrearEntidad.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
+		// crear entidad
+		String nombreFormularioCrearEntidad = (String) iteCrearE.getValue();
 		final Formulario frmCrearEntidad = getFormulario(nombreFormularioCrearEntidad);
 		if(frmCrearEntidad == null){
-			btnCrearEntidad.setDisabled(true);
-			btnCrearEntidad.setVisible(false);
+			iteCrearE.setDisabled(true);
+			iteCrearE.setVisible(false);
+//			menuEntidad.setVisible(false);
 		} else {
 			
-			btnCrearEntidad.setImage(frmCrearEntidad.getUrlIcono());
-			btnCrearEntidad.setTooltip(frmCrearEntidad.getTooltip());
-			btnCrearEntidad.setTooltiptext("Crear entidad");
+			menuEntidad.setImage(frmCrearEntidad.getUrlIcono());
+			menuEntidad.setTooltiptext("Entidad");
+			iteCrearE.setTooltip(frmCrearEntidad.getTooltip());
+			iteCrearE.setLabel("Crear");
+			iteCrearE.setImage(frmCrearEntidad.getUrlIcono());
 			
-			btnCrearEntidad.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+			iteCrearE.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event arg0) throws Exception {
 					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
 						 @Override
 							public void onEvent(Event arg0) throws Exception {
+							 String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									onSelect$trFileSystem(arg0);
+								}
 							 
 						 }
 					 
@@ -145,25 +172,146 @@ public class EscritorioCnt extends WindowComposer {
 			});
 		}
 		
-		// funcionalidad para crear dependencia
-		String nombreFormularioCrearDependencia = (String) btnCrearDependencia.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
-		final Formulario frmCrearDependencia = getFormulario(nombreFormularioCrearDependencia);
-		if(frmCrearEntidad == null){
-			btnCrearDependencia.setDisabled(true);
-			btnCrearDependencia.setVisible(false);
+		// Editar Entidad
+		String nombreFormularioEditar = (String) iteEditarE.getValue();
+		final Formulario frmEditarEntidad = getFormulario(nombreFormularioEditar);
+		if(frmEditarEntidad == null){
+			iteEditarE.setDisabled(true);
+			iteEditarE.setVisible(false);
+		} else {
+			iteEditarE.setImage(frmEditarEntidad.getUrlIcono());
+			iteEditarE.setImage(frmEditarEntidad.getUrlIcono());
+			iteEditarE.setTooltip(frmEditarEntidad.getTooltip());
+			iteEditarE.setLabel("Editar");
+			iteEditarE.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									
+									
+									
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){
+										
+										DocSistArch directorioTmp = li.getValue();
+										
+										DocSistArch directorio = sistemaArchivoNgc.getDirectorio(directorioTmp.getSistArchIdn());
+										
+										Treerow fila = (Treerow) li.getFirstChild();
+										Treecell celda = (Treecell) fila.getFirstChild();
+										li.setValue(directorio);
+										celda.setLabel(directorio.getSistArchNombre());
+										celda.setTooltiptext(directorio.getSistArchDescripcion());
+									}
+									
+									
+									onSelect$trFileSystem(arg0);
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEditarEntidad, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
+		String nombreFormularioEliminarEntidad = (String) iteEliminarE.getValue();
+		final Formulario frmEliminarEntidad = getFormulario(nombreFormularioEliminarEntidad);
+		if(frmEliminarEntidad == null){
+			iteEliminarE.setDisabled(true);
+			iteEliminarE.setVisible(false);
 		} else {
 			
-			btnCrearDependencia.setImage(frmCrearDependencia.getUrlIcono());
-			btnCrearDependencia.setTooltip(frmCrearDependencia.getTooltip());
-			btnCrearDependencia.setTooltiptext("Crear dependencia");
+			iteEliminarE.setImage(frmEliminarEntidad.getUrlIcono());
+			iteEliminarE.setTooltip(frmEliminarEntidad.getTooltip());
+			iteEliminarE.setLabel("Eliminar");
+			iteEliminarE.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){										
+										Component padre = li.getParent();										
+										padre.removeChild(li);
+									}
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEliminarEntidad, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
 			
-			btnCrearDependencia.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+		}
+		
+		/**
+		 * =======================================================================================
+		 */
+		
+		/**
+		 * ============================Dependencia==================================
+		 */
+		
+		// funcionalidad para crear dependencia
+		String nombreFormularioCrearDependencia = (String) iteCrearD.getValue();
+		final Formulario frmCrearDependencia = getFormulario(nombreFormularioCrearDependencia);
+		if(frmCrearEntidad == null){
+			iteCrearD.setDisabled(true);
+			iteCrearD.setVisible(false);
+//			menuDependencia.setVisible(false);
+		} else {
+			
+			menuDependencia.setImage(frmCrearDependencia.getUrlIcono());
+			menuDependencia.setTooltiptext("Dependencia");
+			iteCrearD.setTooltip(frmCrearDependencia.getTooltip());
+			iteCrearD.setLabel("Crear");
+			iteCrearD.setImage(frmCrearDependencia.getUrlIcono());
+			
+			iteCrearD.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event arg0) throws Exception {
 					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
 						 @Override
 							public void onEvent(Event arg0) throws Exception {
-							 
+							 String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									onSelect$trFileSystem(arg0);
+								}
 						 }
 					 
 					 };
@@ -180,19 +328,137 @@ public class EscritorioCnt extends WindowComposer {
 			});
 		}
 		
-		// funcionalidad para crear directorio
-		String nombreFormulario = (String) btnNuevoDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
-		final Formulario frmNuevoDirectorio = getFormulario(nombreFormulario);
-		if(frmNuevoDirectorio == null){
-			btnNuevoDirectorio.setDisabled(true);
-			btnNuevoDirectorio.setVisible(false);
+		// formulario para editar dependencia
+		String nombreFormularioEditarD = (String) iteEditarD.getValue();
+		final Formulario frmEditarDependencia = getFormulario(nombreFormularioEditarD);
+		if(frmEditarDependencia == null){
+			iteEditarD.setDisabled(true);
+			iteEditarD.setVisible(false);
 		} else {
 			
-			btnNuevoDirectorio.setImage(frmNuevoDirectorio.getUrlIcono());
-			btnNuevoDirectorio.setTooltip(frmNuevoDirectorio.getTooltip());
-			btnNuevoDirectorio.setTooltiptext("Crear directorio");
+			iteEditarD.setImage(frmEditarDependencia.getUrlIcono());
+			iteEditarD.setTooltip(frmEditarDependencia.getTooltip());
+			iteEditarD.setLabel("Editar");
+			iteEditarD.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									
+									
+									
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){
+										
+										DocSistArch directorioTmp = li.getValue();
+										
+										DocSistArch directorio = sistemaArchivoNgc.getDirectorio(directorioTmp.getSistArchIdn());
+										
+										Treerow fila = (Treerow) li.getFirstChild();
+										Treecell celda = (Treecell) fila.getFirstChild();
+										li.setValue(directorio);
+										celda.setLabel(directorio.getSistArchNombre());
+										celda.setTooltiptext(directorio.getSistArchDescripcion());
+									}
+									
+									
+									onSelect$trFileSystem(arg0);
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEditarDependencia, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
 			
-			btnNuevoDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+		}
+		
+		//eliminar dependencia
+		String nombreFormularioEliminarDependencia = (String) iteEliminarD.getValue();
+		final Formulario frmEliminarDependencia = getFormulario(nombreFormularioEliminarDependencia);
+		if(frmEliminarDependencia == null){
+			iteEliminarD.setDisabled(true);
+			iteEliminarD.setVisible(false);
+		} else {
+			
+			iteEliminarD.setImage(frmEliminarDependencia.getUrlIcono());
+			iteEliminarD.setTooltip(frmEliminarDependencia.getTooltip());
+			iteEliminarD.setLabel("Eliminar");
+			iteEliminarD.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){										
+										Component padre = li.getParent();										
+										padre.removeChild(li);
+									}
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEliminarDependencia, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
+		
+		/**
+		 * =================================================================================================
+		 */
+		
+		/**
+		 * ================================Directorio===========================
+		 */
+		
+		// funcionalidad para crear directorio
+		String nombreFormulario = (String) iteCrearDi.getValue();
+		final Formulario frmNuevoDirectorio = getFormulario(nombreFormulario);
+		if(frmNuevoDirectorio == null){
+			iteCrearDi.setDisabled(true);
+			iteCrearDi.setVisible(false);
+		} else {
+			
+			menuDirectorio.setImage(frmNuevoDirectorio.getUrlIcono());
+			menuDirectorio.setTooltiptext("Directorio");
+			iteCrearDi.setTooltip(frmNuevoDirectorio.getTooltip());
+			iteCrearDi.setLabel("Crear");
+			iteCrearDi.setImage(frmNuevoDirectorio.getUrlIcono());
+			iteCrearDi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 
 				@Override
 				public void onEvent(Event arg0) throws Exception {
@@ -223,113 +489,118 @@ public class EscritorioCnt extends WindowComposer {
 			
 		}
 		
+		String nombreFormularioEditarDi = (String) iteEditarDi.getValue();
+		final Formulario frmEditarDirectorio = getFormulario(nombreFormularioEditarDi);
+		if(frmEditarDirectorio == null){
+			iteEditarDi.setDisabled(true);
+			iteEditarDi.setVisible(false);
+		} else {
+			
+			iteEditarDi.setImage(frmEditarDirectorio.getUrlIcono());
+			iteEditarDi.setLabel("Editar");
+			
+			iteEditarDi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									
+									
+									
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){
+										
+										DocSistArch directorioTmp = li.getValue();
+										
+										DocSistArch directorio = sistemaArchivoNgc.getDirectorio(directorioTmp.getSistArchIdn());
+										
+										Treerow fila = (Treerow) li.getFirstChild();
+										Treecell celda = (Treecell) fila.getFirstChild();
+										li.setValue(directorio);
+										celda.setLabel(directorio.getSistArchNombre());
+										celda.setTooltiptext(directorio.getSistArchDescripcion());
+									}
+									
+									
+									onSelect$trFileSystem(arg0);
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEditarDirectorio, directorioPadre, eventoCerrar);
+					
+					
+				}
+				
+			});
+			
+		}
+		
+		String nombreFormularioEliminarDirectorio = (String) iteEliminarDi.getValue();
+		final Formulario frmEliminarDirectorio = getFormulario(nombreFormularioEliminarDirectorio);
+		if(frmEliminarDirectorio == null){
+			iteEliminarDi.setDisabled(true);
+			iteEliminarDi.setVisible(false);
+		} else {
+			
+			iteEliminarDi.setImage(frmEliminarDirectorio.getUrlIcono());
+			iteEliminarDi.setTooltip(frmEliminarDirectorio.getTooltip());
+			iteEliminarDi.setLabel("Eliminar");
+			iteEliminarDi.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					
+					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
+
+							@Override
+							public void onEvent(Event arg0) throws Exception {
+								String res = (String) arg0.getData();
+								if(res != null && res.equals(ConstantesAdmin.EXITO)){
+									Treeitem li = trFileSystem.getSelectedItem();
+									if(li != null){										
+										Component padre = li.getParent();										
+										padre.removeChild(li);
+									}
+								}
+								
+							}
+						};
+					
+					
+					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
+					
+					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					
+					
+					abrirFormulario(frmEliminarDirectorio, directorioPadre, eventoCerrar);
+					
+				}
+				
+			});
+			
+		}
+		
+		/**
+		 * =================================================================================================
+		 */
 		
 		
 		
-		
-//		String nombreFormularioEditar = (String) btnEditarDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
-//		final Formulario frmEditarDirectorio = getFormulario(nombreFormularioEditar);
-//		if(frmEditarDirectorio == null){
-//			btnEditarDirectorio.setDisabled(true);
-//			btnEditarDirectorio.setVisible(false);
-//		} else {
-//			
-//			btnEditarDirectorio.setImage(frmEditarDirectorio.getUrlIcono());
-//			btnEditarDirectorio.setTooltip(frmEditarDirectorio.getTooltip());
-//			btnEditarDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-//
-//				@Override
-//				public void onEvent(Event arg0) throws Exception {
-//					
-//					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
-//
-//							@Override
-//							public void onEvent(Event arg0) throws Exception {
-//								String res = (String) arg0.getData();
-//								if(res != null && res.equals(ConstantesAdmin.EXITO)){
-//									
-//									
-//									
-//									Treeitem li = trFileSystem.getSelectedItem();
-//									if(li != null){
-//										
-//										DocSistArch directorioTmp = li.getValue();
-//										
-//										DocSistArch directorio = sistemaArchivoNgc.getDirectorio(directorioTmp.getSistArchIdn());
-//										
-//										Treerow fila = (Treerow) li.getFirstChild();
-//										Treecell celda = (Treecell) fila.getFirstChild();
-//										li.setValue(directorio);
-//										celda.setLabel(directorio.getSistArchNombre());
-//										celda.setTooltiptext(directorio.getSistArchDescripcion());
-//									}
-//									
-//									
-//									//onSelect$trFileSystem(arg0);
-//								}
-//								
-//							}
-//						};
-//					
-//					
-//					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
-//					
-//					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
-//					
-//					
-//					abrirFormulario(frmEditarDirectorio, directorioPadre, eventoCerrar);
-//					
-//					
-//				}
-//				
-//			});
-//			
-//		}
-		
-//		String nombreFormularioEliminar = (String) btnEliminarDirectorio.getAttribute(ConstantesAdmin.ATRIBUTO_FORMULARIO);
-//		final Formulario frmEliminarDirectorio = getFormulario(nombreFormularioEliminar);
-//		if(frmEliminarDirectorio == null){
-//			btnEliminarDirectorio.setDisabled(true);
-//			btnEliminarDirectorio.setVisible(false);
-//		} else {
-//			
-//			btnEliminarDirectorio.setImage(frmEliminarDirectorio.getUrlIcono());
-//			btnEliminarDirectorio.setTooltip(frmEliminarDirectorio.getTooltip());
-//			btnEliminarDirectorio.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-//
-//				@Override
-//				public void onEvent(Event arg0) throws Exception {
-//					
-//					 EventListener<Event> eventoCerrar = new EventListener<Event>() {
-//
-//							@Override
-//							public void onEvent(Event arg0) throws Exception {
-//								String res = (String) arg0.getData();
-//								if(res != null && res.equals(ConstantesAdmin.EXITO)){
-//									Treeitem li = trFileSystem.getSelectedItem();
-//									if(li != null){										
-//										Component padre = li.getParent();										
-//										padre.removeChild(li);
-//									}
-//								}
-//								
-//							}
-//						};
-//					
-//					
-//					Treeitem itemSeleccionado = trFileSystem.getSelectedItem();
-//					
-//					DocSistArch directorioPadre = (DocSistArch) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
-//					
-//					
-//					abrirFormulario(frmEliminarDirectorio, directorioPadre, eventoCerrar);
-//					
-//					
-//				}
-//				
-//			});
-//			
-//		}
+
 		
 		cargarArbol();
 	}
@@ -516,7 +787,9 @@ public class EscritorioCnt extends WindowComposer {
 		//Eliminando hijos que han sido borrados de la BD
 		for(ItemDir dir : mapaDirAux.values()){
 			Component hijo = dir.item.getParent();
+			if(dir.item != null && hijo != null){
 			hijo.removeChild(dir.item);
+		}
 			mapaDir.remove(dir.dir.getSistArchIdn());
 		}
 		

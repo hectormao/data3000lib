@@ -10,18 +10,81 @@
 						
 							<hbox width="100%" sclass="columna-arbol">
 								<div width="100%" align="left">
-									<label value="${labels.data3000.sistema.directorio}"></label>
+									<bandbox id="buscarArchivo" mold="rounded" autodrop="true" tooltiptext="${labels.data3000.buscar.archivo}" >
+										 <bandpopup>
+										 	<groupbox>
+										 		<caption label="${labels.data3000.buscar.$}"></caption>
+										 		<vbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.nombre.$}" ></label>
+										 				</div>
+										 				<textbox id="txtNombre" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 				<label value="${labels.data3000.sistema.serie}"></label>
+										 				</div>
+										 				<tree width="300px" id="trSerie" multiple="false" checkmark="true" rows="4" >
+															<treecols sizable="true">
+																<treecol width="100%">
+																</treecol >
+															</treecols>
+											            </tree>
+													
+										 			</hbox>  
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.descripcion.$}" ></label>
+										 				</div>
+										 				<textbox id="txtDescripcion" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.tagversion}" ></label>
+										 				</div>
+										 				<textbox id="txtTagVersion" width="200px"></textbox>
+										 			</hbox>
+										 		</vbox>
+										 	</groupbox>
+										 
+										 </bandpopup>
+									</bandbox>
 								</div>
 								<div width="100%" align="right">
-								<toolbarbutton id="btnCrearEntidad">
-										<custom-attributes formulario="form.1016"/>
-									</toolbarbutton>
-									<toolbarbutton id="btnCrearDependencia">
-										<custom-attributes formulario="form.1017"/>
-									</toolbarbutton>
-									<toolbarbutton id="btnNuevoDirectorio">
-										<custom-attributes formulario="form.1018"/>
-									</toolbarbutton>
+								<menubar id="mbMenu" width="150px">
+										<menu id="menuEntidad" image="img/iconos/entidadIconp.png">
+										 <menupopup>
+										  <menuitem id="iteCrearE" value="form.1016"></menuitem>
+										  <menuitem id="iteEditarE" value="form.1020"></menuitem>
+										  <menuitem id="iteEliminarE" value="form.1021"></menuitem>
+										 </menupopup>
+										</menu>
+										<menu id="menuDependencia">
+											<menupopup>
+											  <menuitem id="iteCrearD" value="form.1017"></menuitem>
+											  <menuitem id="iteEditarD" value="form.1022"></menuitem>
+											  <menuitem id="iteEliminarD" value="form.1023"></menuitem>
+											</menupopup>
+										</menu>
+										<menu id="menuDirectorio">
+											<menupopup>
+												<menuitem id="iteCrearDi" value="form.1018"></menuitem>
+												<menuitem id="iteEditarDi" value="form.1024"></menuitem>
+												<menuitem id="iteEliminarDi" value="form.1025"></menuitem>
+											</menupopup>
+										</menu>
+										
+								</menubar>
+<!-- 								<toolbarbutton id="btnCrearEntidad"> -->
+<!-- 										<custom-attributes formulario="form.1016"/> -->
+<!-- 									</toolbarbutton> -->
+<!-- 									<toolbarbutton id="btnCrearDependencia"> -->
+<!-- 										<custom-attributes formulario="form.1017"/> -->
+<!-- 									</toolbarbutton> -->
+<!-- 									<toolbarbutton id="btnNuevoDirectorio"> -->
+<!-- 										<custom-attributes formulario="form.1018"/> -->
+<!-- 									</toolbarbutton> -->
 <!-- 									<toolbarbutton id="btnEditarDirectorio"> -->
 <!-- 										<custom-attributes formulario="form.1011"/> -->
 <!-- 									</toolbarbutton> -->

@@ -62,6 +62,9 @@ public class EntidadCnt extends WindowComposer{
 	
 	private Map<Long,DocAcl> permisosRol;
 	private Map<Long,DocAcl> permisosUsuario;
+	private boolean isEditar;
+	private List<DocAcl> listaPermisos;
+	private List<DocSerieSist> listaSeries;
 	
 	@Override
 	public void doAfterCompose(Window winSistemaArchivos) throws Exception{
@@ -71,47 +74,33 @@ public class EntidadCnt extends WindowComposer{
 		
 		permisosRol = new HashMap<Long, DocAcl>();
 		permisosUsuario = new HashMap<Long, DocAcl>();
-		
-		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
-			directorioPadre = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
-			directorio = new DocSistArch();
-			
-//			if(directorioPadre == null){
-//				winSistemaArchivos.setTitle("Crear Entidad");
-//				directorioPadre = new DocSistArch();
-//				directorioPadre.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_ENTIDAD);
-				
-//			}else if(directorioPadre.getSistArchTipo() == ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA){
-//				winSistemaArchivos.setTitle("Crear Dependencia");
-//				directorioPadre.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_DEPENDENCIA);
-//			}else if(directorioPadre.getSistArchTipo() == ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO){
-//				winSistemaArchivos.setTitle("Crear Directorio");
-//				throw new PltException(ConstantesData3000.ERR1007);
-//			}
-		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+		directorioPadre = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+		directorio = new DocSistArch();
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
 			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			directorioPadre = directorio.getDocSistArch();
 			cargarDatosDirectorio();
+			isEditar = true;
 			
-			Set<DocAcl> permisos = directorio.getDocAcls();
-			for(DocAcl acl : permisos){
-				
-				PltUsuario aclUsuario = acl.getPltUsuario();
-				PltRol aclRol = acl.getPltRol();
-				
-				if(aclUsuario != null){
-					permisosUsuario.put(aclUsuario.getUsuaIdn(), acl);					
-				} else {
-					permisosRol.put(aclRol.getRolIdn(), acl);
-				}
-				
-				
-			}
+//			Set<DocAcl> permisos = directorio.getDocAcls();
+//			for(DocAcl acl : permisos){
+//				
+//				PltUsuario aclUsuario = acl.getPltUsuario();
+//				PltRol aclRol = acl.getPltRol();
+//				
+//				if(aclUsuario != null){
+//					permisosUsuario.put(aclUsuario.getUsuaIdn(), acl);					
+//				} else {
+//					permisosRol.put(aclRol.getRolIdn(), acl);
+//				}
+//				
+//				
+//			}
 			
 			
 			
 		}
-		cargarArbolPermisos();
+		
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 			super.soloConsulta();
@@ -122,20 +111,24 @@ public class EntidadCnt extends WindowComposer{
 	
 	public void onCreate$winSistemaArchivos(Event evt) throws Exception{
 		try{
-			List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
-			lista = sistemaArchivoNgc.getSeriesDocumentales();
-			for (DocSerieDoc docSerieDoc : lista) {
-				Listitem item = new Listitem();
-				item.setValue(docSerieDoc);
-				item.setLabel(docSerieDoc.getSerieDocNombre());
-				item.setTooltiptext("Código:"+docSerieDoc.getSerieDocCodigo());
-				lbxSeriesDoc.appendChild(item);
-			}
+			if(isEditar){
 			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
 					throw new PltException(ConstantesData3000.ERR1005);
 				}
 			}
+
+			
+			 listaPermisos = new ArrayList<DocAcl>();
+			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
+		}
+		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			cargarDatosDirectorio();
+			 listaPermisos = new ArrayList<DocAcl>();
+			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
+		}
+			cargarSeriesDocumentales();
+			cargarArbolPermisos();
 		} catch(PltException ex){
 			Events.sendEvent(Events.ON_CLOSE, this.self, null);
 			Messagebox.show(Labels.getLabel(ex.getCodigo()), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -143,14 +136,35 @@ public class EntidadCnt extends WindowComposer{
 		}
 		
 	}
+        
+	private void cargarSeriesDocumentales(){
+		
+		List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
+		lista = sistemaArchivoNgc.getSeriesDocumentales();
+		listaSeries = new ArrayList<DocSerieSist>();
+		if(isEditar){
+		listaSeries = sistemaArchivoNgc.getSeriesSisEditar(directorio.getSistArchIdn());
+		}
+		for (DocSerieDoc docSerieDoc : lista) {
+			Listitem item = new Listitem();
+			item.setValue(docSerieDoc);
+			item.setLabel(docSerieDoc.getSerieDocNombre());
+			item.setTooltiptext("Código:"+docSerieDoc.getSerieDocCodigo());
+			if(isEditar){
+			for (DocSerieSist docSerieSist : listaSeries) {
+				if(docSerieDoc.getSerieDocIdn() ==  docSerieSist.getDocSerieDoc().getSerieDocIdn()){
+					item.setSelected(true);
+				}
+			}	
+		  }
+			lbxSeriesDoc.appendChild(item);
+		}
+		
+	}
 	
 	private void cargarDatosDirectorio(){
 		txtNombre.setValue(directorio.getSistArchNombre());
 		txtDescripcion.setValue(directorio.getSistArchDescripcion());
-		
-		
-		
-		
 	}
 
 	private void cargarArbolPermisos() throws Exception{
@@ -195,8 +209,17 @@ public class EntidadCnt extends WindowComposer{
 			Treerow filaUsuario = new Treerow();
 			
 			itemUsuario.setValue(usuario);
-			itemUsuario.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);
-			
+//			if(acl==null && isEditar){
+//				 for (DocAcl pltRol : listaPermisos) {
+//					 if(pltRol.getPltUsuario() != null){
+//						if(pltRol.getPltUsuario().getUsuaIdn() == usuario.getUsuaIdn()){
+//							itemUsuario.setAttribute(ConstantesData3000.ATRIBUTO_ACL, pltRol);	
+//						}
+//					 }
+//					}
+//			}else{
+				itemUsuario.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);	
+//			}
 			StringBuilder nombre = new StringBuilder(usuario.getUsuaNombre());
 			nombre.append(" (");
 			nombre.append(usuario.getLogin());
@@ -215,13 +238,27 @@ public class EntidadCnt extends WindowComposer{
 			
 			
 			
+			
 			final Checkbox chkSiEscritura = new Checkbox();
 			boolean siEscritura = acl != null && acl.isAclSiEscritura();
 			chkSiEscritura.setChecked(siEscritura);
 			
+			
 			if(siEscritura){
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
+			}
+			if(isEditar){
+				if(listaPermisos!= null){
+				for (DocAcl pltUsuario : listaPermisos) {
+				  if(pltUsuario.getPltUsuario() != null){
+					if(usuario.getUsuaIdn() == pltUsuario.getPltUsuario().getUsuaIdn()){
+						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
+						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
+					  }
+				    }
+				  }
+				}
 			}
 			
 			Treecell celdaSiEscritura = new Treecell();
@@ -264,9 +301,19 @@ public class EntidadCnt extends WindowComposer{
 			
 			Treeitem itemRol = new Treeitem();
 			Treerow filarol = new Treerow();
-			
+
 			itemRol.setValue(rol);
-			itemRol.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);
+//			if(acl==null && isEditar){
+//				for (DocAcl pltRol : listaPermisos) {
+//					if(pltRol.getPltRol() != null){
+//					if(pltRol.getPltRol().getRolIdn() == rol.getRolIdn()){
+//						itemRol.setAttribute(ConstantesData3000.ATRIBUTO_ACL, pltRol);	
+//					}
+//				  }
+//				}
+//			}else{
+				itemRol.setAttribute(ConstantesData3000.ATRIBUTO_ACL, acl);	
+//			}
 			
 			
 			Treecell celdaNombre = new Treecell(rol.getRolNombre());
@@ -291,6 +338,18 @@ public class EntidadCnt extends WindowComposer{
 			if(siEscritura){
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
+			}
+			if(isEditar){
+				if(listaPermisos!=null){
+				for (DocAcl pltUsuario : listaPermisos) {
+					if(pltUsuario.getPltRol() != null){
+					 if(rol.getRolIdn() == pltUsuario.getPltRol().getRolIdn()){
+						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
+						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
+					}
+				  }
+				}
+			  }
 			}
 			
 			Treecell celdaSiEscritura = new Treecell();
@@ -331,6 +390,15 @@ public class EntidadCnt extends WindowComposer{
 	public void onClick$btnAceptar(Event event) throws Exception{
 		
 		
+		if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			String nota = solicitarNota();
+			
+			directorioPadre.setAudiFechModi(new Date());
+			directorioPadre.setAudiMotiAnul(nota);
+			directorioPadre.setAudiSiAnul(true);
+			sistemaArchivoNgc.anularDirectorio(directorioPadre);
+			
+	}else{
 		directorio.setAudiChecksum(null);
 		directorio.setAudiFechModi(new Date());
 		directorio.setAudiMotiAnul(null);
@@ -374,13 +442,17 @@ public class EntidadCnt extends WindowComposer{
 		List<DocAcl> permisosEdicion = new ArrayList<DocAcl>();
 		List<DocAcl> permisosEliminacion = new ArrayList<DocAcl>();
 		
-		directorio.getDocAcls().clear();
+		if(!isEditar){
+			directorio.getDocAcls().clear();	
+		}
 		
 		Treechildren hijosRaiz = trPermisos.getTreechildren();
 		tomarPermisos(permisosNuevos, permisosEdicion, permisosEliminacion, hijosRaiz);
 		
-		directorio.getDocAcls().addAll(permisosNuevos);
-		directorio.getDocAcls().addAll(permisosEdicion);
+		if(!isEditar){
+			directorio.getDocAcls().addAll(permisosNuevos);
+			directorio.getDocAcls().addAll(permisosEdicion);
+		}
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			long id = sistemaArchivoNgc.registrarDirectorio(directorio,permisosNuevos);
@@ -397,104 +469,110 @@ public class EntidadCnt extends WindowComposer{
 				}
 			}
 		} 
-//		else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
-//			sistemaArchivoNgc.modificarDirectorio(directorio,permisosNuevos, permisosEdicion, permisosEliminacion);
-//		}else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
-//			String nota = solicitarNota();
-//			
-//			directorio.setAudiFechModi(new Date());
-//			directorio.setAudiMotiAnul(nota);
-//			directorio.setAudiSiAnul(true);
-//			directorio.setAudiUsuario(usuario.getLogin());
-//			sistemaArchivoNgc.anularDirectorio(directorio);
-//			
-//		}
+		else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
+			sistemaArchivoNgc.modificarDirectorio(directorio,permisosNuevos, permisosEdicion, permisosEliminacion,listaPermisos);
+			sistemaArchivoNgc.ClearSeriesDocumentales(listaSeries);
+			for (Listitem item : lbxSeriesDoc.getItems()) {
+				if(item.isSelected()){
+					DocSerieSist docSerieSist = new DocSerieSist();
+					docSerieSist.setDocSerieDoc(item.getValue());
+					docSerieSist.setDocSistArch(directorio);
+					docSerieSist.setAudiUsuario(usuario.getLogin());
+					docSerieSist.setAudiFechModi(new Date());
+					docSerieSist.setAudiSiAnul(false);
+					sistemaArchivoNgc.RegistrarSeriesSistema(docSerieSist);
+				}
+			}
+		}
 		
-		
+	}
 		
 		Events.sendEvent(Events.ON_CLOSE,winSistemaArchivos,ConstantesAdmin.EXITO);
 		
 	}
 	
-	public void tomarPermisos(List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion, Treechildren arbol){
-		
-		Collection<Treeitem> itemsHijo = arbol.getItems();
-		
-		
-		
-		if(itemsHijo == null){
-			return;
-		} else if(! itemsHijo.isEmpty()){
-			for(Treeitem item : itemsHijo){				
-				Object valor = item.getValue();
-				if(valor != null && (valor instanceof PltUsuario || valor instanceof PltRol)){
-					
-					DocAcl acl = (DocAcl) item.getAttribute(ConstantesData3000.ATRIBUTO_ACL);
-					
-					Checkbox chkSiLectura = (Checkbox) item.getAttribute("chkSiLectura");
-					Checkbox chkSiEscritura = (Checkbox) item.getAttribute("chkSiEscritura");
-					
-					boolean siLeer = chkSiLectura.isChecked();
-					boolean siEscribir = chkSiEscritura.isChecked();
-					
-					if(siLeer || siEscribir){
-						if(acl == null){
-							DocAcl permiso = new DocAcl();
-							permiso.setAclSiEscritura(siEscribir);
-							permiso.setAclSiLectura(siLeer);
-							permiso.setAudiChecksum(null);
-							permiso.setAudiFechModi(new Date());
-							permiso.setAudiMotiAnul(null);
-							permiso.setAudiSiAnul(false);
-							permiso.setAudiUsuario(usuario.getLogin());
-							permiso.setDocArchivo(null);
-							permiso.setDocSistArch(directorio);
-							if(valor instanceof PltRol){
-								permiso.setPltRol((PltRol) valor);
-								permiso.setPltUsuario(null);
+		public void tomarPermisos(List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion, Treechildren arbol){
+			
+			Collection<Treeitem> itemsHijo = arbol.getItems();
+			
+			
+			
+			if(itemsHijo == null){
+				return;
+			} else if(! itemsHijo.isEmpty()){
+				for(Treeitem item : itemsHijo){				
+					Object valor = item.getValue();
+					if(valor != null && (valor instanceof PltUsuario || valor instanceof PltRol)){
+						
+						DocAcl acl = (DocAcl) item.getAttribute(ConstantesData3000.ATRIBUTO_ACL);
+						
+						Checkbox chkSiLectura = (Checkbox) item.getAttribute("chkSiLectura");
+						Checkbox chkSiEscritura = (Checkbox) item.getAttribute("chkSiEscritura");
+						
+						boolean siLeer = chkSiLectura.isChecked();
+						boolean siEscribir = chkSiEscritura.isChecked();
+						
+						if(siLeer || siEscribir){
+							if(acl == null){
+								DocAcl permiso = new DocAcl();
+								permiso.setAclSiEscritura(siEscribir);
+								permiso.setAclSiLectura(siLeer);
+								permiso.setAudiChecksum(null);
+								permiso.setAudiFechModi(new Date());
+								permiso.setAudiMotiAnul(null);
+								permiso.setAudiSiAnul(false);
+								permiso.setAudiUsuario(usuario.getLogin());
+								permiso.setDocArchivo(null);
+								permiso.setDocSistArch(directorio);
+								if(valor instanceof PltRol){
+									permiso.setPltRol((PltRol) valor);
+									permiso.setPltUsuario(null);
+								} else {
+									permiso.setPltRol(null);
+									permiso.setPltUsuario((PltUsuario)valor);
+								}
+								if(isEditar){
+									permisosEdicion.add(permiso);
+								}else {
+								permisosNuevos.add(permiso);
+								}
 							} else {
-								permiso.setPltRol(null);
-								permiso.setPltUsuario((PltUsuario)valor);
-							}
-							
-							permisosNuevos.add(permiso);
-						} else {
-							boolean actualizar = false;
-							if(acl.isAclSiLectura() != siLeer){
-								acl.setAclSiLectura(siLeer);
-								actualizar = true;
-							}
-							
-							if(acl.isAclSiEscritura() != siEscribir){
-								acl.setAclSiEscritura(siEscribir);
-								actualizar = true;
-							}
-							
-							if(actualizar){
-								acl.setAudiUsuario(usuario.getLogin());
-								acl.setAudiFechModi(new Date());
-								permisosEdicion.add(acl);
+								boolean actualizar = false;
+								if(acl.isAclSiLectura() != siLeer){
+									acl.setAclSiLectura(siLeer);
+									actualizar = true;
+								}
 								
+								if(acl.isAclSiEscritura() != siEscribir){
+									acl.setAclSiEscritura(siEscribir);
+									actualizar = true;
+								}
+								
+								if(actualizar){
+									acl.setAudiUsuario(usuario.getLogin());
+									acl.setAudiFechModi(new Date());
+									permisosEdicion.add(acl);
+									
+								}
+							}
+							
+						} else {
+							if(acl != null){
+								permisosEliminacion.add(acl);
 							}
 						}
 						
-					} else {
-						if(acl != null){
-							permisosEliminacion.add(acl);
-						}
+						
 					}
 					
-					
 				}
-				
 			}
+			
+			
+			
+			
+			
 		}
-		
-		
-		
-		
-		
-	}
 
 	
 	public UsuarioNgc getUsuarioNgc() {

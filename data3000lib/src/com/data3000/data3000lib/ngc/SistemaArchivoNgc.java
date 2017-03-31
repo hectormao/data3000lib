@@ -115,7 +115,7 @@ public interface SistemaArchivoNgc {
 	 * @param directorio
 	 * @param permisos
 	 */
-	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion) throws Exception;
+	public void modificarDirectorio(DocSistArch directorio, List<DocAcl> permisosNuevos, List<DocAcl> permisosEdicion, List<DocAcl> permisosEliminacion,List<DocAcl> permisosAnterior) throws Exception;
 	
 	/**
 	 * Obtiene un directorio a partir de su id
@@ -213,7 +213,20 @@ public interface SistemaArchivoNgc {
 	 * @param docSerieSist
 	 */
 	public void RegistrarSeriesSistema(DocSerieSist docSerieSist);
-
+	/**
+	 * metodo para obtener los permisos y rol a ser editados
+	 */
+	public List<DocAcl> getObtenerPermisosRol(long id); 
+	/**
+	 * metodo para traer las series documentales del sistema de archivos
+	 * @param sisArchi
+	 * @return
+	 */
+	public List<DocSerieSist> getSeriesSisEditar(long sisArchi);
+	/**
+	 * limpiar series documentales
+	 */
+	public void ClearSeriesDocumentales(List<DocSerieSist> lista);
 	
 	
 }
