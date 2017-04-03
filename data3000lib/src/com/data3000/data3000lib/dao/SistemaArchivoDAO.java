@@ -986,6 +986,30 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
+	public List<DocSistArch> getSistemaPorNombre(String buscar) {
+		Session session = super.sessionFactory.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocSistArch> lista = new ArrayList<DocSistArch>();
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocSistArch.class.getName()).append(" as o");
+			hql.append(" where upper(o.sistArchNombre) like '%").append(buscar.toUpperCase()).append("%'");
+			Query query = session.createQuery(hql.toString());
+			lista = query.list();
+		}catch (Exception e) {
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+		
+	}
+
+
 	
 
 }

@@ -25,7 +25,7 @@ public interface SistemaArchivoNgc {
 	 * @param usuario 
 	 * @return
 	 */
-	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario)  throws Exception;
+	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario, String buscar)  throws Exception;
 
 	/**
 	 * Obtiene los campos ya registrados en el sistema ordenados por su nombre

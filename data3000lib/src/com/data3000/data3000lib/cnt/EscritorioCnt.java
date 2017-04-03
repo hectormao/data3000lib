@@ -1,6 +1,6 @@
 package com.data3000.data3000lib.cnt;
 
-import java.awt.MenuItem;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,19 +16,31 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Bandpopup;
+import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.North;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 import com.data3000.admin.bd.PltUsuario;
@@ -72,6 +84,9 @@ public class EscritorioCnt extends WindowComposer {
 	private Menuitem iteEditarDi;
 	private Menuitem iteEliminarDi;
 	
+	private Bandbox buscarDirectorio;
+	private String buscar;
+	
 	
 	
 //	private Toolbarbutton btnEditarDirectorio;
@@ -84,6 +99,8 @@ public class EscritorioCnt extends WindowComposer {
 	
 	
 	private Window winTablaDatos;
+	
+	private Bandbox bndBuscarArchivo;
 	
 	private class ItemDir {
 		public DocSistArch dir;
@@ -112,6 +129,141 @@ public class EscritorioCnt extends WindowComposer {
 		winTablaDatos.setTitle(null);
 		winTablaDatos.setBorder("none");
 		winTablaDatos.doEmbedded();
+		
+		
+		bndBuscarArchivo = new Bandbox();
+		bndBuscarArchivo.setWidth("300px");
+		bndBuscarArchivo.setAutodrop(true);
+		bndBuscarArchivo.setTooltiptext(Labels.getLabel("data3000.buscar.archivo"));
+		
+		/************************
+		 <bandpopup>
+										 	<groupbox>
+										 		<caption label="${labels.data3000.buscar.$}"></caption>
+										 		<vbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.nombre.$}" ></label>
+										 				</div>
+										 				<textbox id="txtBscNombre" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 				<label value="${labels.data3000.sistema.serie}"></label>
+										 				</div>
+										 				<tree width="300px" id="trBscSerie" multiple="false" checkmark="true" rows="4" >
+															<treecols sizable="true">
+																<treecol width="100%">
+																</treecol >
+															</treecols>
+											            </tree>
+													
+										 			</hbox>  
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.descripcion.$}" ></label>
+										 				</div>
+										 				<textbox id="txtBscDescripcion" width="200px"></textbox>
+										 			</hbox>
+										 			<hbox>
+										 				<div width="150px">
+										 					<label value="${labels.data3000.tagversion}" ></label>
+										 				</div>
+										 				<textbox id="txtBscTagVersion" width="200px"></textbox>
+										 			</hbox>
+										 		</vbox>
+										 	</groupbox>
+										 
+										 </bandpopup>
+		 ************************/
+		Bandpopup winBndBuscarArchivo = new Bandpopup();
+		
+		Groupbox grpBuscarArchivo = new Groupbox();
+		grpBuscarArchivo.appendChild(new Caption(Labels.getLabel("data3000.buscar.archivo")));
+		
+		Vbox vboxBuscarArchivo = new Vbox();
+		
+		Hbox hboxNombre = new Hbox();
+		Div divNombre = new Div();
+		divNombre.setWidth("150px");
+		divNombre.appendChild(new Label(Labels.getLabel("data3000.nombre")));
+		Textbox txtBscNombre = new Textbox();
+		txtBscNombre.setWidth("200px");
+		hboxNombre.appendChild(divNombre);
+		hboxNombre.appendChild(txtBscNombre);		
+		vboxBuscarArchivo.appendChild(hboxNombre);
+		
+		Hbox hboxSerie = new Hbox();
+		Div divSerie = new Div();
+		divSerie.setWidth("150px");
+		divSerie.appendChild(new Label(Labels.getLabel("data3000.sistema.serie")));		
+		Tree trBscSerie = new Tree();
+		trBscSerie.setWidth("300px");
+		trBscSerie.setMultiple(false);
+		trBscSerie.setCheckmark(true);
+		trBscSerie.setRows(4);
+		hboxSerie.appendChild(divSerie);
+		hboxSerie.appendChild(trBscSerie);		
+		vboxBuscarArchivo.appendChild(hboxSerie);
+		
+		
+		Hbox hboxDescripcion = new Hbox();
+		Div divDescripcion = new Div();
+		divDescripcion.setWidth("150px");
+		divDescripcion.appendChild(new Label(Labels.getLabel("data3000.descripcion")));
+		Textbox txtBscDescripcion = new Textbox();
+		txtBscDescripcion.setWidth("200px");
+		hboxDescripcion.appendChild(divDescripcion);
+		hboxDescripcion.appendChild(txtBscDescripcion);		
+		vboxBuscarArchivo.appendChild(hboxDescripcion);
+		
+		Hbox hboxTag = new Hbox();
+		Div divTag = new Div();
+		divTag.setWidth("150px");
+		divTag.appendChild(new Label(Labels.getLabel("data3000.tagversion")));
+		Textbox txtBscTag = new Textbox();
+		txtBscTag.setWidth("200px");
+		hboxTag.appendChild(divTag);
+		hboxTag.appendChild(txtBscTag);		
+		vboxBuscarArchivo.appendChild(hboxTag);
+		
+		
+		Div dBotones = new Div();
+		dBotones.setWidth("100%");
+		
+		Button btnBuscar = new Button();
+		btnBuscar.setLabel(Labels.getLabel("data3000.buscar"));
+		dBotones.appendChild(btnBuscar);
+		vboxBuscarArchivo.appendChild(dBotones);
+		dBotones.setStyle("text-align: center;");
+		
+		btnBuscar.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				alert("en desarrollo !!!");
+				
+			}
+		});
+		
+		
+		grpBuscarArchivo.appendChild(vboxBuscarArchivo);
+		winBndBuscarArchivo.appendChild(grpBuscarArchivo);
+	
+		
+		
+		bndBuscarArchivo.appendChild(winBndBuscarArchivo);
+		
+		
+		Borderlayout contenidoDatos = (Borderlayout) winTablaDatos.getFirstChild();
+		North norte = contenidoDatos.getNorth();
+		Div divNorte = (Div) norte.getFirstChild();
+		Hbox hboxNorte = (Hbox) divNorte.getFirstChild();
+		hboxNorte.setStyle("vertical-align: middle;");
+		
+		
+		hboxNorte.getChildren().add(0, bndBuscarArchivo);
+		
 		
 		
 		List<FormularioHijo> hijos = formulario.getHijos();
@@ -605,7 +757,44 @@ public class EscritorioCnt extends WindowComposer {
 
 		
 		cargarArbol();
+		
+		buscarDirectorio.addEventListener(Events.ON_OK, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				trFileSystem.setSelectedItem(null);
+				buscar = (String) buscarDirectorio.getValue();
+				aplicarFiltro(arg0);
+				
+			}
+		});
+		
+		buscarDirectorio.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				trFileSystem.setSelectedItem(null);
+				OpenEvent oevt = (OpenEvent) arg0;				
+				buscar = (String) oevt.getValue();
+				aplicarFiltro(arg0);
+				
+			}
+		});
+		
+		
 	}
+	
+	
+	private void aplicarFiltro(Event arg0) throws Exception{
+		
+		if(buscar != null && buscar.length() == 0){
+			buscar = null;
+		}
+		
+		onSelect$trFileSystem(arg0);
+		
+	}
+	
 	
 	
 	
@@ -729,9 +918,13 @@ public class EscritorioCnt extends WindowComposer {
 	}
 	
 	private void cargarArbol(DocSistArch padre, Treechildren arbolPadre) throws Exception{
+		cargarArbol(padre, arbolPadre, null);
+	}
+	
+	private void cargarArbol(DocSistArch padre, Treechildren arbolPadre, String buscar) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug(new StringBuilder("Cargando hijos para ...").append(padre != null ? padre.getSistArchNombre() : "Raiz").toString());
 		
-		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre, (PltUsuario) usuario);
+		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre, (PltUsuario) usuario, buscar);
 		
 		Map<Long,ItemDir> mapaDir = (Map<Long, ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR);
 		//List<ItemDir> listaDir = (List<ItemDir>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_LISTA_DIR);
@@ -857,11 +1050,11 @@ public class EscritorioCnt extends WindowComposer {
 			}			
 			DocSistArch dir = tiSeleccion.getValue();
 			if(dir != null){
-			cargarArbol(dir, hijos);
+			cargarArbol(dir, hijos,buscar);
 			}
 		} else {
 			Treechildren hijos = trFileSystem.getTreechildren();
-			cargarArbol(null, hijos);
+			cargarArbol(null, hijos,buscar);
 		}
 		
 	}

@@ -10,7 +10,8 @@
 						
 							<hbox width="100%" sclass="columna-arbol">
 								<div width="100%" align="left">
-									<bandbox id="buscarArchivo" mold="rounded" autodrop="true" tooltiptext="${labels.data3000.buscar.archivo}" >
+									<bandbox id="buscarDirectorio" mold="rounded" autodrop="false" tooltiptext="${labels.data3000.buscar.directorio}" width="130px">
+									<!-- 
 										 <bandpopup>
 										 	<groupbox>
 										 		<caption label="${labels.data3000.buscar.$}"></caption>
@@ -49,6 +50,7 @@
 										 	</groupbox>
 										 
 										 </bandpopup>
+										  -->
 									</bandbox>
 								</div>
 								<div width="100%" align="right">

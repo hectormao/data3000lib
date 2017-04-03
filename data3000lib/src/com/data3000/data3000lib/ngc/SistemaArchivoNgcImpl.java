@@ -9,7 +9,9 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.data3000.admin.bd.PltRol;
@@ -37,16 +39,43 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	private PlataformaNgc plataformaNgc;
 	
 	@Override
-	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario) throws Exception{
+	public List<DocSistArch> getHijos(DocSistArch padre, PltUsuario usuario, String buscar) throws Exception{
 		
 		List<DocSistArch> directorios = null;
 		
-		if(padre == null){
-			directorios = sistemaArchivoDAO.getHijosRaiz();
-		} else {
-			directorios = sistemaArchivoDAO.getHijos(padre);
-		}
+		if(buscar == null){
 		
+			if(padre == null){
+				directorios = sistemaArchivoDAO.getHijosRaiz();
+			} else {
+				directorios = sistemaArchivoDAO.getHijos(padre);
+			}
+		} else {
+			List<DocSistArch> filtro = sistemaArchivoDAO.getSistemaPorNombre(buscar);
+			
+			Map<Long,DocSistArch> resultadoFiltro = new HashMap<>();
+			
+			for(DocSistArch dirEncontrado : filtro){
+				DocSistArch hijo = getHijoPorFiltro(padre,dirEncontrado);
+				if(hijo != null){
+					resultadoFiltro.put(hijo.getSistArchIdn(), hijo);
+				}
+			}
+			
+			directorios = new ArrayList<>();
+						
+			if(! resultadoFiltro.isEmpty()){
+				directorios.addAll(resultadoFiltro.values());
+				Collections.sort(directorios, new Comparator<DocSistArch>() {
+
+					@Override
+					public int compare(DocSistArch o1, DocSistArch o2) {						
+						return o1.getSistArchNombre().toUpperCase().compareTo(o2.getSistArchNombre().toUpperCase());
+					}
+					
+				});
+			}
+		}
 		List<DocSistArch> directoriosPermiso = new ArrayList<DocSistArch>();
 		
 		for(DocSistArch directorio : directorios){
@@ -88,6 +117,21 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 
 	
+	private DocSistArch getHijoPorFiltro(DocSistArch padre, DocSistArch dir) throws Exception{
+		
+		if(padre == null && dir.getDocSistArch() == null){
+			return dir;
+		} else if(padre != null && dir.getDocSistArch() == null){
+			return null;
+		} else if(padre != null && dir.getDocSistArch() != null && padre.getSistArchIdn() == dir.getDocSistArch().getSistArchIdn()){
+			return dir;
+		} else{	
+			DocSistArch padreDir = sistemaArchivoDAO.getDirectorio(dir.getDocSistArch().getSistArchIdn());
+			return getHijoPorFiltro(padre, padreDir);
+		}
+	}
+
+
 	@Override
 	public List<DocCampo> getCampos() throws Exception {
 		
