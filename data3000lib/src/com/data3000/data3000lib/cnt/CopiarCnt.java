@@ -145,7 +145,7 @@ public class CopiarCnt extends WindowComposer {
 					.toString());
 
 		List<DocSistArch> listaHijos = sistemaArchivoNgc.getHijos(padre,
-				(PltUsuario) usuario);
+				(PltUsuario) usuario,null);
 
 		Map<Long, ItemDir> mapaDir = (Map<Long, ItemDir>) arbolPadre
 				.getAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR);
