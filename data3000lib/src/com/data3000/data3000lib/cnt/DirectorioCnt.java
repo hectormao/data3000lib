@@ -63,6 +63,7 @@ public class DirectorioCnt extends WindowComposer {
 	private Map<Long,DocAcl> permisosUsuario;
 	private boolean isEditar;
 	private List<DocAcl> listaPermisos;
+	private boolean isBorrar = false;
 	
 	@Override
 	public void doAfterCompose(Window winSistemaArchivos) throws Exception{
@@ -85,6 +86,10 @@ public class DirectorioCnt extends WindowComposer {
 		
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+			directorioPadre = directorio;
+			cargarDatosDirectorio();
+			isBorrar = true;
 			super.soloConsulta();
 		}
 		
@@ -94,7 +99,7 @@ public class DirectorioCnt extends WindowComposer {
 	public void onCreate$winSistemaArchivos(Event evt) throws Exception{
 		
 		try{
-			if(isEditar){
+			if(isEditar || isBorrar){
 			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
 					throw new PltException(ConstantesData3000.ERR1005);
@@ -103,8 +108,10 @@ public class DirectorioCnt extends WindowComposer {
 			   listaPermisos = new ArrayList<DocAcl>();
 			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
 			}
+			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			if(directorioPadre == null){
 				throw new PltException(ConstantesData3000.ERR1011);
+			}
 			}
 			cargarArbolPermisos();
 		} catch(PltException ex){
@@ -201,16 +208,21 @@ public class DirectorioCnt extends WindowComposer {
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!= null){
 				for (DocAcl pltUsuario : listaPermisos) {
 				  if(pltUsuario.getPltUsuario() != null){
 					if(usuario.getUsuaIdn() == pltUsuario.getPltUsuario().getUsuaIdn()){
 						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
+						
 					  }
 				    }
 				  }
+				if(isBorrar){
+					chkSiLectura.setDisabled(true);
+					chkSiEscritura.setDisabled(true);
+				}
 				}
 			}
 			
@@ -292,15 +304,20 @@ public class DirectorioCnt extends WindowComposer {
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!=null){
 				for (DocAcl pltUsuario : listaPermisos) {
 					if(pltUsuario.getPltRol() != null){
 					 if(rol.getRolIdn() == pltUsuario.getPltRol().getRolIdn()){
 						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
+						
 					}
 				  }
+				}
+				if(isBorrar){
+					chkSiLectura.setDisabled(true);
+					chkSiEscritura.setDisabled(true);
 				}
 			  }
 			}

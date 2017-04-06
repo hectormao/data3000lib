@@ -65,6 +65,7 @@ public class DependenciaCnt extends WindowComposer{
 	private Map<Long,DocAcl> permisosUsuario;
 	
 	private boolean isEditar = false;
+	private boolean isBorrar = false;
 	private List<DocAcl> listaPermisos;
 	private List<DocSerieSist> listaSeries;
 	
@@ -90,6 +91,10 @@ public class DependenciaCnt extends WindowComposer{
 		
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+			directorioPadre = directorio;
+			cargarDatosDirectorio();
+			isBorrar = true;
 			super.soloConsulta();
 		}
 		
@@ -100,7 +105,7 @@ public class DependenciaCnt extends WindowComposer{
 		
 		try{
 			
-			if(isEditar){
+			if(isEditar || isBorrar){
 			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
 					throw new PltException(ConstantesData3000.ERR1005);
@@ -108,15 +113,18 @@ public class DependenciaCnt extends WindowComposer{
 			}
 				   listaPermisos = new ArrayList<DocAcl>();
 				   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
-			}else{
+			}else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 				
 		    if(directorioPadre==null){
 			    	throw new PltException(ConstantesData3000.ERR1010);
 			}else if(directorioPadre.getSistArchTipo().equalsIgnoreCase(ConstantesData3000.SISTEMA_ARCHIVO_DIRECTORIO)){
 					throw new PltException(ConstantesData3000.ERR1010);
 			}
+		    
+			}
+			
 		   
-		  }
+		  
 			cargarSeriesDocumentales();
 			cargarArbolPermisos();
 		} catch(PltException ex){
@@ -132,7 +140,7 @@ public class DependenciaCnt extends WindowComposer{
 		List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
 		lista = sistemaArchivoNgc.getSeriesDocumentales();
 		listaSeries = new ArrayList<DocSerieSist>();
-		if(isEditar){
+		if(isEditar || isBorrar){
 		listaSeries = sistemaArchivoNgc.getSeriesSisEditar(directorio.getSistArchIdn());
 		}
 		for (DocSerieDoc docSerieDoc : lista) {
@@ -140,12 +148,16 @@ public class DependenciaCnt extends WindowComposer{
 			item.setValue(docSerieDoc);
 			item.setLabel(docSerieDoc.getSerieDocNombre());
 			item.setTooltiptext("Código:"+docSerieDoc.getSerieDocCodigo());
-			if(isEditar){
+			if(isEditar || isBorrar){
 			for (DocSerieSist docSerieSist : listaSeries) {
 				if(docSerieDoc.getSerieDocIdn() ==  docSerieSist.getDocSerieDoc().getSerieDocIdn()){
 					item.setSelected(true);
+					
 				}
 			}	
+			if (isBorrar) {
+				item.setDisabled(true);
+			}
 		  }
 			lbxSeriesDoc.appendChild(item);
 		}
@@ -238,7 +250,7 @@ public class DependenciaCnt extends WindowComposer{
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!= null){
 				for (DocAcl pltUsuario : listaPermisos) {
 				  if(pltUsuario.getPltUsuario() != null){
@@ -246,8 +258,14 @@ public class DependenciaCnt extends WindowComposer{
 						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
 					  }
+					
 				    }
 				  }
+				if(isBorrar){
+					chkSiLectura.setDisabled(true);
+					chkSiEscritura.setDisabled(true);
+				}
+				
 				}
 			}
 			
@@ -329,7 +347,7 @@ public class DependenciaCnt extends WindowComposer{
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!=null){
 				for (DocAcl pltUsuario : listaPermisos) {
 					if(pltUsuario.getPltRol() != null){
@@ -338,6 +356,10 @@ public class DependenciaCnt extends WindowComposer{
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
 					}
 				  }
+				}
+				if(isBorrar){
+					chkSiLectura.setDisabled(true);
+					chkSiEscritura.setDisabled(true);
 				}
 			  }
 			}

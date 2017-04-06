@@ -47,7 +47,7 @@
             </column>
         </property>
         <property name="audiMotiAnul" type="string">
-            <column name="audi_moti_anul" length="32">
+            <column name="audi_moti_anul" length="1024">
                 <comment>Motivo de anulacion del registro</comment>
             </column>
         </property>
