@@ -11,7 +11,7 @@
             	<param name="sequence">SQN_DOC_SERIE_DOC</param>
             </generator>
         </id>
-        <many-to-one name="serieDocPadre" class="com.data3000.data3000lib.bd.DocSerieDoc" fetch="select">
+        <many-to-one name="serieDocPadre" class="com.data3000.data3000lib.bd.DocSerieDoc" lazy="false" fetch="join">
             <column name="serie_doc_padre" precision="10" scale="0">
                 <comment>identificador del padre de esta serie documental (null) cuando pertenece a la raiz</comment>
             </column>

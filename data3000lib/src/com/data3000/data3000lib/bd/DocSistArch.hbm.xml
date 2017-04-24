@@ -47,7 +47,7 @@
             </column>
         </property>
         <property name="audiMotiAnul" type="string">
-            <column name="audi_moti_anul" length="32">
+            <column name="audi_moti_anul" length="1024">
                 <comment>Motivo de anulacion del registro</comment>
             </column>
         </property>
@@ -69,7 +69,7 @@
             </key>
             <one-to-many class="com.data3000.data3000lib.bd.DocSistArch" />
         </set>
-        <set name="docAcls" table="doc_acl" inverse="true" lazy="true" fetch="select">
+        <set name="docAcls" table="doc_acl" inverse="true" lazy="false" fetch="join">
             <key>
                 <column name="sist_arch_idn" precision="10" scale="0">
                     <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
