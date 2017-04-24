@@ -65,6 +65,7 @@ public class EntidadCnt extends WindowComposer{
 	private boolean isEditar;
 	private List<DocAcl> listaPermisos;
 	private List<DocSerieSist> listaSeries;
+	private boolean isBorrar = false;
 	
 	@Override
 	public void doAfterCompose(Window winSistemaArchivos) throws Exception{
@@ -103,6 +104,10 @@ public class EntidadCnt extends WindowComposer{
 		
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+			directorio = (DocSistArch) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+			directorioPadre = directorio;
+			cargarDatosDirectorio();
+			isBorrar = true;
 			super.soloConsulta();
 		}
 		
@@ -111,7 +116,7 @@ public class EntidadCnt extends WindowComposer{
 	
 	public void onCreate$winSistemaArchivos(Event evt) throws Exception{
 		try{
-			if(isEditar){
+			if(isEditar || isBorrar){
 			if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 				if(directorio != null && directorio.getPltUsuario().getUsuaIdn() != ((PltUsuario)usuario).getUsuaIdn()){
 					throw new PltException(ConstantesData3000.ERR1005);
@@ -122,11 +127,11 @@ public class EntidadCnt extends WindowComposer{
 			 listaPermisos = new ArrayList<DocAcl>();
 			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
 		}
-		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
-			cargarDatosDirectorio();
-			 listaPermisos = new ArrayList<DocAcl>();
-			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
-		}
+//		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
+//			cargarDatosDirectorio();
+//			 listaPermisos = new ArrayList<DocAcl>();
+//			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
+//		}
 			cargarSeriesDocumentales();
 			cargarArbolPermisos();
 		} catch(PltException ex){
@@ -142,7 +147,7 @@ public class EntidadCnt extends WindowComposer{
 		List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
 		lista = sistemaArchivoNgc.getSeriesDocumentales();
 		listaSeries = new ArrayList<DocSerieSist>();
-		if(isEditar){
+		if(isEditar || isBorrar){
 		listaSeries = sistemaArchivoNgc.getSeriesSisEditar(directorio.getSistArchIdn());
 		}
 		for (DocSerieDoc docSerieDoc : lista) {
@@ -150,12 +155,16 @@ public class EntidadCnt extends WindowComposer{
 			item.setValue(docSerieDoc);
 			item.setLabel(docSerieDoc.getSerieDocNombre());
 			item.setTooltiptext("Código:"+docSerieDoc.getSerieDocCodigo());
-			if(isEditar){
+			if(isEditar || isBorrar){
 			for (DocSerieSist docSerieSist : listaSeries) {
 				if(docSerieDoc.getSerieDocIdn() ==  docSerieSist.getDocSerieDoc().getSerieDocIdn()){
 					item.setSelected(true);
+					
 				}
-			}	
+			}
+			if (isBorrar) {
+				item.setDisabled(true);
+			}
 		  }
 			lbxSeriesDoc.appendChild(item);
 		}
@@ -248,16 +257,22 @@ public class EntidadCnt extends WindowComposer{
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!= null){
 				for (DocAcl pltUsuario : listaPermisos) {
 				  if(pltUsuario.getPltUsuario() != null){
 					if(usuario.getUsuaIdn() == pltUsuario.getPltUsuario().getUsuaIdn()){
 						chkSiLectura.setChecked(pltUsuario.isAclSiLectura());
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
+						
 					  }
+					 
 				    }
 				  }
+				 if(isBorrar){
+						chkSiLectura.setDisabled(true);
+						chkSiEscritura.setDisabled(true);
+					 }
 				}
 			}
 			
@@ -339,7 +354,7 @@ public class EntidadCnt extends WindowComposer{
 				chkSiLectura.setChecked(true);
 				chkSiLectura.setDisabled(true);
 			}
-			if(isEditar){
+			if(isEditar || isBorrar){
 				if(listaPermisos!=null){
 				for (DocAcl pltUsuario : listaPermisos) {
 					if(pltUsuario.getPltRol() != null){
@@ -348,6 +363,10 @@ public class EntidadCnt extends WindowComposer{
 						chkSiEscritura.setChecked(pltUsuario.isAclSiEscritura());
 					}
 				  }
+				}
+				if(isBorrar){
+					chkSiLectura.setDisabled(true);
+					chkSiEscritura.setDisabled(true);
 				}
 			  }
 			}
