@@ -11,66 +11,27 @@
 							<hbox width="100%" sclass="columna-arbol">
 								<div width="100%" align="left">
 									<bandbox id="buscarDirectorio" mold="rounded" autodrop="false" tooltiptext="${labels.data3000.buscar.directorio}" width="130px">
-									<!-- 
-										 <bandpopup>
-										 	<groupbox>
-										 		<caption label="${labels.data3000.buscar.$}"></caption>
-										 		<vbox>
-										 			<hbox>
-										 				<div width="150px">
-										 					<label value="${labels.data3000.nombre.$}" ></label>
-										 				</div>
-										 				<textbox id="txtBscNombre" width="200px"></textbox>
-										 			</hbox>
-										 			<hbox>
-										 				<div width="150px">
-										 				<label value="${labels.data3000.sistema.serie}"></label>
-										 				</div>
-										 				<tree width="300px" id="trBscSerie" multiple="false" checkmark="true" rows="4" >
-															<treecols sizable="true">
-																<treecol width="100%">
-																</treecol >
-															</treecols>
-											            </tree>
-													
-										 			</hbox>  
-										 			<hbox>
-										 				<div width="150px">
-										 					<label value="${labels.data3000.descripcion.$}" ></label>
-										 				</div>
-										 				<textbox id="txtBscDescripcion" width="200px"></textbox>
-										 			</hbox>
-										 			<hbox>
-										 				<div width="150px">
-										 					<label value="${labels.data3000.tagversion}" ></label>
-										 				</div>
-										 				<textbox id="txtBscTagVersion" width="200px"></textbox>
-										 			</hbox>
-										 		</vbox>
-										 	</groupbox>
-										 
-										 </bandpopup>
-										  -->
+				
 									</bandbox>
 								</div>
 								<div width="100%" align="right">
-								<menubar id="mbMenu" width="150px">
-										<menu id="menuEntidad" image="img/iconos/entidadIconp.png">
-										 <menupopup>
+								<menubar id="mbMenu" width="150px" sclass="menuSecundario">
+										<menu id="menuEntidad" image="img/iconos/entidadIconp.png" sclass="menuDesplegable">
+										 <menupopup sclass="contenedorItems">
 										  <menuitem id="iteCrearE" value="form.1016"></menuitem>
 										  <menuitem id="iteEditarE" value="form.1020"></menuitem>
 										  <menuitem id="iteEliminarE" value="form.1021"></menuitem>
 										 </menupopup>
 										</menu>
-										<menu id="menuDependencia">
-											<menupopup>
+										<menu id="menuDependencia" sclass="menuDesplegable">
+											<menupopup sclass="contenedorItems">
 											  <menuitem id="iteCrearD" value="form.1017"></menuitem>
 											  <menuitem id="iteEditarD" value="form.1022"></menuitem>
 											  <menuitem id="iteEliminarD" value="form.1023"></menuitem>
 											</menupopup>
 										</menu>
-										<menu id="menuDirectorio">
-											<menupopup>
+										<menu id="menuDirectorio" sclass="menuDesplegable">
+											<menupopup sclass="contenedorItems">
 												<menuitem id="iteCrearDi" value="form.1018"></menuitem>
 												<menuitem id="iteEditarDi" value="form.1024"></menuitem>
 												<menuitem id="iteEliminarDi" value="form.1025"></menuitem>

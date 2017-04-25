@@ -427,29 +427,7 @@ public class EntidadCnt extends WindowComposer{
 		directorio.setSistArchDescripcion(txtDescripcion.getValue());
 		directorio.setSistArchNombre(txtNombre.getValue());
 		directorio.setSistArchTipo(ConstantesData3000.SISTEMA_ARCHIVO_ENTIDAD);
-//		java.io.InputStream zulInput = this.getClass().getClassLoader().getResourceAsStream("com/data3000/data3000lib/zul/decision.zul");
-//		
-//    	java.io.Reader zulReader = new java.io.InputStreamReader(zulInput);
-//    	
-//    	Map<String,Object> parametros = new HashMap<String, Object>();
-//		parametros.put(ConstantesAdmin.ARG_USUARIO,usuario);
-//		parametros.put(ConstantesAdmin.ARG_FORMULARIO,formulario);
-//		parametros.put(ConstantesAdmin.ARG_CLASE,DocArchivo.class);
-//		
-//		
-//		
-//    	 Window win = (Window) Executions.createComponentsDirectly(zulReader,"zul",null,parametros);
-//    	 win.setVisible(true);
-//    	 win.doModal();
-//    	 win.setTitle(null);
-//		 
-//		 win.addEventListener(Events.ON_CLOSE, new EventListener<Event>(){
-//
-//			@Override
-//			public void onEvent(Event arg0) throws Exception {
-//				
-//			}
-//		 });
+	
 
 		 
 		 
