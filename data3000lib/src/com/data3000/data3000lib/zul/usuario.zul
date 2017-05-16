@@ -1,0 +1,159 @@
+<?page title="Tipo Documento" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="winUsuario" apply="${usuarioCnt}" border="normal">
+		<hlayout>
+			<groupbox mold="3d">
+				<caption label="${labels.app.datosPersonales}" />
+				<vlayout>
+					<!-- 		NOMBRE COMPLETO -->
+					<hlayout>
+						<div width="150px">
+							<label id="lblNombreCompleto"
+								value="${labels.app.nombreCompleto}"
+								style="font-weight:bold;">
+							</label>
+						</div>
+						<textbox id="txtNombreCompleto" width="150px"
+							constraint="no empty:Por favor ingrese su Nombre Completo">
+						</textbox>
+					</hlayout>
+					<!-- 			CORREO ELECTRÓNICO  -->
+					<hlayout>
+						<div width="150px">
+							<label id="lblCorreo"
+								value="${labels.app.correo}" style="font-weight:bold;">
+							</label>
+						</div>
+						<textbox id="txtCorreo" width="150px"
+							constraint="/.+@.+\.[a-z]+/:Por favor ingrese un Correo Electronico Valido">
+						</textbox>
+					</hlayout>
+				</vlayout>
+
+			</groupbox>
+
+			<groupbox mold="3d">
+				<caption label="${labels.app.datosUsuario}" />
+				<vlayout id="vlylogin">
+					<!-- 		LOGIN -->
+					<hlayout>
+						<div width="150px">
+							<label id="lblLogin"
+								value="${labels.app.login}" style="font-weight:bold;">
+							</label>
+						</div>
+						<textbox id="txtLogin" width="150px"
+							constraint="no empty:Por favor ingrese un Nombre de Usuario">
+						</textbox>
+					</hlayout>
+					<!-- 			CLAVE  -->
+					<hlayout>
+						<div width="150px">
+							<label id="lblClave"
+								value="${labels.app.clave}" style="font-weight:bold;">
+							</label>
+						</div>
+						<textbox id="txtClave" type="password"
+							width="150px">
+						</textbox>
+					</hlayout>
+					<!-- 			CONFIRMAR CLAVE -->
+					<!-- 			<hlayout> -->
+					<!-- 				<div width="150px"> -->
+					<!-- 					<label id="lblConfirmarClave" value="${labels.app.confirmarClave}" style="font-weight:bold;"></label> -->
+					<!-- 				</div> -->
+					<!-- 				<textbox id="txtConfirmarClave" type="password" width="150px" ></textbox> -->
+					<!-- 			</hlayout> -->
+				</vlayout>
+
+			</groupbox>
+		</hlayout>
+		<separator height="5px"></separator>
+		<!-- ROLES -->
+		<vlayout>
+			<tabbox>
+				<tabs>
+					<tab label="${labels.app.rolesUsuario}"></tab>
+					<tab label="${labels.app.empresaUsuario}"></tab>
+				</tabs>
+				<tabpanels>
+					<tabpanel>
+						<listbox id="lstRolesUsuario" multiple="true"
+							checkmark="true" rows="3" vflex="true" width="635px">
+							<listhead sizable="true">
+								<!-- 				CHECKBOX -->
+								<listheader width="25px">
+									<label value=""></label>
+								</listheader>
+								<!-- 				NOMBRE ROL -->
+								<listheader width="270px">
+									<label
+										value="${labels.app.nombreRol}">
+									</label>
+								</listheader>
+								<!-- 				DESCRIPCION ROL -->
+								<listheader width="230px">
+									<label
+										value="${labels.app.descripcionRol}">
+									</label>
+								</listheader>
+							</listhead>
+						</listbox>
+
+					</tabpanel>
+					<tabpanel>
+						<hbox>
+							<listbox id="lstEmpresasDisponibles"
+								rows="3" multiple="true" checkmark="true" width="280px">
+								<listhead sizable="true">
+									<!-- 				CHECKBOX -->
+									<listheader width="25px">
+										<label value=""></label>
+									</listheader>
+									<!-- 				NOMBRE Empresa -->
+									<listheader>
+										<label
+											value="${labels.app.nombreEmpresa}">
+										</label>
+									</listheader>
+								</listhead>
+							</listbox>
+							<vbox>
+								<button id="btnSeleccionar" label="&gt;" tooltiptext="${labels.app.seleccionar}" width="50px"></button>
+								<button id="btnSeleccionarTodos" label="&gt;&gt;" tooltiptext="${labels.app.seleccionarTodos}" width="50px"></button>
+								<button id="btnQuitar" label="&lt;" tooltiptext="${labels.app.quitar}" width="50px"></button>
+								<button id="btnQuitarTodos" label="&lt;&lt;" tooltiptext="${labels.app.quitarTodos}" width="50px"></button>
+							</vbox>
+							<listbox id="lstEmpresasSeleccionadas" rows="3" multiple="true" checkmark="true" width="280px">
+								<listhead sizable="true">
+									<!-- 				CHECKBOX -->
+									<listheader width="25px">
+										<label value=""></label>
+									</listheader>
+									<!-- 				NOMBRE Empresa -->
+									<listheader>
+										<label
+											value="${labels.app.nombreEmpresa}">
+										</label>
+									</listheader>
+								</listhead>
+							</listbox>
+						</hbox>
+
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
+
+		</vlayout>
+		<separator width="30px"></separator>
+		<div width="100%" align="center">
+			<hlayout>
+				<button id="btnAceptar"
+					label="${labels.data3000.aceptar}" />
+				<separator width="20px" />
+				<button id="btnCancelar"
+					label="${labels.data3000.cancelar}" />
+			</hlayout>
+		</div>
+	</window>
+</zk>

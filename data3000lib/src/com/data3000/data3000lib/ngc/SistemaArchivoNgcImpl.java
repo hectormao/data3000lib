@@ -520,6 +520,19 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		sistemaArchivoDAO.ClearSeriesSistema(lista);
 		
 	}
+
+
+	@Override
+	public void registrarAcl(DocAcl acl) throws Exception{
+		sistemaArchivoDAO.save(acl);		
+		
+	}
+	
+	@Override
+	public void eliminarAcl(DocAcl acl) throws Exception{
+		sistemaArchivoDAO.delete(acl);		
+		
+	}
 	
 
 
