@@ -470,7 +470,10 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 			}
 		}
 	}
-
+	
+	
+	
+	
 
 	@Override
 	public List<DocSistArch> getEntidades() {

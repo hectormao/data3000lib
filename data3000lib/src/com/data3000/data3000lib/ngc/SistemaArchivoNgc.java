@@ -202,6 +202,8 @@ public interface SistemaArchivoNgc {
      */
 	public List<DocSistArch> getEntidades();
 	
+	
+	
 	/**
 	 * metodo para optener todas las series documentales para relacionar sistema de 
 	 * archivos con series

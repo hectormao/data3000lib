@@ -868,8 +868,7 @@ public class EscritorioCnt extends WindowComposer {
 		Treechildren raiz = new Treechildren();		
 		trFileSystem.appendChild(raiz);
 		
-		List<DocSistArch> lista = new ArrayList<DocSistArch>();
-		lista = sistemaArchivoNgc.getEntidades();
+		List<DocSistArch> lista = sistemaArchivoNgc.getHijos(null, (PltUsuario) usuario, buscar);
 		
 		Map<Long,ItemDir> mapaDir = new HashMap<>();
 		raiz.setAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR, mapaDir);
