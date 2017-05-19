@@ -22,7 +22,7 @@
                 <comment>Usuario al que se le asigna el permiso, el permiso sobre el usuario prevalece sobre el del rol</comment>
             </column>
         </many-to-one>
-        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="select">
+        <many-to-one name="docSistArch" class="com.data3000.data3000lib.bd.DocSistArch" fetch="join" lazy="false">
             <column name="sist_arch_idn" precision="10" scale="0">
                 <comment>Identificador del directorio al que pertenece el permiso, puede ser null</comment>
             </column>

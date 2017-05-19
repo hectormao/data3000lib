@@ -3,6 +3,8 @@ package com.data3000.data3000lib.cnt;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
@@ -58,6 +62,32 @@ public class UsuarioCodexCnt extends UsuarioCnt  {
 		
 		cargarEmpresas();
 		listaEliminar = new ArrayList<DocAcl>();
+		
+		if (formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
+			
+			cargarAclUsuario();
+			
+		}
+	}
+	
+	private void cargarAclUsuario(){
+		List<DocAcl> accesos = sistemaArchivoNgc.getAccesoEntidadesUsuario(usu);
+		for(DocAcl acl : accesos){
+			
+			int idx = 0;
+			while(idx < lstEmpresasDisponibles.getItemCount()){
+				Listitem liComboDisponible = lstEmpresasDisponibles.getItemAtIndex(idx);
+				DocSistArch entidadCombo = liComboDisponible.getValue();
+				if(entidadCombo.getSistArchIdn() == acl.getDocSistArch().getSistArchIdn()){					
+					lstEmpresasDisponibles.removeChild(liComboDisponible);
+					agregarAcl(acl);					
+					break;
+				}
+				
+				idx++;
+			}
+			
+		}
 	}
 
 	private void cargarEmpresas(){
@@ -82,7 +112,39 @@ public class UsuarioCodexCnt extends UsuarioCnt  {
 		arg0.setValue(entidad);
 		arg0.setTooltiptext(entidad.getSistArchDescripcion());
 		
-		lstEmpresasDisponibles.appendChild(arg0);
+		
+		
+		int idx = 0;
+		Listitem liAntes = null;
+		while(idx < lstEmpresasDisponibles.getItemCount()){
+			Listitem liCombo = lstEmpresasDisponibles.getItemAtIndex(idx);
+			DocSistArch entidadCombo = liCombo.getValue();
+			if(entidadCombo.getSistArchNombre().compareToIgnoreCase(entidad.getSistArchNombre()) > 0){
+				liAntes = liCombo;
+				break;
+			}
+			
+			idx++;
+		}
+		
+		if(liAntes != null){
+			lstEmpresasDisponibles.insertBefore(arg0, liAntes);
+		} else {
+			lstEmpresasDisponibles.appendChild(arg0);
+		}
+		
+		
+		/*Collections.sort(lstEmpresasDisponibles.getItems(), new Comparator<Listitem>() {
+
+			@Override
+			public int compare(Listitem o1, Listitem o2) {
+				
+				DocSistArch ent1 = o1.getValue();
+				DocSistArch ent2 = o1.getValue();
+				
+				return ent1.getSistArchNombre().compareToIgnoreCase(ent2.getSistArchNombre());
+			}
+		});*/
 		
 	}
 
@@ -117,6 +179,38 @@ public class UsuarioCodexCnt extends UsuarioCnt  {
 		liAcl.setValue(acl);
 		lstEmpresasSeleccionadas.appendChild(liAcl);
 		
+		
+		int idx = 0;
+		Listitem liAntes = null;
+		while(idx < lstEmpresasSeleccionadas.getItemCount()){
+			Listitem liCombo = lstEmpresasSeleccionadas.getItemAtIndex(idx);
+			DocAcl aclCombo = liCombo.getValue();
+			if(aclCombo.getDocSistArch().getSistArchNombre().compareToIgnoreCase(acl.getDocSistArch().getSistArchNombre()) > 0){
+				liAntes = liCombo;
+				break;
+			}
+			idx ++;
+		}
+		
+		if(liAntes != null){
+			lstEmpresasSeleccionadas.insertBefore(liAcl, liAntes);
+		} else {
+			lstEmpresasSeleccionadas.appendChild(liAcl);
+		}
+		
+		
+		/*Collections.sort(lstEmpresasSeleccionadas.getItems(), new Comparator<Listitem>() {
+
+			@Override
+			public int compare(Listitem o1, Listitem o2) {
+				
+				DocAcl acl1 = o1.getValue();
+				DocAcl acl2 = o1.getValue();
+				
+				return acl1.getDocSistArch().getSistArchNombre().compareToIgnoreCase(acl2.getDocSistArch().getSistArchNombre());
+			}
+		});*/
+		
 	}
 
 	private void agregarItem(Listitem selecion){
@@ -135,6 +229,8 @@ public class UsuarioCodexCnt extends UsuarioCnt  {
 		
 		
 		lstEmpresasDisponibles.removeChild(selecion);
+		
+		
 	}
 	
 	public void onClick$btnQuitar(Event event){

@@ -520,7 +520,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 
 	@Override
 	public void ClearSeriesDocumentales(List<DocSerieSist> lista) {
-		sistemaArchivoDAO.ClearSeriesSistema(lista);
+		sistemaArchivoDAO.clearSeriesSistema(lista);
 		
 	}
 
@@ -535,6 +535,13 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	public void eliminarAcl(DocAcl acl) throws Exception{
 		sistemaArchivoDAO.delete(acl);		
 		
+	}
+
+
+	@Override
+	public List<DocAcl> getAccesoEntidadesUsuario(PltUsuario usu) {
+		
+		return sistemaArchivoDAO.getAclUsuarioEntidades(usu);
 	}
 	
 

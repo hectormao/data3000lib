@@ -234,5 +234,7 @@ public interface SistemaArchivoNgc {
 	public void registrarAcl(DocAcl acl) throws Exception;
 	
 	public void eliminarAcl(DocAcl acl) throws Exception;
+
+	public List<DocAcl> getAccesoEntidadesUsuario(PltUsuario usu);
 	
 }

@@ -13,6 +13,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.mapping.Value;
 
+import com.data3000.admin.bd.PltUsuario;
 import com.data3000.admin.dao.PltDAO;
 import com.data3000.data3000lib.bd.DocAcl;
 import com.data3000.data3000lib.bd.DocArchivo;
@@ -962,7 +963,7 @@ public class SistemaArchivoDAO extends PltDAO{
 		
 	}
 	
-	public void ClearSeriesSistema(List<DocSerieSist> lista){
+	public void clearSeriesSistema(List<DocSerieSist> lista){
 		Session session = super.getSessionFactory().getCurrentSession();
 		Transaction tx = session.getTransaction();
 		try {
@@ -989,7 +990,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	public List<DocSistArch> getSistemaPorNombre(String buscar) {
 		Session session = super.sessionFactory.getCurrentSession();
 		Transaction tx = session.getTransaction();
-		List<DocSistArch> lista = new ArrayList<DocSistArch>();
+		List<DocSistArch> lista = null;
 		try {
 			if(!tx.isActive()){
 				tx.begin();
@@ -1006,6 +1007,33 @@ public class SistemaArchivoDAO extends PltDAO{
 			session.close();
 		}
 		return lista;
+		
+	}
+
+
+	public List<DocAcl> getAclUsuarioEntidades(PltUsuario usu) {
+		
+		Session session = super.sessionFactory.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		List<DocAcl> lista = null;
+		try {
+			if(!tx.isActive()){
+				tx.begin();
+			}
+			StringBuilder hql = new StringBuilder();
+			hql.append("select o from ");
+			hql.append(DocAcl.class.getName()).append(" as o");
+			hql.append(" where o.pltUsuario = :usuario and o.docSistArch.docSistArch is null");
+			Query query = session.createQuery(hql.toString());
+			query.setEntity("usuario", usu);
+			lista = query.list();
+		}catch (Exception e) {
+			throw e;
+		}finally {
+			session.close();
+		}
+		return lista;
+		
 		
 	}
 
