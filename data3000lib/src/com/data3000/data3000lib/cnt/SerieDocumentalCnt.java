@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -320,8 +321,22 @@ public class SerieDocumentalCnt extends WindowComposer {
 	private void cargarArbol() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("Consultando arbol ...");
 		
+		
+		String leyenda = Labels.getLabel("data3000.seriesDoc");
+		if(leyenda == null || (leyenda != null && leyenda.trim().length() <= 0)){
+			leyenda = "Series";
+		}
+		
+		
+		Treechildren raizSerie = new Treechildren();
+		trSerie.appendChild(raizSerie);
+		Treeitem itemSerie = new Treeitem(leyenda);
+		itemSerie.getTreerow().setClass("submenu");
+		raizSerie.appendChild(itemSerie);
+		
 		Treechildren raiz = new Treechildren();		
-		trSerie.appendChild(raiz);
+		itemSerie.appendChild(raiz);
+		
 		
 		
 		
