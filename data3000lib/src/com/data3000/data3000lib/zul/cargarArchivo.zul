@@ -54,7 +54,7 @@
 	<vbox>
 	<groupbox >
 		<caption>${labels.data3000.anexos}</caption>
-		<toolbar>
+		<toolbar sclass="menuTablaDato">
 			<toolbarbutton id="btnNuevoAnexo" image="img/iconos/agregarFila.png" tooltiptext="${labels.data3000.agregar.anexo}"></toolbarbutton>
 			<toolbarbutton id="btnEliminarAnexo" image="img/iconos/eliminarFila.png" tooltiptext="${labels.data3000.eliminar.anexo}"></toolbarbutton>
 		</toolbar>
