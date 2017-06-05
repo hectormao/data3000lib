@@ -46,7 +46,7 @@ public class EntidadCnt extends WindowComposer{
 	private Textbox txtNombre;
 	private Textbox txtDescripcion;
 	private Tree trPermisos;
-	private Listbox lbxSeriesDoc;
+	//private Listbox lbxSeriesDoc;
 	
 	/**
 	 * BEANS
@@ -64,7 +64,7 @@ public class EntidadCnt extends WindowComposer{
 	private Map<Long,DocAcl> permisosUsuario;
 	private boolean isEditar;
 	private List<DocAcl> listaPermisos;
-	private List<DocSerieSist> listaSeries;
+	//private List<DocSerieSist> listaSeries;
 	private boolean isBorrar = false;
 	
 	@Override
@@ -132,7 +132,7 @@ public class EntidadCnt extends WindowComposer{
 //			 listaPermisos = new ArrayList<DocAcl>();
 //			   listaPermisos = sistemaArchivoNgc.getObtenerPermisosRol(directorio.getSistArchIdn());
 //		}
-			cargarSeriesDocumentales();
+			//cargarSeriesDocumentales();
 			cargarArbolPermisos();
 		} catch(PltException ex){
 			Events.sendEvent(Events.ON_CLOSE, this.self, null);
@@ -142,13 +142,13 @@ public class EntidadCnt extends WindowComposer{
 		
 	}
         
-	private void cargarSeriesDocumentales(){
+	/*private void cargarSeriesDocumentales(){
 		
 		List<DocSerieDoc> lista = new ArrayList<DocSerieDoc>();
 		lista = sistemaArchivoNgc.getSeriesDocumentales();
-		listaSeries = new ArrayList<DocSerieSist>();
+		//listaSeries = new ArrayList<DocSerieSist>();
 		if(isEditar || isBorrar){
-		listaSeries = sistemaArchivoNgc.getSeriesSisEditar(directorio.getSistArchIdn());
+		//listaSeries = sistemaArchivoNgc.getSeriesSisEditar(directorio.getSistArchIdn());
 		}
 		for (DocSerieDoc docSerieDoc : lista) {
 			Listitem item = new Listitem();
@@ -169,7 +169,7 @@ public class EntidadCnt extends WindowComposer{
 			lbxSeriesDoc.appendChild(item);
 		}
 		
-	}
+	}*/
 	
 	private void cargarDatosDirectorio(){
 		txtNombre.setValue(directorio.getSistArchNombre());
@@ -454,7 +454,7 @@ public class EntidadCnt extends WindowComposer{
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			long id = sistemaArchivoNgc.registrarDirectorio(directorio,permisosNuevos);
 			directorio.setSistArchIdn(id);
-			for (Listitem docAcl : lbxSeriesDoc.getItems()) {
+			/*for (Listitem docAcl : lbxSeriesDoc.getItems()) {
 				if(docAcl.isSelected()){
 					DocSerieSist docSerieSist = new DocSerieSist();
 					docSerieSist.setDocSerieDoc(docAcl.getValue());
@@ -464,11 +464,11 @@ public class EntidadCnt extends WindowComposer{
 					docSerieSist.setAudiSiAnul(false);
 					sistemaArchivoNgc.RegistrarSeriesSistema(docSerieSist);
 				}
-			}
+			}*/
 		} 
 		else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
 			sistemaArchivoNgc.modificarDirectorio(directorio,permisosNuevos, permisosEdicion, permisosEliminacion,listaPermisos);
-			sistemaArchivoNgc.ClearSeriesDocumentales(listaSeries);
+			/*sistemaArchivoNgc.ClearSeriesDocumentales(listaSeries);
 			for (Listitem item : lbxSeriesDoc.getItems()) {
 				if(item.isSelected()){
 					DocSerieSist docSerieSist = new DocSerieSist();
@@ -479,7 +479,7 @@ public class EntidadCnt extends WindowComposer{
 					docSerieSist.setAudiSiAnul(false);
 					sistemaArchivoNgc.RegistrarSeriesSistema(docSerieSist);
 				}
-			}
+			}*/
 		}
 		
 	}

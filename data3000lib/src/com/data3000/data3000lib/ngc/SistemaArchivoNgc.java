@@ -50,7 +50,7 @@ public interface SistemaArchivoNgc {
 	 * @param listaCrearCampo
 	 * @throws Exception
 	 */
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception;
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo, DocSerieSist serieSistema) throws Exception;
 	
 	/**
 	 * Actualiza en la base de datos un tipo de documento
@@ -180,6 +180,14 @@ public interface SistemaArchivoNgc {
 	 * @return
 	 */
 	public List<DocSerieDoc> getHijosSerie(DocSerieDoc padre, PltUsuario usuario)  throws Exception;
+	
+	/**
+	 * Obtiene las series asociadas a la entidad
+	 * @param entidad
+	 * @return
+	 * @throws Exception
+	 */
+	public List<DocSerieDoc> getSeriesEntidad(DocSistArch entidad)  throws Exception;
 	
 	
 	/**

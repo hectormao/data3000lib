@@ -1,23 +1,18 @@
 package com.data3000.data3000lib.cnt;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zhtml.Tbody;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Bandpopup;
 import org.zkoss.zul.Borderlayout;
@@ -27,13 +22,11 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
@@ -44,8 +37,6 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 import com.data3000.admin.bd.PltUsuario;
-import com.data3000.admin.cmp.TablaDatos;
-import com.data3000.admin.ngc.PlataformaNgc;
 import com.data3000.admin.utl.ConstantesAdmin;
 import com.data3000.admin.utl.WindowComposer;
 import com.data3000.admin.vo.Formulario;

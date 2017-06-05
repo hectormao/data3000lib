@@ -32,6 +32,8 @@ import com.data3000.admin.vo.Dominio;
 import com.data3000.data3000lib.bd.DocCampTipo;
 import com.data3000.data3000lib.bd.DocCampo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
+import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.bd.DocTipoAlma;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 import com.data3000.data3000lib.utl.ConstantesData3000;
@@ -69,18 +71,26 @@ public class TipoDocumentoCnt extends WindowComposer {
 	
 	private DocSerieDoc padre;
 	
+	private DocSistArch entidad;
+	
+	private DocSerieSist serieSistema;
+	
 	
 	@Override
 	public void doAfterCompose(Window winTipoDocumento) throws Exception{		
 		super.doAfterCompose(winTipoDocumento);
 		
 		if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
-			padre = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
+			cargarSeleccion();
 			docSerieDoc = new DocSerieDoc();
+			
+			
+			
 			
 		} else if(formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_EDITAR) || formulario.getTipo().equalsIgnoreCase(ConstantesAdmin.FORMULARIO_TIPO_BORRAR)){
 			docSerieDoc = (DocSerieDoc) argumentos.get(ConstantesAdmin.ARG_SELECCION);
 			padre = docSerieDoc.getSerieDocPadre();
+			cmbTipo.setDisabled(true);
 		}
 		
 		
@@ -99,7 +109,36 @@ public class TipoDocumentoCnt extends WindowComposer {
 	}
 	
 	
-	
+	private void cargarSeleccion(){
+		Object seleccion =  argumentos.get(ConstantesAdmin.ARG_SELECCION);
+		if(seleccion instanceof DocSerieDoc){
+			padre = (DocSerieDoc) seleccion;
+			entidad = null;
+			
+			switch(padre.getSerieDocTipo()){
+				case ConstantesData3000.SERIE:{
+					seleccionarComboDominio(cmbTipo, ConstantesData3000.SUBSERIE);
+					cmbTipo.setDisabled(true);
+				}break;
+				
+				case ConstantesData3000.SUBSERIE:{
+					seleccionarComboDominio(cmbTipo, ConstantesData3000.TIPO_DOCUMENTO);
+					cmbTipo.setDisabled(true);
+				}break;
+			}
+			
+		} else if(seleccion instanceof DocSistArch) {
+			padre = null;
+			entidad = (DocSistArch) seleccion;
+			
+			seleccionarComboDominio(cmbTipo, ConstantesData3000.SERIE);
+			cmbTipo.setDisabled(true);
+			
+		} else {
+			padre = null;
+			entidad = null;
+		}
+	}
 	
 	
 	
@@ -457,7 +496,19 @@ public class TipoDocumentoCnt extends WindowComposer {
 		
 		if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_INSERTAR)){
 			establecerDatos();
-			sistemaArchivoNgc.registrarTipoDocumentos(docSerieDoc,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);
+			if(entidad != null){
+				serieSistema = new DocSerieSist();
+				serieSistema.setDocSerieDoc(docSerieDoc);
+				serieSistema.setDocSistArch(entidad);
+				serieSistema.setAudiChecksum(null);
+				serieSistema.setAudiFechModi(new Date());
+				serieSistema.setAudiMotiAnul(null);
+				serieSistema.setAudiSiAnul(false);
+				serieSistema.setAudiUsuario(usuario.getLogin());
+			} else {
+				serieSistema = null;
+			}
+			sistemaArchivoNgc.registrarTipoDocumentos(docSerieDoc,listaCrear,listaActualizar,listaEliminar,listaCrearCampo, serieSistema);
 		} else if(formulario.getTipo().equals(ConstantesAdmin.FORMULARIO_TIPO_EDITAR)){
 			establecerDatos();
 			sistemaArchivoNgc.actualizarTipoDocumentos(docSerieDoc,listaCrear,listaActualizar,listaEliminar,listaCrearCampo);

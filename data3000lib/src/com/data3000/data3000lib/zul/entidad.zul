@@ -37,6 +37,7 @@
 								</hbox>
 							</vbox>
 						</groupbox>
+						<!-- 
 						<groupbox height="45%">
 					<caption label="${labels.data3000.seriesDoc}">
 					</caption>
@@ -49,6 +50,7 @@
 
 					</listbox>
 				</groupbox>
+				 -->
 						</vbox>
 					</north>
 					<center border="none">

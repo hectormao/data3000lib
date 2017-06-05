@@ -127,7 +127,12 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 			return dir;
 		} else{	
 			DocSistArch padreDir = sistemaArchivoDAO.getDirectorio(dir.getDocSistArch().getSistArchIdn());
-			return getHijoPorFiltro(padre, padreDir);
+			if(padreDir.isAudiSiAnul()){
+				return null;
+			} else {
+				return getHijoPorFiltro(padre, padreDir);
+			}
+			
 		}
 	}
 
@@ -139,8 +144,8 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 	}
 	
 	@Override
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
-		sistemaArchivoDAO.registrarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo);
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo, List<Object> listaCrear, List<Object> listaActualizar, List<Object> listaEliminar, List<DocCampo> listaCrearCampo, DocSerieSist serieSistema) throws Exception {
+		sistemaArchivoDAO.registrarTipoDocumentos(docTipoArchivo, listaCrear, listaActualizar, listaEliminar, listaCrearCampo, serieSistema);
 		
 	}
 
@@ -428,6 +433,13 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		} else {
 			return sistemaArchivoDAO.getHijosSerie(padre);
 		}
+	}
+	
+	@Override
+	public List<DocSerieDoc> getSeriesEntidad(DocSistArch entidad)  throws Exception {
+		
+		return sistemaArchivoDAO.getHijosRaizSerie(entidad);
+		
 	}
 
 

@@ -153,7 +153,7 @@ public class SistemaArchivoDAO extends PltDAO{
 	}
 
 
-	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo,List<Object> listaCrear, List<Object> listaActualizar,List<Object> listaEliminar, List<DocCampo> listaCrearCampo) throws Exception {
+	public void registrarTipoDocumentos(DocSerieDoc docTipoArchivo,List<Object> listaCrear, List<Object> listaActualizar,List<Object> listaEliminar, List<DocCampo> listaCrearCampo, DocSerieSist serieSistema) throws Exception {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
 		Transaction tx = sesion.getTransaction();
@@ -183,7 +183,9 @@ public class SistemaArchivoDAO extends PltDAO{
 				sesion.save(campoTipo);
 			}
 			
-			
+			if(serieSistema != null){
+				sesion.save(serieSistema);
+			}
 			
 			
 			
@@ -708,6 +710,37 @@ public class SistemaArchivoDAO extends PltDAO{
 		}
 	}
 	
+	
+	public List<DocSerieDoc> getHijosRaizSerie(DocSistArch entidad) {
+		Session sesion = super.getSessionFactory().getCurrentSession();
+		
+		Transaction tx = sesion.getTransaction();
+		try{
+			if(! tx.isActive()){
+				tx.begin();
+			}
+			
+			
+			String hql = "select docSerieDoc from " + DocSerieSist.class.getName() + " ser where ser.docSistArch = :entidad and ser.docSerieDoc.audiSiAnul = false and ser.docSerieDoc.serieDocPadre is null  order by ser.docSerieDoc.serieDocCodigo, ser.docSerieDoc.serieDocNombre";
+			
+			Query query = sesion.createQuery(hql);
+			query.setEntity("entidad", entidad);
+			
+			/*Criteria criteria = sesion.createCriteria(DocSistArch.class);
+			criteria.add(Restrictions.isNull("docSistArch"));
+			criteria.addOrder(Order.asc("sistArchNombre"));*/
+			
+			return query.list();
+			
+		} catch(Exception ex){			
+			throw ex;
+		} finally{
+			if(sesion.isOpen()){
+				sesion.close();
+			}
+		}
+	}
+	
 	public List<DocSerieDoc> getHijosSerie() {
 		Session sesion = super.getSessionFactory().getCurrentSession();
 		
@@ -998,7 +1031,7 @@ public class SistemaArchivoDAO extends PltDAO{
 			StringBuilder hql = new StringBuilder();
 			hql.append("select o from ");
 			hql.append(DocSistArch.class.getName()).append(" as o");
-			hql.append(" where upper(o.sistArchNombre) like '%").append(buscar.toUpperCase()).append("%'");
+			hql.append(" where ((o.audiSiAnul is null) or (o.audiSiAnul is not null and o.audiSiAnul = false) ) and (upper(o.sistArchNombre) like '%").append(buscar.toUpperCase()).append("%')");
 			Query query = session.createQuery(hql.toString());
 			lista = query.list();
 		}catch (Exception e) {

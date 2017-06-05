@@ -31,6 +31,8 @@ import com.data3000.admin.utl.WindowComposer;
 import com.data3000.admin.vo.Formulario;
 import com.data3000.admin.vo.FormularioHijo;
 import com.data3000.data3000lib.bd.DocSerieDoc;
+import com.data3000.data3000lib.bd.DocSerieSist;
+import com.data3000.data3000lib.bd.DocSistArch;
 import com.data3000.data3000lib.ngc.SistemaArchivoNgc;
 import com.data3000.data3000lib.utl.ConstantesData3000;
 
@@ -119,9 +121,9 @@ public class SerieDocumentalCnt extends WindowComposer {
 							public void onEvent(Event arg0) throws Exception {
 								DocSerieDoc res = (DocSerieDoc) arg0.getData();
 								if(res != null ){
-									if(res.getSerieDocPadre() == null){
+									/*if(res.getSerieDocPadre() == null){
 										trSerie.setSelectedItem(null);
-									}
+									}*/
 									onSelect$trSerie(arg0);
 								}
 								
@@ -131,10 +133,10 @@ public class SerieDocumentalCnt extends WindowComposer {
 					
 					Treeitem itemSeleccionado = trSerie.getSelectedItem();
 					
-					DocSerieDoc seriePadre = (DocSerieDoc) (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
+					Object seleccion =  (itemSeleccionado != null ? itemSeleccionado.getValue() : null);
 					
 					
-					abrirFormulario(frmNuevoDirectorio, seriePadre, eventoCerrar);
+					abrirFormulario(frmNuevoDirectorio, seleccion, eventoCerrar);
 					
 					
 				}
@@ -248,8 +250,12 @@ public class SerieDocumentalCnt extends WindowComposer {
 			
 		}
 		
+		btnNuevo.setDisabled(true);
+		btnEditar.setDisabled(true);
+		btnEliminar.setDisabled(true);
+		
 		cargarArbol();
-		actualizarTablaDatos(null);
+		//actualizarTablaDatos((DocSerieDoc) null);
 	}
 	
 	
@@ -322,7 +328,7 @@ public class SerieDocumentalCnt extends WindowComposer {
 		if(logger.isDebugEnabled()) logger.debug("Consultando arbol ...");
 		
 		
-		String leyenda = Labels.getLabel("data3000.seriesDoc");
+		/*String leyenda = Labels.getLabel("data3000.seriesDoc");
 		if(leyenda == null || (leyenda != null && leyenda.trim().length() <= 0)){
 			leyenda = "Series";
 		}
@@ -335,18 +341,41 @@ public class SerieDocumentalCnt extends WindowComposer {
 		raizSerie.appendChild(itemSerie);
 		
 		Treechildren raiz = new Treechildren();		
-		itemSerie.appendChild(raiz);
+		itemSerie.appendChild(raiz);*/
+		
+		Treechildren raizSerie = new Treechildren();
+		trSerie.appendChild(raizSerie);
+		
+		List<DocSistArch> entidades = sistemaArchivoNgc.getEntidades();
+		for(DocSistArch entidad : entidades){
+			
+			Treeitem itemEntidad = new Treeitem(entidad.getSistArchNombre());
+			itemEntidad.setValue(entidad);
+			itemEntidad.getTreerow().setClass("submenu");
+			raizSerie.appendChild(itemEntidad);
+			
+			Treechildren raizEntidad = new Treechildren();		
+			itemEntidad.appendChild(raizEntidad);
+			
+			cargarArbol(null, raizEntidad, entidad);
+			
+			
+		}
 		
 		
 		
 		
-		cargarArbol(null, raiz);
 	}
 	
-	private void cargarArbol(DocSerieDoc padre, Treechildren arbolPadre) throws Exception{
+	private void cargarArbol(DocSerieDoc padre, Treechildren arbolPadre, DocSistArch entidad) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug(new StringBuilder("Cargando hijos para ...").append(padre != null ? padre.getSerieDocNombre() : "Raiz").toString());
+		List<DocSerieDoc> listaHijos = null;
+		if(entidad != null){
+			listaHijos = sistemaArchivoNgc.getSeriesEntidad(entidad);
+		} else {
+			listaHijos = sistemaArchivoNgc.getHijosSerie(padre, (PltUsuario) usuario);
+		}
 		
-		List<DocSerieDoc> listaHijos = sistemaArchivoNgc.getHijosSerie(padre, (PltUsuario) usuario);
 		
 		Map<Long,ItemSerie> mapaSerie = (Map<Long, ItemSerie>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_MAPA_DIR);
 		List<ItemSerie> listaSerie = (List<ItemSerie>) arbolPadre.getAttribute(ConstantesData3000.ATRIBUTO_LISTA_DIR);
@@ -439,35 +468,65 @@ public class SerieDocumentalCnt extends WindowComposer {
 	}
 	
 	
+	
 	public void onSelect$trSerie(Event event) throws Exception {
 		
 		
 		
 		Treeitem tiSeleccion = trSerie.getSelectedItem();
 		
-		DocSerieDoc serie = tiSeleccion != null ? (DocSerieDoc) tiSeleccion.getValue() : null; 
+		Object valorSeleccion = tiSeleccion != null ? tiSeleccion.getValue() : null; 
 		
-		
-		
-		actualizarTablaDatos(serie);
-		
-		
-		if(tiSeleccion != null){
+		if(valorSeleccion instanceof DocSerieDoc){
+			DocSerieDoc serie = (DocSerieDoc) valorSeleccion;
+			actualizarTablaDatos(serie);
+			if(tiSeleccion != null){
+				
+				Treechildren hijos = tiSeleccion.getTreechildren();
+				if(hijos == null){
+					hijos = new Treechildren();
+					tiSeleccion.appendChild(hijos);
+				}		
+				cargarArbol(serie, hijos,null);
+							
+				
+			}
+			if(serie.getSerieDocTipo().equals(ConstantesData3000.TIPO_DOCUMENTO)){
+				btnNuevo.setDisabled(true);
+			} else {
+				btnNuevo.setDisabled(false);
+			}
 			
-			Treechildren hijos = tiSeleccion.getTreechildren();
-			if(hijos == null){
-				hijos = new Treechildren();
-				tiSeleccion.appendChild(hijos);
-			}			
-			DocSerieDoc ser = tiSeleccion.getValue();			
-			cargarArbol(ser, hijos);
-						
 			
+			btnEditar.setDisabled(false);
+			btnEliminar.setDisabled(false);
+		} else if(valorSeleccion instanceof DocSistArch) {
+			DocSistArch entidad = (DocSistArch) valorSeleccion;
+			actualizarTablaDatos(entidad);
+			if(tiSeleccion != null){
+				
+				Treechildren hijos = tiSeleccion.getTreechildren();
+				if(hijos == null){
+					hijos = new Treechildren();
+					tiSeleccion.appendChild(hijos);
+				}		
+				cargarArbol(null, hijos,entidad);
+							
+				
+			}
+			btnNuevo.setDisabled(false);
+			btnEditar.setDisabled(true);
+			btnEliminar.setDisabled(true);
 		} else {
-			Treechildren raiz = trSerie.getTreechildren();
-			
-			cargarArbol(null, raiz);
+			btnNuevo.setDisabled(true);
+			btnEditar.setDisabled(true);
+			btnEliminar.setDisabled(true);
 		}
+		
+		
+		
+		
+		 
 		
 	}
 
@@ -484,7 +543,22 @@ public class SerieDocumentalCnt extends WindowComposer {
 			datos.put(ConstantesAdmin.FILTRAR_PADRE_NULL, true);
 		}
 		
+		
+		
 		Events.sendEvent(Events.ON_USER, winTablaDatos, datos);
+		
+	}
+	
+	private void actualizarTablaDatos(DocSistArch entidad) {
+		
+		Map<String,Object> datos = new HashMap<String, Object>();
+		datos.put(ConstantesAdmin.ACCION, ConstantesAdmin.EVENTO_REFRESCAR);
+		datos.put(ConstantesAdmin.OBJETO_PADRE, null);
+		
+		datos.put(ConstantesAdmin.ARG_WHERE, "serieDocIdn in (select ent.docSerieDoc.serieDocIdn from " + DocSerieSist.class.getName() + " ent where ent.docSistArch.sistArchIdn = " + entidad.getSistArchIdn() + ")");
+		
+		Events.sendEvent(Events.ON_USER, winTablaDatos, datos);
+		
 		
 	}
 
