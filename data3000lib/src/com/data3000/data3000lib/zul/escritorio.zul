@@ -2,7 +2,7 @@
 <zk>
   <window id="winEscritorio" border="normal" apply="${escritorioCnt}" sizable="true" maximizable="false" minimizable="false" closable="false" width="100%" height="100%" hflex="1" vflex="1">
   	<borderlayout>
-          <west splittable="true" size="23%" collapsible="true" minsize="300">
+          <west splittable="true" size="23%" collapsible="true" minsize="300" border="none">
 		
         	<tree vflex="1" height="100%" width="100%" id="trFileSystem" multiple="false" checkmark="true" >
 				<treecols sizable="true">
@@ -66,8 +66,8 @@
 				
    </west>
     
- <center>    	 
-    	 <div id="divTrabajo" hflex="1" vflex="1" /> 		
+ <center border="none">    	 
+    	 <div id="divTrabajo" hflex="1" vflex="1" sclass="areaTrabajo"/> 		
  </center>
   	</borderlayout>
   	<menupopup id="menuArchivo">

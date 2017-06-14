@@ -20,10 +20,10 @@ public class DocCampArch implements java.io.Serializable {
 	@Columna(orden=2)
 	private String campArchValor;
 	
-	@Columna(orden=3)
+	
 	private String audiUsuario;
 	
-	@Columna(orden=4)
+	
 	private Date audiFechModi;
 	
 	private boolean audiSiAnul;

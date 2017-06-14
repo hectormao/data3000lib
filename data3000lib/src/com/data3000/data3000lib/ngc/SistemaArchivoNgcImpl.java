@@ -457,7 +457,7 @@ public class SistemaArchivoNgcImpl implements SistemaArchivoNgc{
 		}
 		
 		List<DocSerieDoc> resultado =  sistemaArchivoDAO.getSeriesDirectorio(dir);
-		if(resultado != null){
+		if(resultado != null && ! resultado.isEmpty() ){
 			
 			Collections.sort(resultado, new Comparator<DocSerieDoc>() {
 

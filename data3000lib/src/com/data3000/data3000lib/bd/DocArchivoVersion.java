@@ -25,13 +25,13 @@ public class DocArchivoVersion implements java.io.Serializable {
 	private String archVersRuta;
 	private String archVersChecksum;
 	
-	@Columna(orden=3, aplica={"form.1008"})
+	
 	private String archVersDescripcion;
 	
-	@Columna(orden=4)
+	@Columna(orden=3, aplica={"form.1008"})
 	private String audiUsuario;
 	
-	@Columna(orden=5)
+	@Columna(orden=4, aplica={"form.1008"})
 	private Date audiFechModi;
 	private boolean audiSiAnul;
 	private String audiMotiAnul;
